@@ -81,7 +81,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
     Environment,
     { files: Map<string, Edges>; key: string }
   >()
-  // A development entry's last output, reused until a watcher event.
+  // A development entry's last output, reused until a watcher event or a recompile of its module.
   const outputs = new WeakMap<
     Entry,
     {
@@ -742,8 +742,10 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
     const current = projects.get(entry.environment)?.outcome
 
     // Without a watcher event the closure is unchanged, so a stylesheet load after its
-    // transform reuses the output, as later merges of other modules leave it unchanged. The
-    // shared stylesheet reads every module merged so far, so it waits for an unchanged graph.
+    // transform reuses the output while the merged graph keeps the module's compiled output.
+    // Merging other modules leaves it, unless one is code the module's own compile had read
+    // from disk. The shared stylesheet reads every module merged so far, so it waits for an
+    // unchanged graph.
     if (
       memo &&
       !everything &&
@@ -752,7 +754,10 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       (code === undefined || code === memo.code) &&
       current &&
       'result' in current &&
-      (!allSources || current.result === memo.result)
+      (allSources
+        ? current.result === memo.result
+        : current.result.modules[sourceId(entry.file)] ===
+          memo.result.modules[sourceId(entry.file)])
     ) {
       for (const file of entry.files) host.watch(file)
       return memo.output

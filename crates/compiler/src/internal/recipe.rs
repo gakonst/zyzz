@@ -18,7 +18,7 @@ pub type Defaults = Vec<(Arc<str>, Option<Arc<str>>)>;
 pub type Matches = Vec<(Arc<str>, Vec<Arc<str>>)>;
 
 /// One base, choice, or compound rule.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Rule<V> {
     /// Required choices by axis.
     pub matches: Matches,
@@ -27,7 +27,7 @@ pub struct Rule<V> {
 }
 
 /// Static recipe data shared by source extraction and target compilers.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Definition<V = style::Definition> {
     /// Ordered axes and their finite choice names.
     pub axes: Axes,

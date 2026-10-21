@@ -227,6 +227,49 @@ mod create {
         );
     }
 
+    /// A graph whose page styles itself with a constant that its index re-exports from the button
+    /// module.
+    fn reexported(size: &str) -> String {
+        let button = json(&format!(
+            "import {{style}} from 'zyzz';export const size='{size}';export const button=style({{padding:size}});"
+        ));
+        let index = json("export * from './button.js';export const label='Continue';");
+        let page = json(
+            "import {size,label} from './index.js';import {style} from 'zyzz';export const page=style({margin:size});export const element=label;",
+        );
+
+        format!(
+            r#"{{"imports":{{"button.ts":{{"zyzz":null}},"index.ts":{{"./button.js":"button.ts"}},"page.ts":{{"./index.js":"index.ts","zyzz":null}}}},"modules":{{"button.ts":{button},"index.ts":{index},"page.ts":{page}}}}}"#
+        )
+    }
+
+    #[test]
+    fn reexported_edits() {
+        let mut compiler = Compiler::default();
+        let parse =
+            |text: String| -> serde_json::Value { serde_json::from_str(&text).unwrap_or_default() };
+        let before = parse(compiler.compile(&reexported("8px")));
+        let edited = parse(compiler.compile(&reexported("12px")));
+        let fresh = parse(Compiler::default().compile(&reexported("12px")));
+
+        // The index extracts as before the edit, while the page reads the edited constant through
+        // it. Each module matches a fresh compile.
+        for id in ["button.ts", "index.ts", "page.ts"] {
+            let output = match &edited["modules"][id] {
+                serde_json::Value::Number(_) => &before["modules"][id],
+                output => output,
+            };
+
+            assert_eq!(output, &fresh["modules"][id], "{id}");
+        }
+
+        insta::assert_snapshot!(edited["modules"]["index.ts"].to_string(), @"0");
+        insta::assert_snapshot!(
+            edited["modules"]["page.ts"]["css"].to_string().contains("12px").to_string(),
+            @"true"
+        );
+    }
+
     #[test]
     fn unchanged_sources() {
         let mut compiler = Compiler::default();

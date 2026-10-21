@@ -27,7 +27,7 @@ pub enum ClassName {
 }
 
 /// A theme or variable set definition.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Definition {
     /// How the scope class name is derived.
     pub class_name: ClassName,

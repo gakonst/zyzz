@@ -19,7 +19,7 @@ use crate::internal::{condition, query, targets, typography, variable_sets};
 use crate::js;
 
 /// A declaration value.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Value {
     /// A compiler binding slot.
     Binding(Arc<binding::Reference>),
@@ -52,7 +52,7 @@ impl Value {
 }
 
 /// One ordered declaration.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Declaration {
     /// Whether the declaration is `!important`.
     pub important: bool,
@@ -63,7 +63,7 @@ pub struct Declaration {
 }
 
 /// A nested block under an optional condition.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Rule {
     /// Normalized condition: a selector containing `&` or an at-rule prelude.
     pub condition: Option<Arc<str>>,
@@ -72,7 +72,7 @@ pub struct Rule {
 }
 
 /// Native and web branches applied after shared declarations.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct Targets {
     /// Android declarations as static data.
     pub android: Option<Data>,
@@ -87,7 +87,7 @@ pub struct Targets {
 }
 
 /// A named style definition.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct NamedStyle {
     /// Composition mode inherited from the defining configuration.
     pub composition: Option<Composition>,
@@ -116,7 +116,7 @@ pub struct Label {
 }
 
 /// Validated named styles in authored order.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct Definition {
     /// Readable CSS names retained for target compilation.
     pub labels: Option<Arc<Labels>>,

@@ -39,7 +39,7 @@ pub enum ImportLayer {
 }
 
 /// One kind of stylesheet contribution.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Kind {
     /// A document-level descriptor rule with descriptors and nested blocks.
     Block {
@@ -115,7 +115,7 @@ pub enum Kind {
 }
 
 /// Explicit stylesheet data supplied by source adapters or in-memory callers.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Definition {
     /// The contribution.
     pub kind: Kind,

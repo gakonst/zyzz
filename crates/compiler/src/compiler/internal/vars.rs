@@ -31,7 +31,7 @@ use crate::js::{self, Record};
 use crate::web::internal::contributions::{self, Scalar};
 
 /// One `variable()` call replaced with immutable compiler-assigned slot data.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Call {
     /// Exclusive offset.
     pub end: u32,

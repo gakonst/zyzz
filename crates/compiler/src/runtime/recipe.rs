@@ -14,7 +14,7 @@ pub enum Scalar {
 }
 
 /// Slot names a choice's payload fields bind.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Payload {
     /// Axis name.
     pub axis: Arc<str>,

@@ -122,7 +122,7 @@ pub fn write_parameter(output: &mut String, parameter: &FunctionParameter) {
 }
 
 /// A configuration, theme, or variable-set authoring call.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, PartialEq)]
 #[expect(
     clippy::struct_excessive_bools,
     reason = "Each flag is an independent property of the authored call."
@@ -229,7 +229,7 @@ pub enum LinkKind {
 }
 
 /// An exported authoring value that other modules of the graph can import.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Link {
     /// Exported binding identity.
     pub binding: Arc<str>,
@@ -246,7 +246,7 @@ pub struct Link {
 }
 
 /// A configured `vars()` selection read for native output.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct VarsRead {
     /// Default set name.
     pub default_vars: Arc<str>,

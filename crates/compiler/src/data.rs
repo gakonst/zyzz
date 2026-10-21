@@ -10,7 +10,7 @@ use crate::internal::{binding, theme, token};
 use crate::js;
 
 /// A statically known JavaScript value.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Data {
     /// An array of elements in index order.
     Array(Arc<Vec<Data>>),
@@ -164,7 +164,7 @@ impl From<Object> for Data {
 }
 
 /// A property value, or the accessor marker that authoring validation rejects.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Property {
     /// An accessor property, which is never evaluated.
     Accessor,
@@ -176,7 +176,7 @@ pub enum Property {
 ///
 /// Array-index keys enumerate first in ascending order, then other keys in insertion order. The
 /// order is maintained on insertion, so iteration needs no sorting.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct Object {
     entries: Vec<(Arc<str>, Property)>,
     /// Number of leading array-index keys.

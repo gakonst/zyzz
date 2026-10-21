@@ -240,7 +240,7 @@ pub struct Expression {
 }
 
 /// Contract, values, and query metadata for one theme or variable set.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Metadata {
     /// Contract that owns every token.
     pub contract: Arc<Contract>,

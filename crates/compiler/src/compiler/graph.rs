@@ -230,7 +230,7 @@ impl Graph {
 }
 
 /// Owned extraction data that the graph links, publishes, and caches.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq)]
 struct Module {
     calls: Vec<CallSummary>,
     contribution_starts: Vec<u32>,
@@ -250,7 +250,7 @@ struct Module {
     vars: Record<Arc<Definition>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct CallSummary {
     composition: bool,
     composition_case: bool,
@@ -2035,6 +2035,18 @@ impl<'p, 'a> Build<'p, 'a> {
             opaque: linked.opaque,
             ..Module::detach(&linked.extracted)
         });
+        // A module re-extracted only because a dependency changed usually extracts as before.
+        // Keeping the previous identity then lets the modules that read it reuse their own
+        // extractions, and its unchanged source keeps transform reuse sound.
+        let module = match self.previous.and_then(|previous| {
+            previous
+                .extracted
+                .get(module_id)
+                .filter(|_| previous.sources.get(module_id) == options.modules.get(module_id))
+        }) {
+            Some(previous) if **previous == *module => Arc::clone(previous),
+            _ => module,
+        };
 
         // Only extracted modules contribute names, as the TypeScript graph walks only those.
         if options.native.is_some()

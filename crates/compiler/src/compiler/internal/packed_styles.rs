@@ -19,7 +19,7 @@ use crate::runtime::recipe as runtime;
 use crate::style::{Declaration, NamedStyle, Rule, Targets, Value};
 
 /// Dynamic recipe data of a packed style.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Dynamic {
     /// Default payload values by axis and field.
     pub default_payloads: Option<crate::js::Record<crate::js::Record<runtime::Scalar>>>,
@@ -32,7 +32,7 @@ pub struct Dynamic {
 }
 
 /// A style as a packed library exports it.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Definition {
     /// Recipe attributes.
     pub attributes: Vec<Arc<str>>,

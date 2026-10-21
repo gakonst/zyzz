@@ -64,7 +64,7 @@ fn invalid(message: &str, span: Span) -> Error {
 }
 
 /// Native alternatives of an authoring contract.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct NativeContext {
     /// Default label selected when the provider omits its theme.
     pub default_vars: Arc<str>,

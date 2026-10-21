@@ -6,7 +6,7 @@ use crate::style::NamedStyle;
 use crate::web::internal::contributions::Scalar;
 
 /// One authored descriptor, element declaration fragment, or nested descriptor block.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Entry {
     /// A nested block under a header.
     Block {

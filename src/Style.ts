@@ -23,13 +23,8 @@ export type Accepted<
   targets extends boolean = true,
 > = Record<
   Exclude<
-    Keys<style>,
-    | keyof Literal.Properties
-    | Condition.Keys<tokens, Keys<style>>
-    | 'selectors'
-    | 'targets'
-    | 'typography'
-    | 'vars'
+    Exclude<Keys<style>, Reserved<tokens>>,
+    Condition.Dynamic<Keys<style>>
   >,
   never
 > &
@@ -130,6 +125,18 @@ export type TargetBranches<tokens extends Theme.Tokens = {}> =
   }
 
 type Keys<value> = value extends unknown ? keyof value : never
+
+// The conditional caches this union per token set. `Accepted` runs for every declaration,
+// and the union holds every property name.
+type Reserved<tokens extends Theme.Tokens> = [tokens] extends [unknown]
+  ?
+      | keyof Literal.Properties
+      | Condition.Static<tokens>
+      | 'selectors'
+      | 'targets'
+      | 'typography'
+      | 'vars'
+  : never
 
 type Exact<
   styles extends Record<string, unknown>,

@@ -674,6 +674,43 @@ type Entry<
 
 type Keys<styles> = styles extends unknown ? keyof styles : never
 
+/**
+ * Returns `key` when it names a condition or an allowed `@layer` block, otherwise `never`.
+ * Testing the key against the cached `Condition.Keys` union avoids building a union per key.
+ */
+export type Nested<
+  tokens extends Theme.Tokens,
+  key extends PropertyKey,
+  layers extends string,
+> = key extends `@layer${string}`
+  ? key extends '@layer' | `@layer ${layers}`
+    ? key
+    : key extends Exclude<Condition.Keys<tokens, key>, `@layer${string}`>
+      ? key
+      : never
+  : key extends Condition.Keys<tokens, key>
+    ? key
+    : never
+
+// The conditional caches this union per configuration. `Body` runs for every style, and the
+// union holds every property name.
+type Reserved<
+  tokens extends Theme.Tokens,
+  layers extends string,
+  mappings extends Shorthands.Map,
+> = [tokens, layers, mappings] extends [unknown, unknown, unknown]
+  ?
+      | keyof mappings
+      | 'selectors'
+      | 'targets'
+      | 'typography'
+      | 'vars'
+      | keyof Style.DeclarationProperties
+      | Exclude<Condition.Static<tokens>, `@layer${string}`>
+      | '@layer'
+      | `@layer ${layers}`
+  : never
+
 /** Checked declaration body shared by configured styles and recipe choices. */
 export type Body<
   styles,
@@ -683,16 +720,8 @@ export type Body<
   targets extends boolean = true,
 > = Record<
   Exclude<
-    Keys<styles>,
-    | keyof mappings
-    | 'selectors'
-    | 'targets'
-    | 'typography'
-    | 'vars'
-    | keyof Style.DeclarationProperties
-    | Exclude<Condition.Keys<tokens, Keys<styles>>, `@layer${string}`>
-    | '@layer'
-    | `@layer ${layers}`
+    Exclude<Keys<styles>, Reserved<tokens, layers, mappings>>,
+    Exclude<Condition.Dynamic<Keys<styles>>, `@layer${string}`>
   >,
   never
 > &
@@ -736,10 +765,7 @@ export type Body<
                     : never
                 }
               : never
-            : key extends
-                  | Exclude<Condition.Keys<tokens, key>, `@layer${string}`>
-                  | '@layer'
-                  | `@layer ${layers}`
+            : key extends Nested<tokens, key, layers>
               ? styles[key] extends Record<string, unknown>
                 ? Body<styles[key], tokens, layers, mappings, targets>
                 : never

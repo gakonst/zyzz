@@ -72,10 +72,7 @@ type Body<
             mappings
           >
         }
-      : key extends
-            | Exclude<Condition.Keys<tokens, key>, `@layer${string}`>
-            | '@layer'
-            | `@layer ${layers}`
+      : key extends Configuration.Nested<tokens, key, layers>
         ? Body<input[key], part, tokens, layers, mappings>
         : Configuration.Body<Pick<input, key>, tokens, layers, mappings>[key]
 }

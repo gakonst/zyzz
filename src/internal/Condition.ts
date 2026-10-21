@@ -91,16 +91,35 @@ export type Relationship = symbol & { readonly [relationship]: true }
 export type Keys<
   tokens extends Theme.Tokens = {},
   key extends PropertyKey = never,
-> =
-  | ([key] extends [never]
-      ? never
-      : symbol extends key
-        ? symbol
-        : Relationship | Query)
-  | Raw
-  | `@media ${Alias<Names<tokens, 'breakpoint'>>}`
-  | `@container ${Alias<Names<tokens, 'container'>>}`
-  | `@container ${Containers<tokens>} ${Alias<Names<tokens, 'container'>>}`
+> = [key] extends [never]
+  ? Static<tokens>
+  : symbol extends key
+    ? Static<tokens, symbol>
+    : Static<tokens, Relationship | Query>
+
+/** The part of `Keys` that depends on the authored keys. */
+export type Dynamic<key extends PropertyKey> = [key] extends [never]
+  ? never
+  : symbol extends key
+    ? symbol
+    : Relationship | Query
+
+/**
+ * The part of `Keys` that depends only on the bound tokens, plus `extra`.
+ * The wrapping conditional caches the union by its arguments. A bare union alias is reduced
+ * again on every instantiation, which compares each literal against each pattern.
+ */
+export type Static<tokens extends Theme.Tokens, extra = never> = [
+  tokens,
+  extra,
+] extends [unknown, unknown]
+  ?
+      | extra
+      | Raw
+      | `@media ${Alias<Names<tokens, 'breakpoint'>>}`
+      | `@container ${Alias<Names<tokens, 'container'>>}`
+      | `@container ${Containers<tokens>} ${Alias<Names<tokens, 'container'>>}`
+  : never
 
 /** Recognizes structured rule keys before declaration parsing. */
 export function is(key: string): boolean {

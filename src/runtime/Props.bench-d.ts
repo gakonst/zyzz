@@ -21,7 +21,7 @@ bench('create / static overrides', () => {
 
   void button({ className: 'external', style: { paddingLeft: '2px' } })
     .className
-}).types([689, 'instantiations'])
+}).types([25, 'instantiations'])
 
 bench('create / html and dynamic bindings', () => {
   const card = Html.create({ className: 'card' })
@@ -32,4 +32,4 @@ bench('create / html and dynamic bindings', () => {
 
   void card({ style: { opacity: 0.5 } }).class
   void bar({ width: '50%' }).style
-}).types([347, 'instantiations'])
+}).types([384, 'instantiations'])

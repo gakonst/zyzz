@@ -33,7 +33,7 @@ bench('global / selectors and grouping rules', () => {
     'h1, h2': { fontWeight: 700, lineHeight: 1.2 },
   })
   layers(['reset', 'base', 'components'])
-}).types([141786, 'instantiations'])
+}).types([29124, 'instantiations'])
 
 bench('keyframes / stop positions', () => {
   keyframes({
@@ -42,7 +42,7 @@ bench('keyframes / stop positions', () => {
     to: { opacity: 1 },
   })
   keyframes({ 'entry 0%': { opacity: 0 }, 'exit 100%': { opacity: 1 } })
-}).types([13955, 'instantiations'])
+}).types([5714, 'instantiations'])
 
 bench('fontFace / descriptor inventory', () => {
   fontFace({

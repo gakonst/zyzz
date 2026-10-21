@@ -20,14 +20,14 @@ bench('native / compile and select named tables', () => {
     vars: { alternate: set, base: set },
   })
   StyleSheet.select(output.styles, { colorScheme: 'dark', set: 'alternate' })
-}).types([432, 'instantiations'])
+}).types([341, 'instantiations'])
 
 bench('native / compose compiled styles', () => {
   const output = StyleSheet.compile({ styles })
   StyleSheet.flatten(
     StyleSheet.compose(output.styles.default.dark.card, { opacity: 0.5 }),
   )
-}).types([330, 'instantiations'])
+}).types([296, 'instantiations'])
 
 bench('native / structured target authoring', () => {
   StyleSheet.compile({
@@ -47,4 +47,4 @@ bench('native / structured target authoring', () => {
       },
     }),
   })
-}).types([19936, 'instantiations'])
+}).types([20869, 'instantiations'])

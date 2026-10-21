@@ -23,7 +23,7 @@ bench('create / react catalog selection', () => {
 
   void select({ colorScheme: 'dark', set: 'mint' }).className
   void select({ set: 'ocean' }).className
-}).types([141, 'instantiations'])
+}).types([151, 'instantiations'])
 
 bench('create / html catalog selection', () => {
   const select = Selection.create(
@@ -35,4 +35,4 @@ bench('create / html catalog selection', () => {
   )
 
   void select({ set: 'ocean' }).class
-}).types([125, 'instantiations'])
+}).types([121, 'instantiations'])

@@ -14,4 +14,4 @@ bench('cx / ordered static props', () => {
   const a = style({ padding: '8px', color: 'red' })
   const b = style({ paddingLeft: '12px', color: 'blue' })
   cx(a(), false, null, undefined, b(), a())
-}).types([30418, 'instantiations'])
+}).types([19276, 'instantiations'])

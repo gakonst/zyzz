@@ -26,7 +26,7 @@ bench('define / scalar and scheme tokens', () => {
     spacing: { 4: '1rem', 8: '2rem', md: '8px' },
     textColor: { foreground: '#000' },
   })
-}).types([142641, 'instantiations'])
+}).types([3456, 'instantiations'])
 
 bench('define / query aliases', () => {
   const theme = Vars.define({
@@ -41,7 +41,7 @@ bench('define / query aliases', () => {
     '@container sidebar >=card': { display: 'grid' },
     '@media tablet..desktop': { ':hover': { padding: 'gap' } },
   })
-}).types([24193, 'instantiations'])
+}).types([15849, 'instantiations'])
 
 bench('extend / overrides', () => {
   const theme = Vars.define({
@@ -54,7 +54,7 @@ bench('extend / overrides', () => {
     backgroundColor: { surface: '#fff' },
     spacing: { md: '2rem' },
   })
-}).types([39162, 'instantiations'])
+}).types([13165, 'instantiations'])
 
 bench('style / token names and references', () => {
   const theme = Vars.define({
@@ -69,4 +69,4 @@ bench('style / token names and references', () => {
     padding: 4,
     width: theme.spacing[4],
   })
-}).types([49914, 'instantiations'])
+}).types([18258, 'instantiations'])

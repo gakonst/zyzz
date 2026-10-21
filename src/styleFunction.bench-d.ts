@@ -29,7 +29,7 @@ bench('style / literal declarations', () => {
     padding: '1rem 2rem',
     width: 'calc(100% - 16px)',
   })
-}).types([54766, 'instantiations'])
+}).types([28571, 'instantiations'])
 
 bench('style / fallbacks, importance, and templates', () => {
   style({
@@ -38,7 +38,7 @@ bench('style / fallbacks, importance, and templates', () => {
     position: 'sticky !important',
     width: `calc(100% - ${16}px)`,
   })
-}).types([25026, 'instantiations'])
+}).types([18522, 'instantiations'])
 
 bench('style / nested conditions', () => {
   style({
@@ -48,7 +48,7 @@ bench('style / nested conditions', () => {
     '@media (width >= 800px)': { ':focus-visible': { outline: '2px solid' } },
     '@supports (display: grid)': { display: 'grid' },
   })
-}).types([34732, 'instantiations'])
+}).types([21972, 'instantiations'])
 
 bench('style / dynamic callback', () => {
   const bar = style((values: { alpha: number; amount: `${number}%` }) => ({
@@ -58,14 +58,14 @@ bench('style / dynamic callback', () => {
   }))
 
   bar({ alpha: 0.5, amount: '50%', className: 'external' })
-}).types([19599, 'instantiations'])
+}).types([9585, 'instantiations'])
 
 bench('style / applied overrides', () => {
   const card = style({ color: '#fff', padding: '1rem' })
 
   card({ className: 'external', style: { opacity: 0.5 } })
   card()
-}).types([10656, 'instantiations'])
+}).types([7308, 'instantiations'])
 
 bench('style / bound theme tokens', () => {
   const theme = Vars.define({
@@ -80,4 +80,4 @@ bench('style / bound theme tokens', () => {
     padding: ['md', '2px !custom !important'],
     width: theme.spacing[4],
   })
-}).types([64207, 'instantiations'])
+}).types([19119, 'instantiations'])

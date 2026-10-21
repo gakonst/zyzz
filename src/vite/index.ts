@@ -1690,7 +1690,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
     deleted: string | undefined,
   ) {
     // Portable build adapters share this module and do not require Vite.
-    const { transformWithOxc } = await import('vite')
+    const { transformWithOxc, version } = await import('vite')
     const code = new Set<string>()
     const css = new Set<string>()
 
@@ -1793,11 +1793,18 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       sheets.length &&
       sheets.every((module) => module.isSelfAccepting)
     ) {
+      // The client matches a linked stylesheet by its URL and an imported one by its hot
+      // context, ignoring updates that name neither. Vite 8.3 registers hot contexts under
+      // module URLs, where earlier versions register the browser's `/@id/` URL.
+      const [major = 0, minor = 0] = version.split('.').map(Number)
+      const wrapped = major < 8 || (major === 8 && minor < 3)
       const updates = sheets.map((module) => {
         const path =
-          module.url.startsWith('/') || module.url.startsWith('.')
-            ? module.url
-            : `/@id/${module.url.replace('\0', '__x00__')}`
+          (wrapped || module.type === 'css') &&
+          !module.url.startsWith('/') &&
+          !module.url.startsWith('.')
+            ? `/@id/${module.url.replace('\0', '__x00__')}`
+            : module.url
 
         return {
           acceptedPath: path,

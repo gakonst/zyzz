@@ -3359,6 +3359,66 @@ export namespace styles {
     }
   }, 30000)
 
+  test('Vite HMR applies a stylesheet-only edit in Chromium', async () => {
+    // Grouped output keeps class names across value edits, so only the stylesheet module updates.
+    const { config, root } = await create({
+      ...Fixture.files,
+      'config.ts': Fixture.files['config.ts'].replace(
+        "id:'app',",
+        "id:'app',cssOutput:'grouped',",
+      ),
+    })
+    const server = await Vite.createServer(config)
+    let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined
+
+    try {
+      browser = await chromium.launch()
+      await server.listen()
+
+      const address = server.httpServer!.address()
+      if (!address || typeof address === 'string')
+        throw new Error('Missing server port')
+
+      const page = await browser.newPage()
+
+      // 1. Load the card, whose module imports its stylesheet.
+      await page.goto(`http://127.0.0.1:${address.port}`)
+      await page.waitForFunction(
+        () =>
+          getComputedStyle(document.querySelector('#card')!).padding === '8px',
+      )
+      await page.waitForLoadState('networkidle')
+
+      const className = await page.locator('#card').getAttribute('class')
+
+      // 2. Edit a declaration value. The client applies the update only when it names the
+      // stylesheet as the module's hot context does.
+      await Watch.write({
+        path: Path.join(root, 'card.ts'),
+        source: Fixture.files['card.ts'].replace("'8px'", "'12px'"),
+      })
+      await page.waitForFunction(
+        () =>
+          getComputedStyle(document.querySelector('#card')!).padding === '12px',
+        undefined,
+        { timeout: 10000 },
+      )
+
+      expect(
+        (await page.locator('#card').getAttribute('class')) === className,
+      ).toMatchInlineSnapshot(`true`)
+      expect(
+        await page
+          .locator('#card')
+          .evaluate((element) => getComputedStyle(element).padding),
+      ).toMatchInlineSnapshot(`"12px"`)
+    } finally {
+      await browser?.close()
+      await server.close()
+      await Fs.rm(root, { recursive: true, force: true })
+    }
+  }, 30000)
+
   test('Vite HMR updates server-rendered stylesheet links in Chromium', async () => {
     const { config, root } = await create()
     const server = await Vite.createServer(config)

@@ -81,7 +81,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
     Environment,
     { files: Map<string, Edges>; key: string }
   >()
-  // A development entry's last output, reused until a watcher event or a recompiled graph.
+  // A development entry's last output, reused until a watcher event.
   const outputs = new WeakMap<
     Entry,
     {
@@ -202,6 +202,8 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
         imports: Object.create(null),
         modules: Object.create(null),
         outcome: undefined,
+        pending: undefined,
+        stale: false,
       }
       projects.set(environment, value)
     }
@@ -212,50 +214,58 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
    * Development merges every module a transform reaches into one graph per environment, so
    * modules compile once per change instead of once per importer. A module's output depends only
    * on its own import closure, so the merged graph returns the output a closure compile would.
-   * While some other module fails, the requested closure compiles alone and reports only its own
-   * errors, as before.
+   * Transforms that merge changes in one event loop turn share one compile. While some other
+   * module fails, the requested closure compiles alone and reports only its own errors, as before.
    */
-  function compileProject(
+  async function compileProject(
     environment: Environment,
     input: Graph.compile.Options,
     id: string,
   ) {
     const value = project(environment)
-    let changed = value.outcome === undefined
+
+    if (value.outcome === undefined) value.stale = true
 
     for (const [module, source] of Object.entries(input.modules))
       if (value.modules[module] !== source) {
         value.modules[module] = source
-        changed = true
+        value.stale = true
       }
 
     for (const [module, resolutions] of Object.entries(input.imports ?? {}))
       if (!same(value.imports[module], resolutions)) {
         value.imports[module] = resolutions
-        changed = true
+        value.stale = true
       }
 
     for (const [module, contract] of Object.entries(input.contracts ?? {}))
       if (value.contracts[module] !== contract) {
         value.contracts[module] = contract
-        changed = true
+        value.stale = true
       }
 
-    if (changed)
-      value.outcome = (() => {
-        try {
-          return {
-            result: value.compiler.compile({
-              ...input,
-              contracts: value.contracts,
-              imports: value.imports,
-              modules: value.modules,
-            }),
-          }
-        } catch (error) {
-          return { error }
-        }
-      })()
+    if (value.stale)
+      await (value.pending ??= new Promise<void>((resolve) =>
+        setImmediate(() => {
+          value.pending = undefined
+          value.stale = false
+          value.outcome = (() => {
+            try {
+              return {
+                result: value.compiler.compile({
+                  ...input,
+                  contracts: value.contracts,
+                  imports: value.imports,
+                  modules: value.modules,
+                }),
+              }
+            } catch (error) {
+              return { error }
+            }
+          })()
+          resolve()
+        }),
+      ))
 
     const outcome = value.outcome!
 
@@ -264,6 +274,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
 
     return value.fallback.compile(input)
   }
+
   const discoveries = new WeakMap<Environment, Promise<Map<string, string>>>()
   const contributionFiles = new WeakMap<Environment, Set<string>>()
   const assets = new Map<string, string>()
@@ -278,6 +289,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
   const roots = new Map<string, string | undefined>()
   const lazyImports = new WeakMap<Parser.ParseResult, string[]>()
   const nestedPackages = new Map<string, boolean>()
+  const contributions = new Map<string, boolean>()
   let directories: readonly string[]
   // The directories discovery walks, and the include patterns that narrow it.
   let scopes: readonly string[]
@@ -399,6 +411,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
         const sources = new Map<string, string>()
         const eagerFiles = new Set<string>()
         const visited = new Set<string>()
+        const files: string[] = []
 
         contributionFiles.set(environment, eagerFiles)
 
@@ -417,17 +430,34 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
               if (!nested(file)) await collect(file)
             } else if (item.isFile() && eager(file, environment)) {
               host.watch(file)
-
-              const source = await Fs.readFile(file, 'utf8')
-
-              sources.set(file, source)
-
-              if (contributes(source)) eagerFiles.add(file)
+              files.push(file)
             }
           }
         }
 
         for (const directory of scopes) await collect(directory)
+
+        // Reads overlap, since discovery runs while the server transforms its first requests.
+        // Batches stay under low descriptor limits, and sources keep the walk's order, which
+        // orders the stylesheet's contributions.
+        const texts: string[] = []
+
+        for (let start = 0; start < files.length; start += 64)
+          texts.push(
+            ...(await Promise.all(
+              files
+                .slice(start, start + 64)
+                .map((file) => Fs.readFile(file, 'utf8')),
+            )),
+          )
+
+        for (const [index, file] of files.entries()) {
+          const source = texts[index]!
+
+          sources.set(file, source)
+
+          if (contributes(source)) eagerFiles.add(file)
+        }
 
         return sources
       })()
@@ -492,7 +522,21 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
     )
   }
 
+  /** Whether a source calls a stylesheet contribution. Every environment discovers the same sources. */
   function contributes(source: string) {
+    let value = contributions.get(source)
+
+    if (value === undefined) {
+      if (contributions.size > 4096) contributions.clear()
+
+      value = scanContributions(source)
+      contributions.set(source, value)
+    }
+
+    return value
+  }
+
+  function scanContributions(source: string) {
     const { program } = Parser.parseSync('source.tsx', source, {
       sourceType: 'module',
     })
@@ -690,7 +734,8 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
     const current = projects.get(entry.environment)?.outcome
 
     // Without a watcher event the closure is unchanged, so a stylesheet load after its
-    // transform reuses the output while the merged graph has not recompiled.
+    // transform reuses the output, as later merges of other modules leave it unchanged. The
+    // shared stylesheet reads every module merged so far, so it waits for an unchanged graph.
     if (
       memo &&
       !everything &&
@@ -699,7 +744,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       (code === undefined || code === memo.code) &&
       current &&
       'result' in current &&
-      current.result === memo.result
+      (!allSources || current.result === memo.result)
     ) {
       for (const file of entry.files) host.watch(file)
       return memo.output
@@ -928,6 +973,31 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
         moduleId: id,
         source: text,
       })
+
+      // Lookups start together and settle in authored order below. A lookup that fails here
+      // leaves no cached result, so the ordered walk reports it.
+      for (const node of parsed.program.body) {
+        if (
+          node.type !== 'ImportDeclaration' &&
+          node.type !== 'ExportNamedDeclaration' &&
+          node.type !== 'ExportAllDeclaration'
+        )
+          continue
+
+        const specifier = node.source?.value
+
+        if (
+          specifier === undefined ||
+          (node.type === 'ImportDeclaration'
+            ? node.importKind
+            : node.exportKind) === 'type' ||
+          specifier === 'zyzz' ||
+          specifier.startsWith('zyzz/')
+        )
+          continue
+
+        resolve(specifier, file).catch(() => undefined)
+      }
 
       for (const node of parsed.program.body) {
         if (
@@ -1255,7 +1325,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       modules,
     }
     const result = merged
-      ? compileProject(entry.environment, input, sourceId(entry.file))
+      ? await compileProject(entry.environment, input, sourceId(entry.file))
       : entry.compiler.compile(input)
 
     if (native) {
@@ -1809,6 +1879,12 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
           timestamp,
           true,
         )
+
+        // An imported stylesheet accepts its own updates once a request transforms it. One that
+        // does not was never evaluated, as when a server renders without loading it, so the
+        // invalidation is the whole update.
+        if (module.type === 'js' && !module.isSelfAccepting) continue
+
         sheets.push(module)
       }
 
@@ -2506,6 +2582,10 @@ type Project = {
     | { readonly error: unknown }
     | { readonly result: Graph.compile.ReturnType }
     | undefined
+  /** The scheduled compile that merged changes wait for. */
+  pending: Promise<void> | undefined
+  /** Whether merged changes await a compile. */
+  stale: boolean
 }
 
 /** What an environment served when an edit arrived. */

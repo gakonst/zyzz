@@ -6,6 +6,7 @@
 
 use std::borrow::Cow;
 use std::fmt::Write as _;
+use std::sync::Arc;
 
 use indexmap::IndexMap;
 use rustc_hash::{FxBuildHasher, FxHashMap, FxHashSet};
@@ -244,8 +245,8 @@ pub enum Visibility {
     /// Names introduced by every owner, as in a graph compiled once with every module.
     #[default]
     All,
-    /// Names introduced by these owners only.
-    Owners(FxHashSet<Box<str>>),
+    /// Names introduced by these owners only. Graphs share one set per module closure.
+    Owners(Arc<FxHashSet<Arc<str>>>),
 }
 
 impl Visibility {

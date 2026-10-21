@@ -353,6 +353,7 @@ struct Cache {
     native: Option<NativeOptions>,
     referenced: Option<Arc<FxHashSet<Arc<str>>>>,
     references: bool,
+    renders: Vec<Arc<(Vec<Section>, Rendered)>>,
     reset: Option<Arc<str>>,
     resolutions: Map<String>,
     result: Arc<Output>,
@@ -366,8 +367,20 @@ struct Cache {
     transformed: Map<Transformed>,
 }
 
-/// The bound on cached extractions and transforms, evicting the least recently compiled.
+/// The bound on cached extractions and transforms, evicting the earliest cached module. A recompile
+/// updates a module in place, since reordering a map costs its length per module, and the previous
+/// compilation supplies every module it held regardless of this bound.
 const RETAINED: usize = 256;
+
+/// Evicts the earliest cached modules past [`RETAINED`] once per compilation, as removing each
+/// from the front of a map shifts every entry after it.
+fn bounded<V>(mut cache: Map<V>) -> Map<V> {
+    if let Some(excess) = cache.len().checked_sub(RETAINED) {
+        cache.drain(..excess);
+    }
+
+    cache
+}
 
 /// `Array.prototype.sort` order: UTF-16 code units.
 fn sort(values: &mut [Arc<str>]) {
@@ -585,6 +598,7 @@ fn build(options: &Options, cache: Option<&Cache>) -> Result<Option<Cache>> {
         owners: Owners::default(),
         parsed: &parsed,
         previous,
+        renders: Vec::new(),
         resolutions,
         retained: previous
             .map(|previous| previous.retained.clone())
@@ -628,6 +642,8 @@ struct Build<'p, 'a> {
     owners: Owners,
     parsed: &'p [OnceCell<Parsed<'a>>],
     previous: Option<&'p Cache>,
+    /// Shared stylesheets this compilation rendered, with the sections each rendered.
+    renders: Vec<Arc<(Vec<Section>, Rendered)>>,
     resolutions: Map<String>,
     retained: Map<Extraction>,
     themes: Record<Arc<Definition>>,
@@ -2105,8 +2121,6 @@ impl<'p, 'a> Build<'p, 'a> {
             .insert(Arc::clone(module_id), Arc::clone(&module));
         self.dependencies
             .insert(Arc::clone(module_id), Arc::clone(&imports));
-        self.retained.shift_remove(module_id);
-
         let inputs = imports
             .iter()
             .filter_map(|target| {
@@ -2130,10 +2144,6 @@ impl<'p, 'a> Build<'p, 'a> {
                 source: Arc::clone(&source),
             },
         );
-
-        if self.retained.len() > RETAINED {
-            self.retained.shift_remove_index(0);
-        }
 
         for call in &module.theme_calls {
             let mut names: Vec<&Arc<str>> = vec![&call.name];
@@ -2591,8 +2601,26 @@ impl Build<'_, '_> {
         self.fail(&source, error.text(), None)
     }
 
-    fn render_shared(&self, sections: &[Section], ids: &[Arc<str>]) -> Result<Rendered> {
-        stylesheets::render(sections).map_err(|error| self.render_error(&error, ids))
+    /// Renders a shared stylesheet, which parses and serializes every section. A section list the
+    /// previous compilation rendered renders as it did then.
+    fn render_shared(&mut self, sections: &[Section], ids: &[Arc<str>]) -> Result<Rendered> {
+        let cached = self
+            .previous
+            .iter()
+            .flat_map(|previous| previous.renders.iter())
+            .find(|render| render.0 == sections)
+            .cloned();
+        let render = match cached {
+            Some(render) => render,
+            None => Arc::new((
+                sections.to_vec(),
+                stylesheets::render(sections).map_err(|error| self.render_error(&error, ids))?,
+            )),
+        };
+        let rendered = render.1.clone();
+
+        self.renders.push(render);
+        Ok(rendered)
     }
 
     fn register_rules<'r>(
@@ -2821,8 +2849,8 @@ impl Build<'_, '_> {
     fn closure(
         &self,
         module_id: &Arc<str>,
-        closures: &mut FxHashMap<Arc<str>, Arc<FxHashSet<Box<str>>>>,
-    ) -> Arc<FxHashSet<Box<str>>> {
+        closures: &mut FxHashMap<Arc<str>, Arc<FxHashSet<Arc<str>>>>,
+    ) -> Arc<FxHashSet<Arc<str>>> {
         if let Some(closure) = closures.get(module_id) {
             return Arc::clone(closure);
         }
@@ -2830,7 +2858,7 @@ impl Build<'_, '_> {
         // Cache only complete closures. A back-edge cannot stand for an empty closure because
         // another member of the cycle may reach dependencies not visited yet.
         let mut pending = vec![Arc::clone(module_id)];
-        let mut result: FxHashSet<Box<str>> = FxHashSet::default();
+        let mut result: FxHashSet<Arc<str>> = FxHashSet::default();
 
         while let Some(id) = pending.pop() {
             for dependency in self
@@ -2839,7 +2867,7 @@ impl Build<'_, '_> {
                 .iter()
                 .flat_map(|dependencies| dependencies.iter())
             {
-                if result.insert(Box::from(&**dependency)) {
+                if result.insert(Arc::clone(dependency)) {
                     if let Some(closure) = closures.get(dependency) {
                         result.extend(closure.iter().cloned());
                     } else {
@@ -3164,6 +3192,7 @@ impl Build<'_, '_> {
             native: Some(native.clone()),
             referenced: None,
             references: options.references,
+            renders: Vec::new(),
             reset: options.reset.clone(),
             resolutions: self.resolutions,
             result: Arc::new(Output {
@@ -3174,7 +3203,7 @@ impl Build<'_, '_> {
                 reset: None,
                 shared: None,
             }),
-            retained: self.retained,
+            retained: bounded(self.retained),
             rewrite: true,
             schemes: false,
             scoped: None,
@@ -3294,11 +3323,14 @@ impl Build<'_, '_> {
             })
             .cloned()
             .collect();
+        // Layer names keep their first appearance, which one walk of the whole graph reproduces,
+        // so each module's sections join once rather than once per importer.
         let graph_layers = {
             let mut reached = Vec::new();
+            let mut visited = FxHashSet::default();
 
             for id in ids {
-                reached.extend(self.reachable(&sections, id, &mut FxHashSet::default()));
+                reached.extend(self.reachable(&sections, id, &mut visited));
             }
 
             layer_names(&reached)
@@ -3500,7 +3532,7 @@ impl Build<'_, '_> {
             })
             .collect();
         let mut registry = Registry::new();
-        let mut closures: FxHashMap<Arc<str>, Arc<FxHashSet<Box<str>>>> = FxHashMap::default();
+        let mut closures: FxHashMap<Arc<str>, Arc<FxHashSet<Arc<str>>>> = FxHashMap::default();
         let mut modules: Map<Arc<transform::Output>> = Map::default();
         let mut transformed = previous
             .map(|previous| previous.transformed.clone())
@@ -3534,7 +3566,7 @@ impl Build<'_, '_> {
             let visible = if options.complete {
                 Visibility::All
             } else {
-                Visibility::Owners((*self.closure(module_id, &mut closures)).clone())
+                Visibility::Owners(self.closure(module_id, &mut closures))
             };
             let reusable = transformed.get(module_id).filter(|cached| {
                 Arc::ptr_eq(&cached.extracted, &module)
@@ -3644,7 +3676,6 @@ impl Build<'_, '_> {
                 }
             }
 
-            transformed.shift_remove(module_id);
             transformed.insert(
                 Arc::clone(module_id),
                 Transformed {
@@ -3657,10 +3688,6 @@ impl Build<'_, '_> {
                     themes: shared_themes.clone(),
                 },
             );
-
-            if transformed.len() > RETAINED {
-                transformed.shift_remove_index(0);
-            }
 
             self.register_rules(
                 output
@@ -3770,6 +3797,22 @@ impl Build<'_, '_> {
                 // Catalog readers need configurations and configuration exports, not the
                 // rules, stylesheets, and links that every other contract repeats.
                 if options.lean {
+                    // A lean contract reads only its module and the graph's themes, so an
+                    // unchanged pair publishes the previous text, or nothing as before.
+                    if same_themes
+                        && let Some(previous) = previous
+                        && previous
+                            .extracted
+                            .get(id)
+                            .is_some_and(|extracted| Arc::ptr_eq(extracted, &module))
+                    {
+                        if let Some(text) = previous.result.contracts.get(id) {
+                            published_contracts.insert(Arc::clone(id), text.clone());
+                        }
+
+                        continue;
+                    }
+
                     let configurations = Self::configurations(&module, &shared_themes);
                     let mut links = Record::new();
 
@@ -3896,17 +3939,18 @@ impl Build<'_, '_> {
             native: None,
             referenced,
             references: options.references,
+            renders: self.renders,
             reset: options.reset.clone(),
             resolutions: self.resolutions,
             result: Arc::new(output),
-            retained: self.retained,
+            retained: bounded(self.retained),
             rewrite,
             schemes,
             scoped,
             shared: options.shared,
             sources: options.modules.clone(),
             themes: shared_themes,
-            transformed,
+            transformed: bounded(transformed),
         })
     }
 }

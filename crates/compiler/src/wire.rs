@@ -252,12 +252,12 @@ pub fn decode(input: &str) -> Result<Input> {
             registry,
             visible: match units.visible {
                 None => Visibility::All,
-                Some(owners) => Visibility::Owners(
+                Some(owners) => Visibility::Owners(Arc::new(
                     owners
                         .into_iter()
-                        .map(|owner| owner.as_ref().into())
-                        .collect::<FxHashSet<Box<str>>>(),
-                ),
+                        .map(|owner| Arc::from(owner.as_ref()))
+                        .collect::<FxHashSet<Arc<str>>>(),
+                )),
             },
         }
     });

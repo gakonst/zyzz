@@ -87,7 +87,7 @@ export declare namespace compile {
     readonly cssOutput?: Css.compile.Options['cssOutput']
     /** Serialized library contracts keyed by host-resolved module identity. Runtime modules stay external to this graph. */
     readonly contracts?: Readonly<Record<string, string>> | undefined
-    /** Stable declaration names for CSS-only development updates. */
+    /** Stable declaration names for CSS-only development updates. Wrapper components render without folding. */
     readonly development?: boolean | undefined
     /** Host-resolved static runtime imports keyed by module ID and source specifier; null marks externals. The host owns dynamic imports when supplied. Omit for closed relative-graph resolution. */
     readonly imports?:

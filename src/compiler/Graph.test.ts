@@ -9,6 +9,7 @@ import * as Packed from '../../test/fixtures/Packed.js'
 import * as Responsive from '../../test/fixtures/Responsive.js'
 import * as Universal from '../../test/fixtures/UniversalLibrary.js'
 import * as Library from '../../test/fixtures/VariantLibrary.js'
+import * as Wrappers from '../../test/fixtures/Wrappers.js'
 import * as ClassName from '../web/internal/ClassName.js'
 import * as ThemeRules from '../web/internal/Themes.js'
 import * as Trace from '@jridgewell/trace-mapping'
@@ -28,6 +29,42 @@ import { Css } from 'zyzz/web'
 
 const root = Path.resolve(import.meta.dirname, '../..')
 const modules = Fixture.modules
+const wrappers = {
+  'button.tsx': `import { style } from 'zyzz'
+export const Button = (props: { className?: string | undefined; children?: unknown }) => <button {...styles.base({ className: props.className })}>{props.children}</button>
+namespace styles {
+  export const base = style({ borderLeft: '1px solid', color: 'rgb(255, 0, 0)', paddingLeft: '1px' })
+}`,
+  'ghost.tsx': `import { style } from 'zyzz'
+import { Button } from './button.tsx'
+export const Ghost = (props: { className?: string | undefined; children?: unknown }) => <Button {...styles.ghost({ className: props.className })}>{props.children}</Button>
+namespace styles {
+  export const ghost = style({ borderLeft: '2px solid', paddingLeft: '2px' })
+}`,
+  'index.tsx': `import { Primary } from './primary.tsx'
+import { Left } from './left.tsx'
+export const App = () => <main><Primary>{1}</Primary><Left>left</Left></main>`,
+  // Components that import each other keep rendering at runtime.
+  'left.tsx': `import { style } from 'zyzz'
+import { Right } from './right.tsx'
+export const Left = (props: { className?: string | undefined; children?: unknown }) => <Right {...styles.left({ className: props.className })}>{props.children}</Right>
+export const Leaf = (props: { className?: string | undefined; children?: unknown }) => <i {...styles.left({ className: props.className })}>{props.children}</i>
+namespace styles {
+  export const left = style({ paddingLeft: '4px' })
+}`,
+  'primary.tsx': `import { style } from 'zyzz'
+import { Ghost } from './ghost.tsx'
+export const Primary = (props: { children?: unknown }) => <Ghost {...styles.primary()}>{props.children}</Ghost>
+namespace styles {
+  export const primary = style({ borderLeft: '3px solid', paddingLeft: '3px' })
+}`,
+  'right.tsx': `import { style } from 'zyzz'
+import { Leaf } from './left.tsx'
+export const Right = (props: { className?: string | undefined; children?: unknown }) => <Leaf {...styles.right({ className: props.className })}>{props.children}</Leaf>
+namespace styles {
+  export const right = style({ paddingLeft: '5px' })
+}`,
+}
 
 describe('compile', () => {
   test('retains literal token exports across packed configurations and re-exports', () => {
@@ -2650,9 +2687,89 @@ ${web.modules['app.ts']!.code}`,
       `[Source.ExtractError: pkg/card.ts:7: Import theme contracts by name; namespace imports are not supported.]`,
     )
   })
+  test('folds wrapper components through imported modules', async () => {
+    const output = Graph.compile({ modules: wrappers })
+
+    expect(output.modules['index.tsx']!.code).toMatchInlineSnapshot(`
+      "import { Primary } from './primary.tsx'
+      import { Left } from './left.tsx'
+      export const App = () => <main><button className={"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1"}>{1}</button><Left>left</Left></main>"
+    `)
+    expect(output.modules['primary.tsx']!.code).toMatchInlineSnapshot(`
+      "
+      import { Ghost } from './ghost.tsx'
+      export const Primary = (props: { children?: unknown }) => <button className={(styles.primary?"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1":styles.primary().className)}>{props.children}</button>
+      namespace styles {
+        export const primary = (1 as unknown as import('zyzz').style.ReturnType)
+      }"
+    `)
+    expect(output.modules['left.tsx']!.code).toMatchInlineSnapshot(`
+      "
+      import { Props as __zyzzProps } from 'zyzz/runtime';
+
+      import { Right } from './right.tsx'
+      export const Left = (props: { className?: string | undefined; children?: unknown }) => <Right className={styles.left?__zyzzProps.merge("z_Ct2jZL0",props.className):styles.left({className:props.className}).className}>{props.children}</Right>
+      export const Leaf = (props: { className?: string | undefined; children?: unknown }) => <i className={styles.left?__zyzzProps.merge("z_Ct2jZL0",props.className):styles.left({className:props.className}).className}>{props.children}</i>
+      namespace styles {
+        export const left = (1 as unknown as import('zyzz').style.ReturnType)
+      }"
+    `)
+
+    const rendered = await Wrappers.render({
+      css: Object.values(output.modules)
+        .map((module) => module.css)
+        .join('\n'),
+      entry: 'index.tsx',
+      modules: Object.fromEntries(
+        Object.entries(output.modules).map(([id, module]) => [id, module.code]),
+      ),
+    })
+
+    expect(rendered.markup).toMatchInlineSnapshot(
+      `"<main><button class="z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1">1</button><i class="z_Ct2jZL0 z_jwICbk0 z_Ct2jZL0">left</i></main>"`,
+    )
+    expect(rendered.elements).toMatchInlineSnapshot(`
+      [
+        {
+          "borderLeftWidth": "3px",
+          "className": "z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1",
+          "color": "rgb(255, 0, 0)",
+          "paddingLeft": "3px",
+          "tag": "button",
+        },
+        {
+          "borderLeftWidth": "0px",
+          "className": "z_Ct2jZL0 z_jwICbk0 z_Ct2jZL0",
+          "color": "rgb(0, 0, 0)",
+          "paddingLeft": "5px",
+          "tag": "i",
+        },
+      ]
+    `)
+  })
 })
 
 describe('create', () => {
+  test('refolds consumers when an imported wrapper changes', () => {
+    const compiler = Graph.create()
+    const before = compiler.compile({ modules: wrappers })
+    const after = compiler.compile({
+      modules: {
+        ...wrappers,
+        'button.tsx': wrappers['button.tsx']
+          .replace('<button', '<a')
+          .replace('</button>', '</a>'),
+      },
+    })
+
+    expect(
+      after.modules['ghost.tsx']!.code === before.modules['ghost.tsx']!.code,
+    ).toMatchInlineSnapshot(`false`)
+    expect(
+      after.modules['index.tsx']!.code.match(/<\w+ className/)?.[0],
+    ).toMatchInlineSnapshot(`"<a className"`)
+  })
+
   test('runtime cycles survive edits and changes to style exports', () => {
     const compiler = Graph.create()
     const sources = {

@@ -59,6 +59,7 @@ test('compiles every styling example with its documented imports', async () => {
         "Button.tsx: compiled CSS",
         "Toolbar.tsx: compiled CSS",
         "Button.tsx: compiled CSS",
+        "Actions.tsx: compiled CSS",
         "Meter.tsx: compiled CSS",
         "Plan.tsx: compiled CSS",
         "Panel.tsx: compiled CSS",

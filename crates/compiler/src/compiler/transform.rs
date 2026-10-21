@@ -27,6 +27,7 @@ use crate::compiler::internal::packed_styles;
 use crate::compiler::internal::statics::key_literal;
 use crate::compiler::internal::syntax::Parsed;
 use crate::compiler::internal::themes::{self, Output as ThemeOutput};
+use crate::compiler::internal::wrappers;
 use crate::compiler::source::{Call, Extracted, KnownInput, RuntimeInput};
 use crate::data::Data;
 use crate::error::{Error, Result};
@@ -57,6 +58,8 @@ pub struct Options<'s, 'a> {
     pub owners: Option<&'s Owners>,
     /// Class names of styles compiled elsewhere in the graph, by style identity.
     pub style_classes: Option<&'s FxHashMap<Arc<str>, Arc<str>>>,
+    /// Exported wrapper folds of imported source modules, by import specifier.
+    pub wrappers: Option<&'s wrappers::Imports>,
     /// Default CSS representation for styles without their own mode.
     pub css_output: Option<CssOutput>,
     /// Leaves token resources and scope rules to a graph that emits them once, returning
@@ -112,6 +115,8 @@ pub struct Output {
     pub units: Used,
     /// Scope classes by theme label.
     pub vars: IndexMap<Arc<str>, String, FxBuildHasher>,
+    /// Folds of exported wrapper components, by export name.
+    pub wrappers: Option<Arc<wrappers::Exports>>,
 }
 
 /// Whether two outputs serialize identically, comparing every record in order.
@@ -126,6 +131,7 @@ pub fn same(left: &Output, right: &Output) -> bool {
         && left.units.iter().eq(right.units.iter())
         && left.vars.iter().eq(right.vars.iter())
         && left.shared == right.shared
+        && left.wrappers == right.wrappers
 }
 
 fn message(text: &str) -> Error {
@@ -1128,9 +1134,56 @@ pub fn compile<'a>(
     };
     let mut state =
         generator.rewrite(&mut module, &walker, local.as_ref(), &found, &folded_starts)?;
+    // Development keeps every component, so tools and updates still see each one.
+    let wrappers = if portable || options.development {
+        wrappers::Wrappers::default()
+    } else {
+        let applications: FxHashMap<u32, wrappers::Applied<'_>> = folded
+            .iter()
+            .filter(|application| !outputs.get(&*application.name).copied().unwrap_or_default())
+            .filter_map(|application| {
+                let classes = generator.classes.get(&application.name)?;
+
+                Some((application.start, (application.end, classes.as_str())))
+            })
+            .collect();
+        // Definition and contribution calls are replaced whole.
+        let replaced = Intervals::new(
+            extracted
+                .calls
+                .iter()
+                .map(|call| (call.start, call.end))
+                .chain(
+                    extracted
+                        .contribution_calls
+                        .iter()
+                        .map(|call| (call.start, call.end)),
+                )
+                .collect(),
+        );
+        let excluded = |span: Span| replaced.contains(span.start + 1, span.end);
+
+        wrappers::find(
+            program,
+            &parsed.semantic,
+            &wrappers::Options {
+                applications: &applications,
+                excluded: &excluded,
+                imports: options.wrappers,
+                runtime: &state.runtime,
+                source,
+            },
+        )
+    };
 
     for application in &folded {
-        let class_name = json_class(&generator.classes, &application.name);
+        let class_name = match (
+            wrappers.prefixes.get(&application.start),
+            generator.classes.get(&application.name),
+        ) {
+            (Some(prefix), Some(own)) => quote(&format!("{prefix} {own}")),
+            _ => json_class(&generator.classes, &application.name),
+        };
         let html = outputs.get(&*application.name).copied().unwrap_or_default();
         let key = if html { "class" } else { "className" };
         let callee = source
@@ -1227,6 +1280,12 @@ pub fn compile<'a>(
             }
         }
     }
+
+    for (start, end, text) in wrappers.edits {
+        module.overwrite(start, end, text)?;
+    }
+
+    state.callable |= wrappers.merges;
 
     let bound = local_applications
         .as_ref()
@@ -1328,6 +1387,7 @@ pub fn compile<'a>(
         shared,
         units,
         vars,
+        wrappers: (!wrappers.exports.is_empty()).then(|| Arc::new(wrappers.exports)),
     })
 }
 

@@ -329,6 +329,44 @@ const button = style({ padding: '8px 16px' })
 button({ onClick: () => {} })
 ```
 
+### Fold Wrapper Components
+
+Production builds fold wrapper components. A wrapper's whole body is one element that applies one style, without arguments or with the caller's `className` as its only override, and renders `children`. A use site passing only `children`, `className`, and `key` renders the host element with the merged classes.
+
+```tsx title="Actions.tsx"
+import type { ReactNode } from 'react'
+import { style } from 'zyzz'
+
+type Props = { children?: ReactNode; className?: string | undefined }
+
+// 1. Each level applies its style and forwards the caller's classes
+const Button = (props: Props) => (
+  <button {...styles.button({ className: props.className })}>
+    {props.children}
+  </button>
+)
+
+const Primary = (props: Props) => (
+  <Button {...styles.primary({ className: props.className })}>
+    {props.children}
+  </Button>
+)
+
+// [!code hl:2]
+// 2. Renders one <button> with the button classes, then the primary classes
+export const Actions = () => <Primary>Save</Primary>
+
+namespace styles {
+  export const button = style({ padding: '8px 16px' })
+
+  export const primary = style({ paddingLeft: '24px' })
+}
+```
+
+Chains fold through local and imported source modules. Each level's classes precede the classes it receives, as at runtime, so outer levels win the same conflicts in atomic and grouped output. A `ref`, a spread, any other prop, hooks, or conditions keep the component rendering at runtime.
+
+Folded components no longer appear in React DevTools or component stacks, and the element's `type` is the host element. Development builds keep every component, so tools and Fast Refresh still see each one. Definitions remain in place, so exports and other callers keep working.
+
 ### Bind Dynamic Values
 
 A typed callback handles a value that changes per instance, such as progress or a measured size. The compiler turns the callback body into static rules backed by private CSS variables. Each call assigns those variables without creating CSS.

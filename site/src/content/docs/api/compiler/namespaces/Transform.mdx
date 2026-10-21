@@ -118,7 +118,7 @@ export const c = style({ color: 'red' })
 - **Type:** `boolean{:ts}`
 - **Default:** `false{:ts}`
 
-Keeps every definition live for development updates, including ones the module does not reach. Bundler plugins set this in development. Class names follow production rules, except that `composition: 'independent'` gives each repeated declaration its own class and rule.
+Keeps every definition live for development updates, including ones the module does not reach, and renders [wrapper components](/docs/guides/styling#fold-wrapper-components) without folding them. Bundler plugins set this in development. Class names follow production rules, except that `composition: 'independent'` gives each repeated declaration its own class and rule.
 
 ```ts /development: true/
 // Retains unreached definitions for hot updates

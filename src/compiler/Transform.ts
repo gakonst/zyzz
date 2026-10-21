@@ -55,7 +55,7 @@ export declare namespace compile {
     readonly composition?: Css.compile.Options['composition']
     /** Default CSS representation for definitions without an explicit mode. */
     readonly cssOutput?: Css.compile.Options['cssOutput']
-    /** Retains live definitions for development updates. */
+    /** Retains live definitions for development updates, and renders wrapper components without folding them. */
     readonly development?: boolean | undefined
     /**
      * Emit the `color-scheme` selection classes beside the theme scopes.

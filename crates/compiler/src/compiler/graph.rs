@@ -26,7 +26,9 @@ use crate::compiler::internal::contributions::FACTORIES;
 use crate::compiler::internal::stylesheets::{self, Rendered, Section};
 use crate::compiler::internal::syntax::{self, Parsed};
 use crate::compiler::internal::themes::{self, Link, LinkKind, Owner, VarsRead};
-use crate::compiler::internal::{identifiers, literals, native_vars, relative, statics, vars};
+use crate::compiler::internal::{
+    identifiers, literals, native_vars, relative, statics, vars, wrappers,
+};
 use crate::compiler::native;
 use crate::compiler::source::{self, Code, Diagnostic, ExtractError, Extracted, Target};
 use crate::compiler::transform::{self, Owners};
@@ -47,6 +49,10 @@ use crate::web::internal::themes::{self as theme_rules, Rule as ThemeRule, Scope
 
 /// An ordered record keyed by module identity or name.
 pub type Map<V> = IndexMap<Arc<str>, V, FxBuildHasher>;
+
+/// The import specifiers of each module that renders another source module's components, with
+/// each specifier's target module.
+type Components = Map<Vec<(Arc<str>, Arc<str>)>>;
 
 /// Inputs of one graph compilation.
 #[derive(Clone, Debug, Default)]
@@ -321,6 +327,8 @@ struct Extraction {
 #[derive(Clone)]
 struct Transformed {
     classes: Vec<(Arc<str>, Option<Arc<str>>)>,
+    /// The wrapper folds of each import the transform read, by specifier.
+    components: Vec<(Arc<str>, Option<Arc<wrappers::Exports>>)>,
     extracted: Arc<Module>,
     /// The identity classes of this module's calls that selectors reference, when known.
     markers: Option<Box<[Arc<str>]>>,
@@ -2182,6 +2190,91 @@ impl<'p, 'a> Build<'p, 'a> {
     }
 }
 
+/// The strongly connected component of each node, by Tarjan's algorithm without recursion.
+fn strongly_connected(edges: &[Vec<usize>]) -> Vec<usize> {
+    const UNVISITED: usize = usize::MAX;
+
+    let count = edges.len();
+    let mut components = vec![UNVISITED; count];
+    let mut indexes = vec![UNVISITED; count];
+    let mut lowest = vec![0; count];
+    let mut on_stack = vec![false; count];
+    let mut stack: Vec<usize> = Vec::new();
+    let mut calls: Vec<(usize, usize)> = Vec::new();
+    let mut index = 0;
+    let mut component = 0;
+
+    for root in 0..count {
+        if indexes.get(root) != Some(&UNVISITED) {
+            continue;
+        }
+
+        calls.push((root, 0));
+
+        while let Some(&mut (node, ref mut next)) = calls.last_mut() {
+            if *next == 0 && indexes.get(node) == Some(&UNVISITED) {
+                if let (Some(slot), Some(low), Some(flag)) = (
+                    indexes.get_mut(node),
+                    lowest.get_mut(node),
+                    on_stack.get_mut(node),
+                ) {
+                    *slot = index;
+                    *low = index;
+                    *flag = true;
+                }
+
+                index += 1;
+                stack.push(node);
+            }
+
+            if let Some(&child) = edges.get(node).and_then(|children| children.get(*next)) {
+                *next += 1;
+
+                match indexes.get(child).copied() {
+                    Some(UNVISITED) => calls.push((child, 0)),
+                    Some(child_index) if on_stack.get(child).copied().unwrap_or_default() => {
+                        if let Some(low) = lowest.get_mut(node) {
+                            *low = (*low).min(child_index);
+                        }
+                    }
+                    _ => {}
+                }
+
+                continue;
+            }
+
+            calls.pop();
+
+            let low = lowest.get(node).copied().unwrap_or_default();
+
+            if let Some(&(parent, _)) = calls.last()
+                && let Some(parent_low) = lowest.get_mut(parent)
+            {
+                *parent_low = (*parent_low).min(low);
+            }
+
+            if indexes.get(node) == Some(&low) {
+                while let Some(member) = stack.pop() {
+                    if let (Some(flag), Some(slot)) =
+                        (on_stack.get_mut(member), components.get_mut(member))
+                    {
+                        *flag = false;
+                        *slot = component;
+                    }
+
+                    if member == node {
+                        break;
+                    }
+                }
+
+                component += 1;
+            }
+        }
+    }
+
+    components
+}
+
 /// Publishes a link for a native contract, whose packed styles carry no compiled classes.
 fn packed_link(link: &Link) -> Link {
     let mut link = link.clone();
@@ -3222,6 +3315,148 @@ impl Build<'_, '_> {
         })
     }
 
+    /// Orders transforms so a module that renders an imported source module's components
+    /// follows that module, and returns each module's import specifiers of such modules.
+    ///
+    /// Extraction order already places every non-opaque dependency first. An edge to a module
+    /// whose components a module renders joins only when it closes no cycle with dependency and
+    /// component edges, so the order stays acyclic and each edge holds in every graph that
+    /// contains both modules' imports. Without such edges the order is the extraction order.
+    fn fold_order(&self) -> (Vec<Arc<str>>, Components) {
+        let ids: Vec<&Arc<str>> = self.extracted.keys().collect();
+        let indexes: FxHashMap<&str, usize> = ids
+            .iter()
+            .enumerate()
+            .map(|(index, id)| (&***id, index))
+            .collect();
+        let mut candidates: Vec<Vec<(Arc<str>, usize)>> = vec![Vec::new(); ids.len()];
+
+        for (index, id) in ids.iter().enumerate() {
+            let Some(parsed) = self.parse(id) else {
+                continue;
+            };
+
+            for (specifier, span) in wrappers::imports(parsed.program, &parsed.semantic) {
+                let Ok(Some(target)) = self.resolve(id, specifier, span) else {
+                    continue;
+                };
+
+                if let Some(target) = indexes.get(&*target).copied()
+                    && target != index
+                    && let Some(edges) = candidates.get_mut(index)
+                {
+                    edges.push((Arc::from(specifier), target));
+                }
+            }
+        }
+
+        let mut components = Components::default();
+
+        if candidates.iter().all(Vec::is_empty) {
+            return (ids.into_iter().cloned().collect(), components);
+        }
+
+        // Dependencies that extraction already ordered first.
+        let dependencies: Vec<Vec<usize>> = ids
+            .iter()
+            .map(|id| {
+                self.dependencies
+                    .get(*id)
+                    .iter()
+                    .flat_map(|targets| targets.iter())
+                    .filter(|target| {
+                        self.extracted
+                            .get(*target)
+                            .is_some_and(|module| !module.opaque)
+                    })
+                    .filter_map(|target| indexes.get(&**target).copied())
+                    .collect()
+            })
+            .collect();
+        let edges: Vec<Vec<usize>> = dependencies
+            .iter()
+            .zip(&candidates)
+            .map(|(dependencies, candidates)| {
+                dependencies
+                    .iter()
+                    .copied()
+                    .chain(candidates.iter().map(|(_, target)| *target))
+                    .collect()
+            })
+            .collect();
+        let components_of = strongly_connected(&edges);
+        let mut kept: Vec<Vec<usize>> = vec![Vec::new(); ids.len()];
+
+        for (index, edges) in candidates.into_iter().enumerate() {
+            let mut list = Vec::new();
+
+            for (specifier, target) in edges {
+                if components_of.get(index) == components_of.get(target) {
+                    continue;
+                }
+
+                if let (Some(kept), Some(id)) = (kept.get_mut(index), ids.get(target)) {
+                    kept.push(target);
+                    list.push((specifier, Arc::clone(id)));
+                }
+            }
+
+            if !list.is_empty()
+                && let Some(id) = ids.get(index)
+            {
+                components.insert(Arc::clone(id), list);
+            }
+        }
+
+        // A post-order walk from each module in extraction order keeps that order wherever no
+        // component edge moves a module earlier.
+        let mut order: Vec<Arc<str>> = Vec::with_capacity(ids.len());
+        let mut done = vec![false; ids.len()];
+        let mut stack: Vec<(usize, usize)> = Vec::new();
+
+        for root in 0..ids.len() {
+            if done.get(root).copied().unwrap_or(true) {
+                continue;
+            }
+
+            if let Some(flag) = done.get_mut(root) {
+                *flag = true;
+            }
+
+            stack.push((root, 0));
+
+            while let Some((node, next)) = stack.last_mut() {
+                let node = *node;
+                let children = dependencies
+                    .get(node)
+                    .into_iter()
+                    .flatten()
+                    .chain(kept.get(node).into_iter().flatten());
+
+                if let Some(child) = children.copied().nth(*next) {
+                    *next += 1;
+
+                    if let Some(flag) = done.get_mut(child)
+                        && !*flag
+                    {
+                        *flag = true;
+                        stack.push((child, 0));
+                    }
+
+                    continue;
+                }
+
+                stack.pop();
+
+                if let Some(id) = ids.get(node) {
+                    order.push(Arc::clone(id));
+                }
+            }
+        }
+
+        (order, components)
+    }
+
     /// Emits module CSS, shared stylesheets, and contracts for a web graph.
     #[expect(
         clippy::too_many_lines,
@@ -3542,7 +3777,12 @@ impl Build<'_, '_> {
         let mut transformed = previous
             .map(|previous| previous.transformed.clone())
             .unwrap_or_default();
-        let order: Vec<Arc<str>> = self.extracted.keys().cloned().collect();
+        let (order, components) = if rewrite && !options.development {
+            self.fold_order()
+        } else {
+            (self.extracted.keys().cloned().collect(), Map::default())
+        };
+        let mut exports: FxHashMap<Arc<str>, Arc<wrappers::Exports>> = FxHashMap::default();
         // Development keeps every identity, so edits that add a selector reference never change
         // other modules' class lists.
         let referenced = (rewrite && !options.development && options.references)
@@ -3573,8 +3813,15 @@ impl Build<'_, '_> {
             } else {
                 Visibility::Owners(self.closure(module_id, &mut closures))
             };
+            let read: Vec<(Arc<str>, Option<Arc<wrappers::Exports>>)> = components
+                .get(module_id)
+                .iter()
+                .flat_map(|edges| edges.iter())
+                .map(|(specifier, target)| (Arc::clone(specifier), exports.get(target).cloned()))
+                .collect();
             let reusable = transformed.get(module_id).filter(|cached| {
                 Arc::ptr_eq(&cached.extracted, &module)
+                    && cached.components == read
                     && cached.schemes == schemes
                     && cached.themes.len() == shared_themes.len()
                     && shared_themes.iter().all(|(name, theme)| {
@@ -3593,7 +3840,20 @@ impl Build<'_, '_> {
             // A module that re-extracts equal after a dependency edit keeps its identity, so an
             // evicted transform is checked against the classes and owners it read.
             let same_inputs = |previous: &Cache| {
-                previous.owners == owner_signature
+                let same_components = components.get(module_id).is_none_or(|edges| {
+                    edges.iter().all(|(_, target)| {
+                        previous
+                            .result
+                            .modules
+                            .get(target)
+                            .and_then(Compiled::web)
+                            .and_then(|output| output.wrappers.as_ref())
+                            == exports.get(target)
+                    })
+                });
+
+                same_components
+                    && previous.owners == owner_signature
                     && module
                         .calls
                         .iter()
@@ -3639,6 +3899,12 @@ impl Build<'_, '_> {
                     .get(compact.len().saturating_sub(6)..)
                     .unwrap_or_default();
                 let mut units = registry.scope(module_id, qualifier, visible);
+                let imported: wrappers::Imports = read
+                    .iter()
+                    .filter_map(|(specifier, exports)| {
+                        Some((Arc::clone(specifier), Arc::clone(exports.as_ref()?)))
+                    })
+                    .collect();
                 let output = transform::compile(
                     &transform::Options {
                         compiler: rewrite,
@@ -3659,6 +3925,7 @@ impl Build<'_, '_> {
                         }),
                         source: parsed.source,
                         style_classes: Some(&style_classes),
+                        wrappers: (!imported.is_empty()).then_some(&imported),
                     },
                     &extracted,
                     parsed,
@@ -3696,6 +3963,7 @@ impl Build<'_, '_> {
                 Arc::clone(module_id),
                 Transformed {
                     classes,
+                    components: read,
                     extracted: Arc::clone(&module),
                     markers,
                     output: Arc::clone(&output),
@@ -3731,7 +3999,20 @@ impl Build<'_, '_> {
                 }
             }
 
+            if let Some(folds) = &output.wrappers {
+                exports.insert(Arc::clone(module_id), Arc::clone(folds));
+            }
+
             modules.insert(Arc::clone(module_id), output);
+        }
+
+        // Results list modules in extraction order whatever order their transforms ran in.
+        if !components.is_empty() {
+            modules = self
+                .extracted
+                .keys()
+                .filter_map(|id| Some((Arc::clone(id), modules.swap_remove(id)?)))
+                .collect();
         }
 
         let scoped = if modules.values().any(|output| output.references.is_some()) {

@@ -10,6 +10,10 @@
 //! A use site that passes only `children`, `className`, and `key` then renders the host element
 //! directly, and a wrapper whose element names a forwarding wrapper renders that wrapper's host
 //! element itself. Definitions stay in place, so exports and other callers keep working.
+//!
+//! A folded element still reads the first imported wrapper its chain passes through, as
+//! `Button&&"classes"`. Bundlers then keep that module and the stylesheet it imports, and its own
+//! folded elements keep the next module in the chain.
 
 use std::sync::Arc;
 
@@ -22,7 +26,7 @@ use oxc_ast::ast::{
     JSXElement, JSXElementName, JSXExpression, ModuleExportName, ObjectPropertyKind, Program,
     PropertyKey, PropertyKind, Statement, VariableDeclarationKind,
 };
-use oxc_semantic::{Semantic, SymbolId};
+use oxc_semantic::{ScopeId, Semantic, SymbolId};
 use oxc_span::{GetSpan, Span};
 use rustc_hash::{FxBuildHasher, FxHashMap, FxHashSet};
 
@@ -73,7 +77,16 @@ pub struct Wrappers {
     pub merges: bool,
     /// Classes of the wrapper that a wrapper's element names, by the start of that element's
     /// application. The application's own classes follow them on the host element.
-    pub prefixes: FxHashMap<u32, Arc<str>>,
+    pub prefixes: FxHashMap<u32, Prefix>,
+}
+
+/// Classes that precede a wrapper application's own classes on the host element.
+#[derive(Debug)]
+pub struct Prefix {
+    /// Local name of the imported wrapper the class list reads first, which keeps its module.
+    pub anchor: Option<Arc<str>>,
+    /// Classes of the wrapper the element names.
+    pub classes: Arc<str>,
 }
 
 /// What a wrapper's element names.
@@ -210,27 +223,37 @@ pub fn find<'a>(
         }
     }
 
+    let nodes = semantic.nodes();
+
     // A wrapper's element that names a forwarding wrapper renders that wrapper's host element.
     for symbol in &symbols {
         let Some(candidate) = candidates.get(symbol) else {
             continue;
         };
-        let target = match candidate.target {
+        let (target, anchor) = match candidate.target {
             Target::Host(_) => continue,
-            Target::Import(target) | Target::Local(target) => resolver.target(target, &folds),
+            Target::Import(target) | Target::Local(target) => {
+                (resolver.target(target, &folds), resolver.anchor(target, 0))
+            }
         };
+        let scope = nodes.get_node(candidate.element.node_id.get()).scope_id();
 
         if let Some(target) = target.filter(|target| target.forwards)
+            && let Some(anchor) = anchor.map_or(Some(None), |anchor| {
+                visible(semantic, scope, anchor).map(Some)
+            })
             && !(options.excluded)(candidate.element.span)
         {
-            wrappers
-                .prefixes
-                .insert(candidate.application, Arc::clone(&target.classes));
+            wrappers.prefixes.insert(
+                candidate.application,
+                Prefix {
+                    anchor,
+                    classes: Arc::clone(&target.classes),
+                },
+            );
             rename(&mut wrappers.edits, candidate.element, &target.tag);
         }
     }
-
-    let nodes = semantic.nodes();
 
     for node in nodes.iter() {
         let AstKind::JSXElement(element) = node.kind() else {
@@ -242,7 +265,7 @@ pub fn find<'a>(
         let Some(symbol) = resolve(semantic, name) else {
             continue;
         };
-        let fold = if let Some(candidate) = candidates.get(&symbol) {
+        let (fold, anchor) = if let Some(candidate) = candidates.get(&symbol) {
             // A module-scope element before the declaration still reads the uninitialized binding.
             let ready = element.span.start >= candidate.ready
                 || nodes.ancestor_kinds(node.id()).any(|kind| defers(&kind));
@@ -251,17 +274,23 @@ pub fn find<'a>(
                 continue;
             }
 
-            folds.get(&symbol).and_then(Option::as_ref)
+            (
+                folds.get(&symbol).and_then(Option::as_ref),
+                resolver.anchor(symbol, 0),
+            )
         } else if imported.contains_key(&symbol) {
-            resolver.imported(symbol)
+            (resolver.imported(symbol), Some(symbol))
         } else {
-            None
+            (None, None)
         };
 
         if let Some(fold) = fold
+            && let Some(anchor) = anchor.map_or(Some(None), |anchor| {
+                visible(semantic, node.scope_id(), anchor).map(Some)
+            })
             && !(options.excluded)(element.span)
         {
-            use_site(&mut wrappers, element, fold, options);
+            use_site(&mut wrappers, element, fold, anchor.as_deref(), options);
         }
     }
 
@@ -557,6 +586,25 @@ fn resolve(semantic: &Semantic<'_>, reference: &IdentifierReference<'_>) -> Opti
         .symbol_id()
 }
 
+/// The local name of an anchor binding, when a scope reads it without a nearer binding of the
+/// same name.
+fn visible(semantic: &Semantic<'_>, scope: ScopeId, anchor: SymbolId) -> Option<Arc<str>> {
+    let scoping = semantic.scoping();
+    let name = scoping.symbol_name(anchor);
+
+    (scoping.find_binding(scope, name.into()) == Some(anchor)).then(|| Arc::from(name))
+}
+
+/// Writes a class list expression, read after an anchor that keeps its module.
+fn guarded(text: &mut String, anchor: Option<&str>, classes: &str) {
+    if let Some(anchor) = anchor {
+        text.push_str(anchor);
+        text.push_str("&&");
+    }
+
+    js::write_string(text, classes);
+}
+
 /// Renames an element's opening and closing names to a host element.
 fn rename(edits: &mut Vec<(u32, u32, String)>, element: &JSXElement<'_>, tag: &str) {
     let name = element.opening_element.name.span();
@@ -571,7 +619,13 @@ fn rename(edits: &mut Vec<(u32, u32, String)>, element: &JSXElement<'_>, tag: &s
 }
 
 /// Plans the edits of a use site that passes only `children`, `className`, and `key`.
-fn use_site(wrappers: &mut Wrappers, element: &JSXElement<'_>, fold: &Fold, options: &Options<'_>) {
+fn use_site(
+    wrappers: &mut Wrappers,
+    element: &JSXElement<'_>,
+    fold: &Fold,
+    anchor: Option<&str>,
+    options: &Options<'_>,
+) {
     let opening = &element.opening_element;
 
     if opening.type_arguments.is_some() {
@@ -605,7 +659,7 @@ fn use_site(wrappers: &mut Wrappers, element: &JSXElement<'_>, fold: &Fold, opti
 
             text.push_str(&fold.tag);
             text.push_str(" className={");
-            js::write_string(&mut text, &fold.classes);
+            guarded(&mut text, anchor, &fold.classes);
             text.push('}');
             edits.push((name.start, name.end, text));
         }
@@ -635,7 +689,7 @@ fn use_site(wrappers: &mut Wrappers, element: &JSXElement<'_>, fold: &Fold, opti
             let mut text = String::with_capacity(classes.len() + 4);
 
             text.push('{');
-            js::write_string(&mut text, &classes);
+            guarded(&mut text, anchor, &classes);
             text.push('}');
             edits.push((name.start, name.end, fold.tag.to_string()));
             edits.push((literal.span.start, literal.span.end, text));
@@ -649,6 +703,12 @@ fn use_site(wrappers: &mut Wrappers, element: &JSXElement<'_>, fold: &Fold, opti
             let mut open = String::with_capacity(options.runtime.len() + fold.classes.len() + 12);
 
             open.push('{');
+
+            if let Some(anchor) = anchor {
+                open.push_str(anchor);
+                open.push_str("&&");
+            }
+
             open.push_str(options.runtime);
             open.push_str(".merge(");
             js::write_string(&mut open, &fold.classes);
@@ -715,6 +775,20 @@ impl Resolver<'_, '_> {
 
         folds.insert(symbol, fold.clone());
         fold
+    }
+
+    /// The first imported wrapper a local wrapper's chain renders, whose module the folded
+    /// element must keep.
+    fn anchor(&self, symbol: SymbolId, depth: usize) -> Option<SymbolId> {
+        if self.imported.contains_key(&symbol) {
+            return Some(symbol);
+        }
+
+        match self.candidates.get(&symbol)?.target {
+            Target::Import(target) => Some(target),
+            Target::Local(target) if depth < DEPTH => self.anchor(target, depth + 1),
+            Target::Host(_) | Target::Local(_) => None,
+        }
     }
 
     /// The fold of an imported wrapper.

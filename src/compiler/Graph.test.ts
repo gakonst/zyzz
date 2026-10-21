@@ -41,9 +41,17 @@ export const Ghost = (props: { className?: string | undefined; children?: unknow
 namespace styles {
   export const ghost = style({ borderLeft: '2px solid', paddingLeft: '2px' })
 }`,
-  'index.tsx': `import { Primary } from './primary.tsx'
+  'index.tsx': `import { style } from 'zyzz'
+import { Ghost } from './ghost.tsx'
+import { Primary } from './primary.tsx'
 import { Left } from './left.tsx'
-export const App = () => <main><Primary>{1}</Primary><Left>left</Left></main>`,
+const Local = (props: { className?: string | undefined; children?: unknown }) => <Ghost {...styles.local({ className: props.className })}>{props.children}</Ghost>
+export const App = () => <main><Primary>{1}</Primary><Left>left</Left><Local>local</Local></main>
+// The folded element would read a parameter instead of the import that keeps its module.
+export const Shadowed = (Ghost: unknown) => <Local>{String(Ghost)}</Local>
+namespace styles {
+  export const local = style({ paddingLeft: '6px' })
+}`,
   // Components that import each other keep rendering at runtime.
   'left.tsx': `import { style } from 'zyzz'
 import { Right } from './right.tsx'
@@ -2691,14 +2699,24 @@ ${web.modules['app.ts']!.code}`,
     const output = Graph.compile({ modules: wrappers })
 
     expect(output.modules['index.tsx']!.code).toMatchInlineSnapshot(`
-      "import { Primary } from './primary.tsx'
+      "
+      import { Props as __zyzzProps } from 'zyzz/runtime';
+
+      import { Ghost } from './ghost.tsx'
+      import { Primary } from './primary.tsx'
       import { Left } from './left.tsx'
-      export const App = () => <main><button className={"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1"}>{1}</button><Left>left</Left></main>"
+      const Local = (props: { className?: string | undefined; children?: unknown }) => <button className={styles.local?__zyzzProps.merge((Ghost&&"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_HXfo7a0"),props.className):styles.local({className:props.className}).className}>{props.children}</button>
+      export const App = () => <main><button className={Primary&&"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1"}>{1}</button><Left>left</Left><button className={Ghost&&"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_HXfo7a0"}>local</button></main>
+      // The folded element would read a parameter instead of the import that keeps its module.
+      export const Shadowed = (Ghost: unknown) => <Local>{String(Ghost)}</Local>
+      namespace styles {
+        export const local = (1 as unknown as import('zyzz').style.ReturnType)
+      }"
     `)
     expect(output.modules['primary.tsx']!.code).toMatchInlineSnapshot(`
       "
       import { Ghost } from './ghost.tsx'
-      export const Primary = (props: { children?: unknown }) => <button className={(styles.primary?"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1":styles.primary().className)}>{props.children}</button>
+      export const Primary = (props: { children?: unknown }) => <button className={(styles.primary?(Ghost&&"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1"):styles.primary().className)}>{props.children}</button>
       namespace styles {
         export const primary = (1 as unknown as import('zyzz').style.ReturnType)
       }"
@@ -2726,7 +2744,7 @@ ${web.modules['app.ts']!.code}`,
     })
 
     expect(rendered.markup).toMatchInlineSnapshot(
-      `"<main><button class="z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1">1</button><i class="z_Ct2jZL0 z_jwICbk0 z_Ct2jZL0">left</i></main>"`,
+      `"<main><button class="z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1">1</button><i class="z_Ct2jZL0 z_jwICbk0 z_Ct2jZL0">left</i><button class="z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_HXfo7a0">local</button></main>"`,
     )
     expect(rendered.elements).toMatchInlineSnapshot(`
       [
@@ -2743,6 +2761,13 @@ ${web.modules['app.ts']!.code}`,
           "color": "rgb(0, 0, 0)",
           "paddingLeft": "5px",
           "tag": "i",
+        },
+        {
+          "borderLeftWidth": "2px",
+          "className": "z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_HXfo7a0",
+          "color": "rgb(255, 0, 0)",
+          "paddingLeft": "6px",
+          "tag": "button",
         },
       ]
     `)

@@ -1181,7 +1181,14 @@ pub fn compile<'a>(
             wrappers.prefixes.get(&application.start),
             generator.classes.get(&application.name),
         ) {
-            (Some(prefix), Some(own)) => quote(&format!("{prefix} {own}")),
+            (Some(prefix), Some(own)) => {
+                let classes = quote(&format!("{} {own}", prefix.classes));
+
+                match &prefix.anchor {
+                    Some(anchor) => format!("({anchor}&&{classes})"),
+                    None => classes,
+                }
+            }
             _ => json_class(&generator.classes, &application.name),
         };
         let html = outputs.get(&*application.name).copied().unwrap_or_default();

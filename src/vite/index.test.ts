@@ -3376,6 +3376,151 @@ export namespace styles {
     }
   }, 30000)
 
+  test('development announces a module update once until the environment loads it', async () => {
+    const accepted = (name: string, padding: string) =>
+      `import { style } from './config'; export const ${name} = style({ color: 'brand', padding: '${padding}' })(); if (import.meta.hot) import.meta.hot.accept();`
+    const { config, root } = await create({
+      ...Fixture.files,
+      'banner.ts': accepted('banner', '4px'),
+      'card.ts': accepted('card', '8px'),
+    })
+    const server = await Vite.createServer(config)
+    let socket: WebSocket | undefined
+
+    try {
+      await server.listen()
+
+      const address = server.httpServer!.address()
+      if (!address || typeof address === 'string')
+        throw new Error('Missing server port')
+
+      const origin = `http://127.0.0.1:${address.port}`
+
+      // 1. Serve both modules and their stylesheets once.
+      for (const path of ['/card.ts', '/banner.ts']) {
+        const code = await (await fetch(origin + path)).text()
+
+        for (const [, stylesheet] of code.matchAll(
+          /import\s*["']([^"']*zyzz:[^"']+\.css)["']/g,
+        ))
+          await fetch(origin + stylesheet!)
+      }
+
+      socket = new WebSocket(
+        `ws://127.0.0.1:${address.port}/?token=${server.config.webSocketToken}`,
+        'vite-hmr',
+      )
+      await new Promise<void>((resolve, reject) => {
+        socket!.onopen = () => resolve()
+        socket!.onerror = () => reject(new Error('WebSocket failed'))
+      })
+
+      const names = (text: string) =>
+        (
+          JSON.parse(text) as { updates: { path: string; type: string }[] }
+        ).updates
+          .map(
+            (update) =>
+              `${update.type} ${decodeURIComponent(update.path).split('/').pop()}`,
+          )
+          .sort()
+
+      // 2. Edit the card's padding, which renames its atomic class and so changes its code. Nothing
+      // requests the card again, as a server that renders later does not.
+      const card = await message(
+        socket,
+        () =>
+          Watch.write({
+            path: Path.join(root, 'card.ts'),
+            source: accepted('card', '12px'),
+          }),
+        (text) => text.includes('card.ts'),
+      )
+
+      expect(names(card)).toMatchInlineSnapshot(`
+        [
+          "js-update card.ts",
+          "js-update card.ts.css",
+        ]
+      `)
+
+      // 3. Edit the banner. Its update leaves out the card, whose announced update is pending.
+      const banner = await message(
+        socket,
+        () =>
+          Watch.write({
+            path: Path.join(root, 'banner.ts'),
+            source: accepted('banner', '6px'),
+          }),
+        (text) => text.includes('banner.ts'),
+      )
+
+      expect(names(banner)).toMatchInlineSnapshot(`
+        [
+          "js-update banner.ts",
+          "js-update banner.ts.css",
+        ]
+      `)
+    } finally {
+      socket?.close()
+      await server.close()
+      await Fs.rm(root, { recursive: true, force: true })
+    }
+  }, 30000)
+
+  test('development leaves server stylesheets that no request transformed', async () => {
+    // Grouped output keeps class names across value edits, so only the stylesheet changes.
+    const { config, root } = await create({
+      ...Fixture.files,
+      'config.ts': Fixture.files['config.ts'].replace(
+        "id:'app',",
+        "id:'app',cssOutput:'grouped',",
+      ),
+    })
+    const passed = Promise.withResolvers<readonly string[]>()
+
+    // Plugins after Zyzz receive the modules it leaves Vite to update.
+    config.plugins!.push({
+      name: 'server-update',
+      hotUpdate(options) {
+        if (
+          this.environment.name === 'ssr' &&
+          options.file === Path.join(root, 'card.ts')
+        )
+          passed.resolve(options.modules.map((module) => module.url))
+      },
+    })
+
+    const server = await Vite.createServer(config)
+
+    try {
+      await server.listen()
+
+      const environment = server.environments.ssr!
+      const stylesheet = `\0zyzz:${encodeURIComponent(Path.join(root, 'card.ts'))}.css`
+
+      // 1. Transform the card for the server and load its stylesheet through the plugins only, as a
+      // renderer that collects styles for the document does. Vite never transforms the sheet.
+      await environment.transformRequest('/card.ts')
+      await environment.pluginContainer.load(stylesheet)
+
+      // 2. Edit a declaration value. The sheet only invalidates, since nothing evaluated it.
+      await Watch.write({
+        path: Path.join(root, 'card.ts'),
+        source: Fixture.files['card.ts'].replace("'8px'", "'12px'"),
+      })
+
+      expect(await passed.promise).toMatchInlineSnapshot(`[]`)
+      expect(
+        environment.moduleGraph.getModuleById(stylesheet)?.lastHMRTimestamp !==
+          0,
+      ).toMatchInlineSnapshot(`true`)
+    } finally {
+      await server.close()
+      await Fs.rm(root, { recursive: true, force: true })
+    }
+  }, 30000)
+
   test('development updates only the stylesheet a value edit changes', async () => {
     const card = `import './fonts'; ${Fixture.files['card.ts']}`
     // The font asset makes the served shared stylesheet differ from the compiled one.

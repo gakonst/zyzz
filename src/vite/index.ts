@@ -1893,6 +1893,24 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       if (left.code !== right.code) code.add(entry.file)
     }
 
+    // An environment loads the announced outputs when it next requests each module, which a server
+    // can postpone past later edits. Those edits compare against the announced outputs, so an
+    // update the environment has not loaded yet is not announced again.
+    for (const [entry, { code: current, css: stylesheet }] of served.entries) {
+      const id = sourceId(entry.file)
+      const next = after.modules[id]
+
+      if (!next) continue
+
+      if (stylesheet !== undefined && entry.css === stylesheet)
+        entry.css = next.css
+
+      if (current !== undefined && entry.code === current) {
+        entry.code = next.code
+        entry.imports = JSON.stringify(projects.get(environment)?.imports[id])
+      }
+    }
+
     const stylesheets = new Set<string>()
 
     if (deleted !== undefined) stylesheets.add(cssId(deleted))

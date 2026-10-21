@@ -415,31 +415,35 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
 
         contributionFiles.set(environment, eagerFiles)
 
-        async function collect(directory: string): Promise<void> {
-          if (visited.has(directory)) return
+        // Discovery runs while the server transforms its first requests, so sibling directories
+        // and file reads overlap. Files keep the walk's order, which orders the stylesheet's
+        // contributions.
+        async function collect(directory: string): Promise<readonly string[]> {
+          if (visited.has(directory)) return []
           visited.add(directory)
 
-          for (const item of await Fs.readdir(directory, {
-            withFileTypes: true,
-          })) {
-            if (skipped(item.name)) continue
+          const items = await Fs.readdir(directory, { withFileTypes: true })
+          const found = await Promise.all(
+            items.map((item) => {
+              if (skipped(item.name)) return []
 
-            const file = Path.join(directory, item.name)
+              const file = Path.join(directory, item.name)
 
-            if (item.isDirectory()) {
-              if (!nested(file)) await collect(file)
-            } else if (item.isFile() && eager(file, environment)) {
+              if (item.isDirectory()) return nested(file) ? [] : collect(file)
+              if (!item.isFile() || !eager(file, environment)) return []
+
               host.watch(file)
-              files.push(file)
-            }
-          }
+              return [file]
+            }),
+          )
+
+          return found.flat()
         }
 
-        for (const directory of scopes) await collect(directory)
+        for (const directory of scopes)
+          files.push(...(await collect(directory)))
 
-        // Reads overlap, since discovery runs while the server transforms its first requests.
-        // Batches stay under low descriptor limits, and sources keep the walk's order, which
-        // orders the stylesheet's contributions.
+        // Reads stay in batches under low descriptor limits.
         const texts: string[] = []
 
         for (let start = 0; start < files.length; start += 64)
@@ -456,7 +460,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
 
           sources.set(file, source)
 
-          if (contributes(source)) eagerFiles.add(file)
+          if (contributes(environment, file, source)) eagerFiles.add(file)
         }
 
         return sources
@@ -522,24 +526,27 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
     )
   }
 
-  /** Whether a source calls a stylesheet contribution. Every environment discovers the same sources. */
-  function contributes(source: string) {
+  /**
+   * Whether a discovered source calls a stylesheet contribution. Every environment discovers the
+   * same sources, and the compile that visits one reuses the syntax parsed here.
+   */
+  function contributes(environment: Environment, file: string, source: string) {
     let value = contributions.get(source)
 
     if (value === undefined) {
       if (contributions.size > 4096) contributions.clear()
 
-      value = scanContributions(source)
+      value = scanContributions(
+        snapshot(environment).parse({ moduleId: sourceId(file), source })
+          .program,
+      )
       contributions.set(source, value)
     }
 
     return value
   }
 
-  function scanContributions(source: string) {
-    const { program } = Parser.parseSync('source.tsx', source, {
-      sourceType: 'module',
-    })
+  function scanContributions(program: Parser.ParseResult['program']) {
     const imports = new Map<number, string>()
 
     for (const node of program.body) {
@@ -717,7 +724,8 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
 
       sources.set(file, source)
 
-      if (contributes(source)) contributionFiles.get(environment)?.add(file)
+      if (contributes(environment, file, source))
+        contributionFiles.get(environment)?.add(file)
       else contributionFiles.get(environment)?.delete(file)
     }
   }
@@ -841,6 +849,35 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       }
 
       return { ...resolved, id: normalize(resolved.id) }
+    }
+
+    /**
+     * Starts the lookups of a module's static imports, which an ordered walk then settles. A
+     * lookup that fails leaves no cached result, so the walk reports it.
+     */
+    function prefetch(file: string, program: Parser.ParseResult['program']) {
+      for (const node of program.body) {
+        if (
+          node.type !== 'ImportDeclaration' &&
+          node.type !== 'ExportNamedDeclaration' &&
+          node.type !== 'ExportAllDeclaration'
+        )
+          continue
+
+        const specifier = node.source?.value
+
+        if (
+          specifier === undefined ||
+          (node.type === 'ImportDeclaration'
+            ? node.importKind
+            : node.exportKind) === 'type' ||
+          specifier === 'zyzz' ||
+          specifier.startsWith('zyzz/')
+        )
+          continue
+
+        resolve(specifier, file).catch(() => undefined)
+      }
     }
 
     // Optimized dependency sources by bundled file, indexed once per compile rather than
@@ -974,30 +1011,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
         source: text,
       })
 
-      // Lookups start together and settle in authored order below. A lookup that fails here
-      // leaves no cached result, so the ordered walk reports it.
-      for (const node of parsed.program.body) {
-        if (
-          node.type !== 'ImportDeclaration' &&
-          node.type !== 'ExportNamedDeclaration' &&
-          node.type !== 'ExportAllDeclaration'
-        )
-          continue
-
-        const specifier = node.source?.value
-
-        if (
-          specifier === undefined ||
-          (node.type === 'ImportDeclaration'
-            ? node.importKind
-            : node.exportKind) === 'type' ||
-          specifier === 'zyzz' ||
-          specifier.startsWith('zyzz/')
-        )
-          continue
-
-        resolve(specifier, file).catch(() => undefined)
-      }
+      prefetch(file, parsed.program)
 
       for (const node of parsed.program.body) {
         if (
@@ -1152,6 +1166,17 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       merged && !allSources
         ? new Map<string, string>()
         : await discover(entry.environment, host)
+
+    // The walk below visits discovered sources in order, so their lookups start together first.
+    for (const [file, source] of sources)
+      if (allSources || contributionFiles.get(entry.environment)?.has(file))
+        prefetch(
+          file,
+          snapshot(entry.environment).parse({
+            moduleId: sourceId(file),
+            source,
+          }).program,
+        )
 
     for (const [file, source] of sources) {
       if (files.has(file) && !allSources) continue

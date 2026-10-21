@@ -15,11 +15,11 @@ describe('zyzz', () => {
         {
           "cold": {
             "modules": 3,
-            "parses": 6,
+            "parses": 3,
           },
           "edited": {
             "modules": 2,
-            "parses": 2,
+            "parses": 1,
           },
           "settled": {
             "modules": 0,

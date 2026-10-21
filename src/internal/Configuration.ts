@@ -676,7 +676,7 @@ type Keys<styles> = styles extends unknown ? keyof styles : never
 
 /**
  * Returns `key` when it names a condition or an allowed `@layer` block, otherwise `never`.
- * Testing the key against the cached `Condition.Keys` union avoids building a union per key.
+ * Testing the key against the cached `Condition.Static` union avoids building a union per key.
  */
 export type Nested<
   tokens extends Theme.Tokens,
@@ -685,12 +685,14 @@ export type Nested<
 > = key extends `@layer${string}`
   ? key extends '@layer' | `@layer ${layers}`
     ? key
-    : key extends Exclude<Condition.Keys<tokens, key>, `@layer${string}`>
+    : key extends Exclude<Condition.Static<tokens>, `@layer${string}`>
       ? key
       : never
-  : key extends Condition.Keys<tokens, key>
+  : key extends Condition.Static<tokens>
     ? key
-    : never
+    : key extends Condition.Dynamic<key>
+      ? key
+      : never
 
 // The conditional caches this union per configuration. `Body` runs for every style, and the
 // union holds every property name.

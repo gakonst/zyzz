@@ -643,7 +643,7 @@ describe('create', () => {
 
       expect(await Fs.readFile(Path.join(outDir, 'button.ts.css'), 'utf8'))
         .toMatchInlineSnapshot(`
-          ".z-CVE4-Z-p-8px {
+          ".z_CVE4-Z0 {
             padding: 8px;
           }
           "
@@ -908,14 +908,14 @@ export const widget = style({ color: '#ff0000', padding: '4px' });`,
         "body {
           margin: 0;
         }
-        .z-nBAAG7-text-\\[\\#ff0000\\] {
+        .z_nBAAG70 {
           color: red;
         }
 
-        .z-nBAAG7-p-4px {
+        .z_nBAAG71 {
           padding: 4px;
         }
-        .z-2cB71a-text-\\[\\#0000ff\\] {
+        .z_2cB71a0 {
           color: #00f;
         }
         "
@@ -1559,7 +1559,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
       const css = await Fs.readFile(Path.join(outDir, 'card.ts.css'), 'utf8')
 
       expect(css).toMatchInlineSnapshot(
-        `".z-KeUUb--display-flex{display:-webkit-flex;display:flex}.z-KeUUb--text-\\[\\#ff0000\\]{color:red}"`,
+        `".z_KeUUb-0{display:-webkit-flex;display:flex}.z_KeUUb-1{color:red}"`,
       )
 
       const map = new Trace.TraceMap(
@@ -1577,8 +1577,8 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
         `)
       expect(map.sourcesContent).toMatchInlineSnapshot(`
         [
-          ".z-KeUUb--display-flex{display:flex;}
-        .z-KeUUb--text-\\5b \\23 ff0000\\5d {color:#ff0000;}",
+          ".z_KeUUb-0{display:flex;}
+        .z_KeUUb-1{color:#ff0000;}",
           "import { style } from 'zyzz';
         export const card = style({ display: 'flex', color: '#ff0000' });",
         ]
@@ -1593,7 +1593,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
       expect(
         await Fs.readFile(Path.join(outDir, 'card.ts.css'), 'utf8'),
       ).toMatchInlineSnapshot(
-        `".z-KeUUb--display-flex{display:-webkit-flex;display:flex}.z-KeUUb--text-\\[\\#ff0000\\]{color:red}"`,
+        `".z_KeUUb-0{display:-webkit-flex;display:flex}.z_KeUUb-1{color:red}"`,
       )
 
       await Fs.writeFile(path, input.replace('#ff0000', '#0000ff'))
@@ -1602,7 +1602,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
       expect(
         await Fs.readFile(Path.join(outDir, 'card.ts.css'), 'utf8'),
       ).toMatchInlineSnapshot(
-        `".z-KeUUb--display-flex{display:-webkit-flex;display:flex}.z-KeUUb--text-\\[\\#0000ff\\]{color:#00f}"`,
+        `".z_KeUUb-0{display:-webkit-flex;display:flex}.z_KeUUb-1{color:#00f}"`,
       )
     } finally {
       await host.close()
@@ -1627,7 +1627,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
 
       expect(
         await Fs.readFile(Path.join(outDir, 'button.ts.css'), 'utf8'),
-      ).toMatchInlineSnapshot(`".z-CVE4-Z-p-8px{padding:8px;}"`)
+      ).toMatchInlineSnapshot(`".z_CVE4-Z0{padding:8px;}"`)
     } finally {
       await host.close()
       await Fs.rm(root, { force: true, recursive: true })
@@ -1664,7 +1664,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
           --z-color-brand: #06c;
         }
 
-        .z-KeUUb--text-\\[var\\(--z-color-brand\\,\\#06c\\)\\] {
+        .z_KeUUb-0 {
           color: var(--z-color-brand, #06c);
         }
         "
@@ -1689,7 +1689,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
           --z-color-brand: #175;
         }
 
-        .z-KeUUb--text-\\[var\\(--z-color-brand\\,\\#175\\)\\] {
+        .z_KeUUb-0 {
           color: var(--z-color-brand, #175);
         }
         "
@@ -1707,7 +1707,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
             --z-color-brand: #175;
           }
 
-          .z-KeUUb--text-\\[var\\(--z-color-brand\\,\\#175\\)\\] {
+          .z_KeUUb-0 {
             color: var(--z-color-brand, #175);
           }
           "
@@ -1721,7 +1721,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
             --z-color-brand: #06c;
           }
 
-          .z-KeUUb--text-\\[var\\(--z-color-brand\\,\\#06c\\)\\] {
+          .z_KeUUb-0 {
             color: var(--z-color-brand, #06c);
           }
           "
@@ -1765,7 +1765,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
           color-scheme: light dark;
         }
 
-        .z-pXWEgW-text-\\[var\\(--z-color-brand\\,\\#000\\)\\] {
+        .z_pXWEgW0 {
           color: var(--z-color-brand, #000);
         }
         "
@@ -1808,7 +1808,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
           color-scheme: light dark;
         }
 
-        .z-pXWEgW-text-\\[var\\(--z-color-brand\\,\\#fff\\)\\] {
+        .z_pXWEgW0 {
           color: var(--z-color-brand, #fff);
         }
         "
@@ -1862,11 +1862,11 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
         .toMatchInlineSnapshot(`
           "
           import { Props as __zyzzProps } from 'zyzz/runtime';
-           export const button = __zyzzProps.create({className:"z-CVE4-Z-p-8px z-style-CVE4-Z-button"});"
+           export const button = /*#__PURE__*/__zyzzProps.create({className:"z_CVE4-Z0 z-style-CVE4-Z-button"});"
         `)
       expect(await Fs.readFile(Path.join(outDir, 'button.ts.css'), 'utf8'))
         .toMatchInlineSnapshot(`
-          ".z-CVE4-Z-p-8px {
+          ".z_CVE4-Z0 {
             padding: 8px;
           }
           "
@@ -1892,7 +1892,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
 
       expect(await Fs.readFile(Path.join(outDir, 'button.ts.css'), 'utf8'))
         .toMatchInlineSnapshot(`
-          ".z-CVE4-Z-p-8px {
+          ".z_CVE4-Z0 {
             padding: 8px;
           }
           "
@@ -2121,7 +2121,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
       expect(
         await Fs.readFile(Path.join(outDir, 'nested/button.ts.css'), 'utf8'),
       ).toMatchInlineSnapshot(`
-        ".z-TnNkY--p-2px {
+        ".z_TnNkY-0 {
           padding: 2px;
         }
         "
@@ -2216,7 +2216,7 @@ export const card = style({ display: 'flex', color: '#ff0000' });`
           'utf8',
         ),
       ).toMatchInlineSnapshot(`
-        ".z-2Ygvve-p-8px {
+        ".z_2Ygvve0 {
           padding: 8px;
         }
         "
@@ -2822,31 +2822,31 @@ describe('packageContracts', () => {
 
         const card = await Fs.readFile(Path.join(root, 'dist/card.ts'), 'utf8')
         expect(card).toMatchInlineSnapshot(
-          `"import {style} from '@acme/tokens';export const card=({className:"z-acme-rnRBDm-p-[var(--z-acme-spacing-16,16px)]"});"`,
+          `"import {style} from '@acme/tokens';export const card=({className:"z_acme-rnRBDm0"});"`,
         )
         expect(await Fs.readFile(Path.join(root, 'dist/card.ts.css'), 'utf8'))
           .toMatchInlineSnapshot(`
             ".z-theme-acme_2f_variables-variables{--z-acme_2f_variables-color-ink:#123456;--z-acme_2f_variables-spacing-16:16px;}
             .z-theme-acme-theme{--z-acme-spacing-16:16px;--z-acme-color-ink:#123456;}
-            .z-acme-rnRBDm-p-\\5b var\\28 --z-acme-spacing-16\\2c 16px\\29 \\5d {padding:var(--z-acme-spacing-16,16px);}"
+            .z_acme-rnRBDm0{padding:var(--z-acme-spacing-16,16px);}"
           `)
         expect(await Fs.readFile(Path.join(root, 'dist/view.ts'), 'utf8'))
           .toMatchInlineSnapshot(`
-          "
-          const __zyzzComposition103=/*#__PURE__*/__zyzzComposition.create({"className":"z-view-0-acme-u3iffL-styles-one-acme-u3iffL-styles-two-0-p-0 z-view-0-acme-u3iffL-styles-one-acme-u3iffL-styles-two-text-0","cases":["z-view-0-acme-u3iffL-styles-one-acme-u3iffL-styles-two-0-p-0","z-view-0-acme-u3iffL-styles-one-acme-u3iffL-styles-two-0-p-0 z-view-0-acme-u3iffL-styles-one-acme-u3iffL-styles-two-text-0"],"inputs":[{"className":"z_acme-u3iffL0","owners":[{"identity":"style-i08hjs5dvj5-175","attributes":[],"slots":[]}]},{"className":"z_acme-u3iffL1","condition":0,"owners":[{"identity":"style-i08hjs5dvj5-214","attributes":[],"slots":[]}]}]});
+            "
+            const __zyzzComposition103=/*#__PURE__*/[{className:"z_u3iffL2"},{className:"z_u3iffL2 z_u3iffL3"}].map(Object.freeze);
 
-          import { Composition as __zyzzComposition, Props as __zyzzProps } from 'zyzz/runtime';
-          import {style} from '@acme/tokens';export function view(active:boolean){return __zyzzComposition103(styles.one(),active&&styles.two())}namespace styles{export const one=__zyzzProps.create({className:"z_acme-u3iffL0"});export const two=__zyzzProps.create({className:"z_acme-u3iffL1"})}"
-        `)
+            import { Props as __zyzzProps } from 'zyzz/runtime';
+            import {style} from '@acme/tokens';export function view(active:boolean){return __zyzzComposition103[((styles.one as unknown)||styles.one(),0)|((active)?((styles.two as unknown)||styles.two(),1):0)]}namespace styles{export const one=/*#__PURE__*/__zyzzProps.create({className:"z_acme-u3iffL0"});export const two=/*#__PURE__*/__zyzzProps.create({className:"z_acme-u3iffL1"})}"
+          `)
         expect(await Fs.readFile(Path.join(root, 'dist/view.ts.css'), 'utf8'))
           .toMatchInlineSnapshot(`
-          ".z-theme-acme_2f_variables-variables{--z-acme_2f_variables-color-ink:#123456;--z-acme_2f_variables-spacing-16:16px;}
-          .z-theme-acme-theme{--z-acme-spacing-16:16px;--z-acme-color-ink:#123456;}
-          .z_acme-u3iffL0{padding:var(--z-acme-spacing-16,16px);}
-          .z_acme-u3iffL1{color:var(--z-acme-color-ink,#123456);}
-          .z-view-0-acme-u3iffL-styles-one-acme-u3iffL-styles-two-0-p-0{padding:var(--z-acme-spacing-16,16px);}
-          .z-view-0-acme-u3iffL-styles-one-acme-u3iffL-styles-two-text-0{color:var(--z-acme-color-ink,#123456);}"
-        `)
+            ".z-theme-acme_2f_variables-variables{--z-acme_2f_variables-color-ink:#123456;--z-acme_2f_variables-spacing-16:16px;}
+            .z-theme-acme-theme{--z-acme-spacing-16:16px;--z-acme-color-ink:#123456;}
+            .z_acme-u3iffL0{padding:var(--z-acme-spacing-16,16px);}
+            .z_acme-u3iffL1{color:var(--z-acme-color-ink,#123456);}
+            .z_u3iffL2{padding:var(--z-acme-spacing-16,16px);}
+            .z_u3iffL3{color:var(--z-acme-color-ink,#123456);}"
+          `)
         expect(
           await Fs.readFile(Path.join(root, 'dist/zyzz.shared.css'), 'utf8'),
         ).toMatchInlineSnapshot(`":root{--gap:var(--z-acme-spacing-16,16px);}"`)
@@ -2890,7 +2890,7 @@ describe('packageContracts', () => {
             ".z-theme-acme_2f_variables-variables{--z-acme_2f_variables-color-ink:#123456;--z-acme_2f_variables-spacing-16:16px;}
             .z-theme-acme-theme{--z-acme-spacing-16:16px;--z-acme-color-ink:#123456;}
             .z-theme-app-theme{--z-app-spacing-gutter:var(--z-acme-spacing-16,16px);}
-            .z-app-rYs9RE-p-\\5b var\\28 --z-app-spacing-gutter\\2c var\\28 --z-acme-spacing-16\\2c 16px\\29 \\29 \\5d {padding:var(--z-app-spacing-gutter,var(--z-acme-spacing-16,16px));}"
+            .z_app-rYs9RE0{padding:var(--z-app-spacing-gutter,var(--z-acme-spacing-16,16px));}"
           `)
       } finally {
         await Fs.rm(root, { recursive: true, force: true })

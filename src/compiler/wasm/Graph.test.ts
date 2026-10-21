@@ -60,13 +60,13 @@ export const card = style({ color: 'brand', padding: 'md' })
       import { Props as __zyzzProps } from 'zyzz/runtime';
       import { style } from '@acme/theme'
 
-      export const card = __zyzzProps.create({className:"z-rnRBDm-text-[var(--z-color-brand,#06c)] z-rnRBDm-p-[var(--z-spacing-md,8px)] z-style-rnRBDm-card"})
+      export const card = /*#__PURE__*/__zyzzProps.create({className:"z_rnRBDm0 z_rnRBDm1 z-style-rnRBDm-card"})
       "
     `)
     expect(output.modules['app/card.ts']!.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-color-brand:#06c;--z-spacing-md:8px;}
-      .z-rnRBDm-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}
-      .z-rnRBDm-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_rnRBDm0{color:var(--z-color-brand,#06c);}
+      .z_rnRBDm1{padding:var(--z-spacing-md,8px);}"
     `)
     expect(
       JSON.stringify(output) === JSON.stringify(Compiler.Graph.compile(inputs)),

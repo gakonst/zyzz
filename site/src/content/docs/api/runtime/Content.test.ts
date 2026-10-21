@@ -558,8 +558,8 @@ describe('Composition API page', () => {
       cases: ['z-card-only'],
       className: 'z-card-button',
       inputs: [
-        { className: 'z-card', owners: [] },
-        { className: 'z-button', condition: 0, owners: [] },
+        { className: 'z-card' },
+        { className: 'z-button', condition: 0 },
       ],
     })
 
@@ -734,7 +734,7 @@ describe('CompositionHtml API page', () => {
     )
     const compose = CompositionHtml.create({
       className: 'z-card-composed',
-      inputs: [{ className: 'z-card', owners: [] }],
+      inputs: [{ className: 'z-card' }],
     })
 
     expect(compose(card({ style: { padding: '1rem' } })))
@@ -747,7 +747,7 @@ describe('CompositionHtml API page', () => {
     expect(
       CompositionHtml.create({
         className: 'z-button',
-        inputs: [{ className: 'z-button', owners: [] }],
+        inputs: [{ className: 'z-button' }],
       })(button()),
     ).toMatchInlineSnapshot(`
       {
@@ -792,7 +792,7 @@ describe('CompositionHtml API page', () => {
   test('ignores attributes without retained props', () => {
     const compose = CompositionHtml.create({
       className: 'z-card-composed',
-      inputs: [{ className: 'z-card', owners: [] }],
+      inputs: [{ className: 'z-card' }],
     })
 
     expect(
@@ -815,7 +815,7 @@ describe('CompositionHtml API page', () => {
     const card = CompositionHtml.bind(Html.create({ className: 'z-card' }))
     const compose = CompositionHtml.create({
       className: 'z-card-composed',
-      inputs: [{ className: 'z-card', owners: [] }],
+      inputs: [{ className: 'z-card' }],
     })
 
     expect(card()).toMatchInlineSnapshot(`

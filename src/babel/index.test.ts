@@ -334,7 +334,7 @@ describe('web', () => {
     )!
 
     expect(result.metadata!.zyzz!.css).toMatchInlineSnapshot(
-      '".z-item-text-0{&[data-highlighted]{color:red;}}"',
+      `".z_pPg23S0{&[data-highlighted]{color:red;}}"`,
     )
     expect(result.code?.includes('zyzz/base-ui/react')).toMatchInlineSnapshot(
       'false',

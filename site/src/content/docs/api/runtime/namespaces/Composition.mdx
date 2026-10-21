@@ -2,7 +2,9 @@
 
 Merge applied props over one precompiled class list for a statically resolved composition.
 
-The compiler rewrites a [`cx`](/docs/api/core/cx) call whose arguments it can resolve into one `Composition.create` callable. Applications normally do not import it. The compiler emits combined rules ahead of time, so the callable swaps the arguments' generated classes for one class list and keeps their bindings and attributes.
+The compiler rewrites a [`cx`](/docs/api/core/cx) call with overrides, recipes, or bindings into one `Composition.create` callable, which applications normally do not import. Combined rules are emitted ahead of time, so the callable swaps the arguments' generated classes for one class list and keeps their bindings and attributes.
+
+A `cx` call needs no callable when every argument is a no-argument application of a plain style, without recipe attributes, bindings, or HTML output. It selects frozen props from a precompiled table.
 
 ```ts title="compose.ts"
 import { Composition } from 'zyzz/runtime'
@@ -11,10 +13,7 @@ const compose = Composition.create({
   // [!code hl:2]
   // Rules for these classes already hold the merged declarations
   className: 'z-card-button',
-  inputs: [
-    { className: 'z-card', owners: [] },
-    { className: 'z-button', owners: [] },
-  ],
+  inputs: [{ className: 'z-card' }, { className: 'z-button' }],
 })
 
 // { className: 'z-card-button wide', 'data-size': 'large' }
@@ -36,8 +35,9 @@ Composition.create(options)
 ### options.className
 
 - **Type:** `string{:ts}`
+- **Default:** `undefined{:ts}`
 
-The precompiled class list used when every argument is present.
+The precompiled class list of a call without conditional arguments. With `options.cases`, the last case is the complete list, so the compiler omits it.
 
 ```ts /className: 'z-card-button'/
 // Replaces the generated classes of both arguments
@@ -46,10 +46,10 @@ Composition.create({ className: 'z-card-button', inputs })
 
 ### options.cases
 
-- **Type:** `readonly string[]{:ts}`
+- **Type:** `readonly (string | null)[]{:ts}`
 - **Default:** `undefined{:ts}`
 
-Class lists indexed by a bit mask of the conditional arguments that are present. Bit `n` is set when the argument with `condition: n` is truthy. A mask without an entry falls back to `options.className`.
+Class lists indexed by a bit mask of the conditional arguments that are present. Bit `n` is set when the argument with `condition: n` is truthy. A mask without an entry, or with `null`, falls back to `options.className`.
 
 ```ts /cases: ['z-card-only', 'z-card-button']/
 // Index 0 when the conditional argument is falsy, 1 when present
@@ -62,15 +62,15 @@ Composition.create({
 
 ### options.inputs
 
-- **Type:** `readonly { className: string; condition?: number; owners: readonly Composition.Owner[] }[]{:ts}`
+- **Type:** `readonly { attributes?: readonly string[]; className?: string; condition?: number; slots?: readonly string[] }[]{:ts}`
 
-One entry per argument, in call order. Classes from an argument that are not in its `className` are external, so they follow the composed list.
+One entry per argument, in call order. Classes from an argument that are not in its `className` are external, so they follow the composed list. `attributes` and `slots` list the recipe attributes and inline-style slots the argument owns, omitted when empty.
 
 ```ts /condition: 0/
 // The second argument may be false, null, or undefined
 const inputs = [
-  { className: 'z-card', owners: [] },
-  { className: 'z-button', condition: 0, owners: [] },
+  { className: 'z-card' },
+  { className: 'z-button', condition: 0 },
 ]
 ```
 
@@ -80,9 +80,11 @@ The callable accepts applied props, or `false`, `null`, and `undefined` for omit
 
 ### entries
 
-- **Type:** ``readonly ((style.Props & { [key: `data-${string}`]: string | undefined }) | false | null | undefined)[]{:ts}``
+- **Type:** ``readonly ((style.Props & { [key: `data-${string}`]: string | undefined }) | true | false | null | undefined)[]{:ts}``
 
-Later arguments win. Before an argument's values merge, the attributes and slots of its `owners` are removed, so a repeated definition replaces earlier bindings instead of leaving stale ones.
+Later arguments win. Before an argument's values merge, its `attributes` and `slots` are removed, so a repeated definition replaces earlier bindings instead of leaving stale ones.
+
+`true` stands for an argument whose props the precompiled class list already holds. It counts as present and merges nothing, so its input omits `className`.
 
 Only an argument whose input has a `condition` may be omitted. Its bit selects a class list from `options.cases`. Omitting any other argument still returns `options.className`, with that argument's precompiled classes applied.
 
@@ -131,8 +133,8 @@ compose(
 
 ## Types
 
-- **`Composition.Owner{:ts}`:** One definition's `identity`, with the `attributes` and `slots` it owns.
-- **`Composition.create.Options{:ts}`:** The `{ cases?, className, inputs }` input.
+- **`Composition.Owner{:ts}`:** One definition's `identity`, with the `attributes` and `slots` it owns, as [`Source.extract`](/docs/api/compiler/namespaces/Source) reports them.
+- **`Composition.create.Options{:ts}`:** The `{ cases?, className?, inputs }` input.
 
 ```ts title="owner.ts"
 import type { Composition } from 'zyzz/runtime'
@@ -148,4 +150,4 @@ export const owner = {
 
 ## Errors
 
-`Composition.create` throws no errors. Its callable throws a `TypeError` when it receives a truthy entry beyond `options.inputs`, which generated calls never pass. The compiler reports a `cx` call it cannot resolve as `Source.ExtractError`.
+`Composition.create` throws no errors. Its callable throws a `TypeError` when it receives a props entry beyond `options.inputs`, which generated calls never pass. A `true` entry merges nothing, so it never throws. The compiler reports a `cx` call it cannot resolve as `Source.ExtractError`.

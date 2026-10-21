@@ -350,13 +350,13 @@ describe('Host.create API page', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      @media (width >= 40rem){.z-KzKfXR-styles-button-p-0{padding:24;}}
-      .z-KzKfXR-styles-button-text-1{color:var(--z-color-ink,light-dark(#111111,#eeeeee));}
-      .z-KzKfXR-styles-button-p-2{padding:16;}
-      .z-KzKfXR-styles-button-user-select-3{user-select:none;}"
+      @media (width >= 40rem){.z_KzKfXR0{padding:24;}}
+      .z_KzKfXR1{color:var(--z-color-ink,light-dark(#111111,#eeeeee));}
+      .z_KzKfXR2{padding:16;}
+      .z_KzKfXR3{user-select:none;}"
     `)
     expect(await minified.read('Button.tsx.css')).toMatchInlineSnapshot(
-      `".z-theme-theme{--z-color-ink:light-dark(#111,#eee)}.z_scheme-dark{color-scheme:dark}.z_scheme-light{color-scheme:light}.z_scheme-light-dark{color-scheme:light dark}@media (width>=40rem){.z-KzKfXR-styles-button-p-0{padding:24px}}.z-KzKfXR-styles-button-text-1{color:var(--z-color-ink,light-dark(#111,#eee))}.z-KzKfXR-styles-button-p-2{padding:16px}.z-KzKfXR-styles-button-user-select-3{user-select:none}"`,
+      `".z-theme-theme{--z-color-ink:light-dark(#111,#eee)}.z_scheme-dark{color-scheme:dark}.z_scheme-light{color-scheme:light}.z_scheme-light-dark{color-scheme:light dark}@media (width>=40rem){.z_KzKfXR0{padding:24px}}.z_KzKfXR1{color:var(--z-color-ink,light-dark(#111,#eee))}.z_KzKfXR2{padding:16px}.z_KzKfXR3{user-select:none}"`,
     )
     expect(await targeted.read('Button.tsx.css')).toMatchInlineSnapshot(`
       ".z-theme-theme {
@@ -389,20 +389,20 @@ describe('Host.create API page', () => {
       }
 
       @media (min-width: 40rem) {
-        .z-KzKfXR-styles-button-p-0 {
+        .z_KzKfXR0 {
           padding: 24px;
         }
       }
 
-      .z-KzKfXR-styles-button-text-1 {
+      .z_KzKfXR1 {
         color: var(--z-color-ink, var(--lightningcss-light, #111) var(--lightningcss-dark, #eee));
       }
 
-      .z-KzKfXR-styles-button-p-2 {
+      .z_KzKfXR2 {
         padding: 16px;
       }
 
-      .z-KzKfXR-styles-button-user-select-3 {
+      .z_KzKfXR3 {
         -webkit-user-select: none;
         user-select: none;
       }
@@ -730,7 +730,7 @@ describe('Host.create API page', () => {
         --z-lib-color-brand: #06c;
       }
 
-      .z-lib-1T9aMu-text-\\[var\\(--z-lib-color-brand\\,\\#06c\\)\\] {
+      .z_lib-1T9aMu0 {
         color: var(--z-lib-color-brand, #06c);
       }
       "

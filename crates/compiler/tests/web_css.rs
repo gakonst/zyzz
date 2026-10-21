@@ -65,14 +65,52 @@ fn compile_shares_atomic_domains_in_authored_order() {
     .expect("compiled");
 
     insta::assert_snapshot!(classes(&output), @"
-    card: z-text-red z-card-p-1
-    button: z-text-red z-button-p-0 z-button-padding-inline-1
+    card: z_0 z_1
+    button: z_0 z_2 z_3
     ");
     insta::assert_snapshot!(output.css, @"
-    .z-text-red{color:red;}
-    .z-card-p-1{padding:8px;}
-    .z-button-p-0{padding:4px;}
-    .z-button-padding-inline-1{padding-inline:12px;}
+    .z_0{color:red;}
+    .z_1{padding:8px;}
+    .z_2{padding:4px;}
+    .z_3{padding-inline:12px;}
+    ");
+}
+
+#[test]
+fn compile_keeps_readable_names_in_development() {
+    let definition = define(serde_json::json!({
+        "card": { "color": "red", "padding": "8px" },
+        "button": { "color": "red", "padding": "4px" },
+    }));
+    let atomic = css::compile(
+        &Options {
+            development: true,
+            styles: &definition.styles,
+            ..Options::default()
+        },
+        None,
+    )
+    .expect("compiled");
+
+    insta::assert_snapshot!(classes(&atomic), @"
+    card: z-text-red z-card-p-1
+    button: z-text-red z-button-p-0
+    ");
+
+    let grouped = css::compile(
+        &Options {
+            css_output: Some(CssOutput::Grouped),
+            development: true,
+            styles: &definition.styles,
+            ..Options::default()
+        },
+        None,
+    )
+    .expect("compiled");
+
+    insta::assert_snapshot!(classes(&grouped), @"
+    card: z-card
+    button: z-button
     ");
 }
 
@@ -95,14 +133,14 @@ fn compile_groups_independent_styles_with_shared_declarations() {
     .expect("compiled");
 
     insta::assert_snapshot!(classes(&output), @"
-    first: z-first z-first__1
-    second: z-first z-second
-    third: z-first z-second
+    first: z_0 z_1
+    second: z_0 z_2
+    third: z_0 z_2
     ");
     insta::assert_snapshot!(output.css, @"
-    .z-first{background-color:#fff;display:block;}
-    .z-first__1{padding:1px;}
-    .z-second{padding:2px;}
+    .z_0{background-color:#fff;display:block;}
+    .z_1{padding:1px;}
+    .z_2{padding:2px;}
     ");
 }
 
@@ -156,11 +194,11 @@ fn compile_keeps_inactive_conditions_outside_class_rules() {
     )
     .expect("compiled");
 
-    insta::assert_snapshot!(classes(&output), @"link: z-link-text-0 z-link-text-1 z-link-text-2");
+    insta::assert_snapshot!(classes(&output), @"link: z_0 z_1 z_2");
     insta::assert_snapshot!(output.css, @"
-    .z-link-text-0{color:blue;}
-    .z-link-text-1{&:hover{color:red;}}
-    @media (min-width: 40rem){.z-link-text-2{color:green;}}
+    .z_0{color:blue;}
+    .z_1{&:hover{color:red;}}
+    @media (min-width: 40rem){.z_2{color:green;}}
     ");
 }
 
@@ -198,16 +236,16 @@ fn compile_emits_variable_scopes_with_fallbacks() {
     )
     .expect("compiled");
 
-    insta::assert_snapshot!(classes(&output), @"text: z-text-[var(--z-brand-color-ink,var(--z-brand-color-ink-fallback-1ghx29b15thjhz))] z-border-color-[var(--z-brand-color-accent,light-dark(#06c,#9cf))] z-border-style-solid");
+    insta::assert_snapshot!(classes(&output), @"text: z_0 z_1 z_2");
     insta::assert_snapshot!(format!("{:?}", output.vars), @r#"{"brand": "z-theme-brand-brand"}"#);
-    insta::assert_snapshot!(output.css, @r"
+    insta::assert_snapshot!(output.css, @"
     :where(*){--z-brand-color-ink-fallback-1ghx29b15thjhz:black;}
     @media (prefers-contrast: more){:where(*){--z-brand-color-ink-fallback-1ghx29b15thjhz:#000;}}
     .z-theme-brand-brand{--z-brand-color-ink:var(--z-brand-color-ink-fallback-1ghx29b15thjhz);--z-brand-color-accent:light-dark(#06c,#9cf);}
     @media (prefers-contrast: more){.z-theme-brand-brand{--z-brand-color-ink:#000;}}
-    .z-text-\5b var\28 --z-brand-color-ink\2c var\28 --z-brand-color-ink-fallback-1ghx29b15thjhz\29 \29 \5d {color:var(--z-brand-color-ink,var(--z-brand-color-ink-fallback-1ghx29b15thjhz));}
-    .z-border-color-\5b var\28 --z-brand-color-accent\2c light-dark\28 \23 06c\2c \23 9cf\29 \29 \5d {border-color:var(--z-brand-color-accent,light-dark(#06c,#9cf));}
-    .z-border-style-solid{border-style:solid;}
+    .z_0{color:var(--z-brand-color-ink,var(--z-brand-color-ink-fallback-1ghx29b15thjhz));}
+    .z_1{border-color:var(--z-brand-color-accent,light-dark(#06c,#9cf));}
+    .z_2{border-style:solid;}
     ");
 
     let shared = css::compile(
@@ -354,7 +392,7 @@ fn compile_round_trips_the_wire_format() {
     // `color` refers to object 1 (flags 4) and `padding` is an important number (flags 3).
     let input = r#"{"objects":[["c",{"keys":["variableSet"],"variableSet":true}],["t",0,"color","color.ink","red",false],["m",0,null,[["color.ink","green"]],null,null]],"strings":["color","padding"],"styles":[{"d":[0,1,4,1,8,3],"n":"0"},{"d":[],"n":"card","o":"grouped"}],"vars":[["first",2]]}"#;
 
-    insta::assert_snapshot!(wire::compile(input), @r#"{"classes":{"0":"z-text-[var(--z0,red)] z-p-[8!important]","card":""},"css":".z0{--z0:green;}\n.z-text-\\5b var\\28 --z0\\2c red\\29 \\5d {color:var(--z0,red);}\n.z-p-\\5b 8\\21 important\\5d {padding:8!important;}","vars":{"first":"z0"},"rules":{"z-text-[var(--z0,red)]":"color:var(--z0,red);","z-p-[8!important]":"padding:8!important;","@scope:z0:_2d__2d_z0:_5b__5d_":"green"},"units":[]}"#);
+    insta::assert_snapshot!(wire::compile(input), @r#"{"classes":{"0":"z_0 z_1","card":""},"css":".z0{--z0:green;}\n.z_0{color:var(--z0,red);}\n.z_1{padding:8!important;}","vars":{"first":"z0"},"rules":{"z_0":"color:var(--z0,red);","z_1":"padding:8!important;","@scope:z0:_2d__2d_z0:_5b__5d_":"green"},"units":[["\u0001z-text-[var(--z0,red)]",false,"z_0"],["\u0001z-p-[8!important]",false,"z_1"]]}"#);
     insta::assert_snapshot!(
         wire::compile(r#"{"styles":[{"d":[],"n":"card","o":"inline"}]}"#),
         @r#"{"error":{"name":"Css.CompileError","message":"[\"card\",\"cssOutput\"]: cssOutput must be atomic or grouped.","diagnostics":[{"code":"invalid_output","message":"cssOutput must be atomic or grouped.","path":["card","cssOutput"]}]}}"#

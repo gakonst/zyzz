@@ -82,6 +82,10 @@ pub struct Options {
     pub modules: Map<Arc<str>>,
     /// Native output context. `None` compiles web modules and CSS.
     pub native: Option<NativeOptions>,
+    /// Every module that may interpolate a style definition into a selector is in the graph,
+    /// and no consumer outside it reads published contracts. Production class lists then carry
+    /// only the identity classes those selectors reference.
+    pub references: bool,
     /// Reset stylesheet supplied by the host, ordered before authored layers.
     pub reset: Option<Arc<str>>,
     /// Publishes variable scopes once with shared rules, for CSS-only hosts.
@@ -318,6 +322,8 @@ struct Extraction {
 struct Transformed {
     classes: Vec<(Arc<str>, Option<Arc<str>>)>,
     extracted: Arc<Module>,
+    /// The identity classes of this module's calls that selectors reference, when known.
+    markers: Option<Box<[Arc<str>]>>,
     output: Arc<transform::Output>,
     owners: Arc<[(Arc<str>, usize)]>,
     schemes: bool,
@@ -345,6 +351,8 @@ struct Cache {
     lean: bool,
     libraries: Map<Arc<Library>>,
     native: Option<NativeOptions>,
+    referenced: Option<Arc<FxHashSet<Arc<str>>>>,
+    references: bool,
     reset: Option<Arc<str>>,
     resolutions: Map<String>,
     result: Arc<Output>,
@@ -487,6 +495,7 @@ fn build(options: &Options, cache: Option<&Cache>) -> Result<Option<Cache>> {
             && cache.shared == options.shared
             && cache.entry.is_none() == options.entry.is_none()
             && cache.lean == options.lean
+            && cache.references == options.references
     });
     let mut ids: Vec<Arc<str>> = options.modules.keys().cloned().collect();
 
@@ -2330,6 +2339,93 @@ fn json_or_null(output: &mut String, value: Option<&str>) {
     }
 }
 
+/// Collects the identity classes that the selectors of a graph's styles and contributions
+/// reference, decoding CSS escapes so each class compares by its name.
+fn references<'m>(modules: impl Iterator<Item = &'m Module>) -> FxHashSet<Arc<str>> {
+    fn scan(selector: &str, output: &mut FxHashSet<Arc<str>>) {
+        for (index, _) in selector.match_indices(".z-style-") {
+            let mut name = String::from("z-style-");
+            let mut characters = selector
+                .get(index + ".z-style-".len()..)
+                .unwrap_or_default()
+                .chars()
+                .peekable();
+
+            while let Some(character) = characters.next() {
+                if character.is_ascii_alphanumeric() || matches!(character, '_' | '-') {
+                    name.push(character);
+                    continue;
+                }
+
+                if character != '\\' {
+                    break;
+                }
+
+                let mut code = 0_u32;
+                let mut digits = 0;
+
+                while digits < 6
+                    && let Some(digit) = characters.peek().and_then(|next| next.to_digit(16))
+                {
+                    code = code * 16 + digit;
+                    digits += 1;
+                    characters.next();
+                }
+
+                if digits == 0 {
+                    match characters.next() {
+                        Some(escaped) => name.push(escaped),
+                        None => break,
+                    }
+
+                    continue;
+                }
+
+                // One whitespace character terminates a hexadecimal escape.
+                characters.next_if(|next| js::is_whitespace(*next));
+                name.push(char::from_u32(code).unwrap_or('\u{fffd}'));
+            }
+
+            output.insert(Arc::from(name));
+        }
+    }
+
+    fn style(value: &NamedStyle, output: &mut FxHashSet<Arc<str>>) {
+        for rule in value.rules.iter().flatten() {
+            if let Some(condition) = &rule.condition {
+                scan(condition, output);
+            }
+
+            style(&rule.style, output);
+        }
+    }
+
+    let mut output = FxHashSet::default();
+
+    for module in modules {
+        for value in &module.styles.styles {
+            style(value, &mut output);
+        }
+
+        for contribution in &module.contributions {
+            for group in &contribution.within {
+                scan(group, &mut output);
+            }
+
+            if let ContributionKind::Rule {
+                selector,
+                style: value,
+            } = &contribution.kind
+            {
+                scan(selector, &mut output);
+                style(value, &mut output);
+            }
+        }
+    }
+
+    output
+}
+
 /// Registers the explicit style identities a packed link publishes.
 fn styles(link: &Link, register: &mut dyn FnMut(String, String) -> Result<()>) -> Result<()> {
     if let Some(style) = &link.style {
@@ -3054,6 +3150,8 @@ impl Build<'_, '_> {
             lean: options.lean,
             libraries: self.libraries,
             native: Some(native.clone()),
+            referenced: None,
+            references: options.references,
             reset: options.reset.clone(),
             resolutions: self.resolutions,
             result: Arc::new(Output {
@@ -3396,12 +3494,29 @@ impl Build<'_, '_> {
             .map(|previous| previous.transformed.clone())
             .unwrap_or_default();
         let order: Vec<Arc<str>> = self.extracted.keys().cloned().collect();
+        // Development keeps every identity, so edits that add a selector reference never change
+        // other modules' class lists.
+        let referenced = (rewrite && !options.development && options.references)
+            .then(|| Arc::new(references(self.extracted.values().map(|module| &**module))));
+        let same_references = previous.is_some_and(|previous| previous.referenced == referenced);
 
         // Extraction visits dependencies first, and their emitted classes must precede consumers.
         for module_id in &order {
             let Some(module) = self.extracted.get(module_id).cloned() else {
                 continue;
             };
+            let markers: Option<Box<[Arc<str>]>> = referenced.as_ref().map(|referenced| {
+                module
+                    .calls
+                    .iter()
+                    .flat_map(|call| {
+                        call.identity
+                            .iter()
+                            .flat_map(|identity| identity.split(' '))
+                    })
+                    .filter_map(|name| referenced.get(name).cloned())
+                    .collect()
+            });
             // Hosts that compile a module within several graphs must name it the same in each,
             // so it may reuse only names its dependencies introduce.
             let visible = if options.complete {
@@ -3424,6 +3539,7 @@ impl Build<'_, '_> {
                         .iter()
                         .all(|(name, value)| style_classes.get(name) == value.as_ref())
                     && cached.owners == owner_signature
+                    && cached.markers == markers
             });
             let reused = match reusable {
                 Some(cached) if registry.restore(module_id, &cached.output.units, &visible) => {
@@ -3432,6 +3548,7 @@ impl Build<'_, '_> {
                 _ => previous
                     .filter(|previous| {
                         same_themes
+                            && same_references
                             && previous.schemes == schemes
                             && previous
                                 .extracted
@@ -3473,6 +3590,7 @@ impl Build<'_, '_> {
                         module_id,
                         owners: Some(&self.owners),
                         placeholder: None,
+                        referenced: referenced.as_deref(),
                         schemes: Some(schemes),
                         shared: Some(if options.entry.is_none() {
                             options.shared.unwrap_or(Shared::Defaults)
@@ -3520,6 +3638,7 @@ impl Build<'_, '_> {
                 Transformed {
                     classes,
                     extracted: Arc::clone(&module),
+                    markers,
                     output: Arc::clone(&output),
                     owners: Arc::clone(&owner_signature),
                     schemes,
@@ -3763,6 +3882,8 @@ impl Build<'_, '_> {
             lean: options.lean,
             libraries: self.libraries,
             native: None,
+            referenced,
+            references: options.references,
             reset: options.reset.clone(),
             resolutions: self.resolutions,
             result: Arc::new(output),

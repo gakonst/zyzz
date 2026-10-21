@@ -16,8 +16,7 @@ export function create({ className }: create.Options): style.ReturnType {
 
     const { className: external, style, vars } = overrides
     const inline = vars ? { ...vars, ...style } : style
-    const merged =
-      className && external ? `${className} ${external}` : external || className
+    const merged = merge(className, external)
 
     return inline ? { className: merged, style: inline } : { className: merged }
   }) as style.ReturnType
@@ -30,4 +29,17 @@ export declare namespace create {
     /** Complete generated class list. */
     readonly className: string
   }
+}
+
+/**
+ * Appends an external class override to compiled classes, as applications do.
+ * Compiled applications whose only override is `className` call this directly.
+ * @param className - Compiled class list.
+ * @param external - Override class list; empty and absent values keep the compiled list.
+ * @returns The joined class list.
+ */
+export function merge(className: string, external: string | undefined) {
+  return className && external
+    ? `${className} ${external}`
+    : external || className
 }

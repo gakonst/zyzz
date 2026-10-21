@@ -19,9 +19,9 @@ describe('comparison examples', () => {
     const output = Css.compile({ styles: extracted.styles })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-bg-\\5b \\23 06c\\5d {background-color:#06c;}
-      .z-h-\\5b 0\\2e 5rem\\5d {height:0.5rem;}
-      .z-w-\\5b var\\28 --z-K9A3CB-styles-bar-width\\29 \\5d {width:var(--z-K9A3CB-styles-bar-width);}"
+      ".z_0{background-color:#06c;}
+      .z_1{height:0.5rem;}
+      .z_2{width:var(--z-K9A3CB-styles-bar-width);}"
     `)
   })
 })

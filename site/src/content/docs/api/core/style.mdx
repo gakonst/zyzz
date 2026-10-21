@@ -199,7 +199,7 @@ const card = style({}, { id: 'card' })
 
 Applying a definition returns props for one element. The optional argument accepts only styling overrides, so event handlers, children, and ARIA attributes stay on the element.
 
-A callback definition also requires every declared value on each call. Each call assigns the values to private custom properties without creating CSS.
+A callback definition also requires every declared value on each call. Each call assigns the values to private custom properties without creating CSS. A call spread alone onto an element writes a value that fills one unconditional declaration to that property inline, unless its type admits a CSS-wide keyword, as `string` does.
 
 ```ts /amount: '50%'/
 // Width becomes 50% on this element

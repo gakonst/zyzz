@@ -166,12 +166,12 @@ describe('define', () => {
     expect(output.css).toMatchInlineSnapshot(`
       ".z0{--z0:#fff;--z1:#000;--z2:4px;--z3:light-dark(#111,#fff);--z4:2rem;--z5:#06c;}
       .z1{--z0:#fff;--z1:#000;--z2:4px;--z3:light-dark(#111,#fff);--z4:1rem;--z5:#06c;}
-      .z-bg-\\5b var\\28 --z0\\2c \\23 fff\\29 \\5d {background-color:var(--z0,#fff);}
-      .z-border-color-\\5b var\\28 --z1\\2c \\23 000\\29 \\5d {border-color:var(--z1,#000);}
-      .z-border-radius-\\5b var\\28 --z2\\2c 4px\\29 \\5d {border-radius:var(--z2,4px);}
-      .z-card-text-3{color:var(--z3,light-dark(#111,#fff));}
-      .z-p-\\5b var\\28 --z4\\2c 1rem\\29 \\5d {padding:var(--z4,1rem);}
-      .z-link-text-0{color:var(--z5,#06c);}"
+      .z_0{background-color:var(--z0,#fff);}
+      .z_1{border-color:var(--z1,#000);}
+      .z_2{border-radius:var(--z2,4px);}
+      .z_3{color:var(--z3,light-dark(#111,#fff));}
+      .z_4{padding:var(--z4,1rem);}
+      .z_5{color:var(--z5,#06c);}"
     `)
     expect(
       output.css ===
@@ -229,9 +229,9 @@ describe('define', () => {
     )
 
     expect(Css.compile({ styles }).css).toMatchInlineSnapshot(`
-      ".z-text-\\5b var\\28 --z0\\2c \\23 000\\29 \\5d {color:var(--z0,#000);}
-      .z-p-\\5b var\\28 --z1\\2c 8px\\29 \\5d {padding:var(--z1,8px);}
-      .z-w-\\5b var\\28 --z2\\2c 2rem\\29 \\5d {width:var(--z2,2rem);}"
+      ".z_0{color:var(--z0,#000);}
+      .z_1{padding:var(--z1,8px);}
+      .z_2{width:var(--z2,2rem);}"
     `)
   })
 
@@ -813,10 +813,10 @@ export const result = Css.compile({ styles: Style.define({ button: { color: '#f0
     expect(JSON.parse(server)).toMatchInlineSnapshot(`
       {
         "classes": {
-          "button": "z-text-[#f00] z-p-0",
+          "button": "z_0 z_1",
         },
-        "css": ".z-text-\\5b \\23 f00\\5d {color:#f00;}
-      .z-p-0{padding:0;}",
+        "css": ".z_0{color:#f00;}
+      .z_1{padding:0;}",
         "vars": {},
       }
     `)
@@ -835,10 +835,10 @@ export const result = Css.compile({ styles: Style.define({ button: { color: '#f0
       expect(JSON.parse(result)).toMatchInlineSnapshot(`
         {
           "classes": {
-            "button": "z-text-[#f00] z-p-0",
+            "button": "z_0 z_1",
           },
-          "css": ".z-text-\\5b \\23 f00\\5d {color:#f00;}
-        .z-p-0{padding:0;}",
+          "css": ".z_0{color:#f00;}
+        .z_1{padding:0;}",
           "vars": {},
         }
       `)
@@ -859,10 +859,10 @@ export const result = Css.compile({ styles: Style.define({ button: { color: '#f0
       expect(await page.evaluate('fixture.result')).toMatchInlineSnapshot(`
         {
           "classes": {
-            "button": "z-text-[#f00] z-p-0",
+            "button": "z_0 z_1",
           },
-          "css": ".z-text-\\5b \\23 f00\\5d {color:#f00;}
-        .z-p-0{padding:0;}",
+          "css": ".z_0{color:#f00;}
+        .z_1{padding:0;}",
           "vars": {},
         }
       `)
@@ -890,10 +890,10 @@ export const result = Css.compile({ styles: Style.define({ button: { color: '#f0
       expect(result).toMatchInlineSnapshot(`
         {
           "classes": {
-            "button": "z-text-[#f00] z-p-0",
+            "button": "z_0 z_1",
           },
-          "css": ".z-text-\\5b \\23 f00\\5d {color:#f00;}
-        .z-p-0{padding:0;}",
+          "css": ".z_0{color:#f00;}
+        .z_1{padding:0;}",
           "vars": {},
         }
       `)

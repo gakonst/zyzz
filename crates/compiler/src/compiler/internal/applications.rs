@@ -2,7 +2,8 @@
 //!
 //! A candidate is a top-level `const` bound to a definition call, a top-level object of such
 //! calls, or a non-exported namespace of `const` calls. Applications are no-argument calls of a
-//! candidate or one of its exported members. Reads that escape keep the runtime callable.
+//! candidate or one of its exported members, or calls whose only argument overrides
+//! `className`. Reads that escape keep the runtime callable.
 
 use std::cell::OnceCell;
 use std::sync::Arc;
@@ -10,9 +11,9 @@ use std::sync::Arc;
 use indexmap::IndexMap;
 use oxc_ast::AstKind;
 use oxc_ast::ast::{
-    Argument, Declaration, Expression, JSXAttributeItem, JSXAttributeName, JSXElementName,
-    ObjectPropertyKind, Program, PropertyKey, PropertyKind, Statement, TSNamespaceDeclarationBody,
-    UnaryOperator, VariableDeclarationKind,
+    Argument, CallExpression, Declaration, Expression, JSXAttributeItem, JSXAttributeName,
+    JSXElementName, ObjectExpression, ObjectPropertyKind, Program, PropertyKey, PropertyKind,
+    Statement, TSNamespaceDeclarationBody, UnaryOperator, VariableDeclarationKind,
 };
 use oxc_semantic::Semantic;
 use oxc_span::{GetSpan, Span};
@@ -22,11 +23,13 @@ use crate::compiler::internal::expression::unwrap;
 use crate::compiler::internal::scope::{self, Mode};
 use crate::compiler::source::Call;
 
-/// One no-argument application of a definition.
+/// One application of a definition without arguments or with a `className` override alone.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Application {
     /// End of the callee expression.
     pub callee_end: u32,
+    /// The override value of a `{ className: value }` argument.
+    pub class_override: Option<Override>,
     /// A plain read of the applied class list, as in `styles.card().className`.
     pub class_read: Option<ClassRead>,
     /// End of the call.
@@ -35,10 +38,40 @@ pub struct Application {
     pub initialized: bool,
     /// Definition name.
     pub name: Arc<str>,
+    /// The JSX spread attribute whose argument is the call, as in `<a {...styles.card()} />`.
+    pub spread: Option<Span>,
     /// Start of the call.
     pub start: u32,
     /// Whether the application is the only class source of a DOM element.
     pub terminal: bool,
+}
+
+/// One application of a dynamic definition with an object literal, spread alone onto a DOM
+/// element.
+#[derive(Clone, Copy, Debug)]
+pub struct Bound<'a> {
+    /// End of the callee expression.
+    pub callee_end: u32,
+    /// End of the call.
+    pub end: u32,
+    /// Whether every evaluation follows the definition's initialization.
+    pub initialized: bool,
+    /// Start of the call.
+    pub start: u32,
+    /// The authored values.
+    pub values: &'a ObjectExpression<'a>,
+}
+
+/// The value of an application's only argument property, `className`.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Override {
+    /// End of the value.
+    pub end: u32,
+    /// Whether the value is a read without calls or computed members, which can be repeated in
+    /// an initialization guard without changing evaluation.
+    pub simple: bool,
+    /// Start of the value.
+    pub start: u32,
 }
 
 /// A `.className` or `.class` read of an application's result, used only as a value.
@@ -98,6 +131,8 @@ struct Candidate<'c, 'a> {
 /// What a lexical read is nested in.
 #[derive(Clone, Copy)]
 struct Read<'a> {
+    /// The values object of a one-argument call spread alone onto a DOM element.
+    bound: Option<&'a ObjectExpression<'a>>,
     deferred: bool,
     /// Parent of the identifier.
     parent: Option<AstKind<'a>>,
@@ -495,6 +530,7 @@ impl Walker<'_, '_> {
 
             let count = self.ancestors.len();
             let read = Read {
+                bound: bound(&self.ancestors),
                 deferred: self.ancestors.iter().any(defers),
                 grandparent: count
                     .checked_sub(3)
@@ -581,11 +617,61 @@ fn member_name(kind: Option<AstKind<'_>>, object: Span) -> Option<(&str, Span)> 
 }
 
 /// Whether a parent is a non-optional call of a callee.
-fn call_of(kind: Option<AstKind<'_>>, callee: Span) -> Option<(Span, usize)> {
+fn call_of<'k, 'a>(kind: Option<AstKind<'a>>, callee: Span) -> Option<&'k CallExpression<'a>>
+where
+    'a: 'k,
+{
     match kind? {
         AstKind::CallExpression(call) if !call.optional && call.callee.span() == callee => {
-            Some((call.span, call.arguments.len()))
+            Some(call)
         }
+        _ => None,
+    }
+}
+
+/// The value of a call's only argument when that argument is `{ className: value }`.
+fn class_override(call: &CallExpression<'_>) -> Option<Override> {
+    let [argument] = call.arguments.as_slice() else {
+        return None;
+    };
+    let Some(Expression::ObjectExpression(object)) = argument.as_expression() else {
+        return None;
+    };
+    let [ObjectPropertyKind::ObjectProperty(property)] = object.properties.as_slice() else {
+        return None;
+    };
+
+    if property.computed || property.method || property.kind != PropertyKind::Init {
+        return None;
+    }
+
+    let named = match &property.key {
+        PropertyKey::StaticIdentifier(key) => key.name == "className",
+        PropertyKey::StringLiteral(key) => key.value == "className",
+        _ => false,
+    };
+    let span = property.value.span();
+
+    named.then(|| Override {
+        end: span.end,
+        simple: simple(&property.value),
+        start: span.start,
+    })
+}
+
+/// Matches identifiers and static member chains of them, whose reads call no function.
+fn simple(expression: &Expression<'_>) -> bool {
+    match expression {
+        Expression::Identifier(_) => true,
+        Expression::StaticMemberExpression(member) => !member.optional && simple(&member.object),
+        _ => false,
+    }
+}
+
+/// The JSX spread attribute whose argument is exactly a call.
+fn spread_of(kind: Option<AstKind<'_>>, call: Span) -> Option<Span> {
+    match kind? {
+        AstKind::JSXSpreadAttribute(spread) if spread.argument.span() == call => Some(spread.span),
         _ => None,
     }
 }
@@ -643,16 +729,21 @@ impl<'c, 'a> Applications<'c, 'a> {
             }
 
             let call = call?;
-            let (span, arguments) = call_of(application, callee)?;
-
-            // An override needs the runtime callable, but exposes no other definition.
-            if !self.options.dynamic && arguments > 0 {
+            let node = call_of(application, callee)?;
+            let span = node.span;
+            let class_override = if self.options.dynamic || node.arguments.is_empty() {
+                None
+            } else if let Some(value) = class_override(node) {
+                Some(value)
+            } else {
+                // Other overrides need the runtime callable, but expose no other definition.
                 called.insert(Arc::clone(&call.name));
                 continue;
-            }
+            };
 
             applications.push(Application {
                 callee_end: callee.end,
+                class_override,
                 class_read: class_read(span, read),
                 end: span.end,
                 initialized: !reference.deferred
@@ -660,6 +751,7 @@ impl<'c, 'a> Applications<'c, 'a> {
                     && (candidate.namespace.is_none()
                         || self.namespace_counts.get(&candidate.name) == Some(&1)),
                 name: Arc::clone(&call.name),
+                spread: spread_of(read[0], span),
                 start: span.start,
                 terminal: reference.terminal,
             });
@@ -810,6 +902,126 @@ impl<'c, 'a> Applications<'c, 'a> {
         output
     }
 
+    /// Applications of each dynamic definition that bind an object literal on a DOM element alone,
+    /// by definition name, in candidate order.
+    pub fn bound(&self) -> FxHashMap<Arc<str>, Vec<Bound<'a>>> {
+        let mut output: FxHashMap<Arc<str>, Vec<Bound<'a>>> = FxHashMap::default();
+
+        if self.evaluation {
+            return output;
+        }
+
+        // Merged namespace declarations share one read list, so each name's reads are walked once.
+        let mut groups: IndexMap<&Arc<str>, Vec<&Candidate<'c, 'a>>, FxBuildHasher> =
+            IndexMap::default();
+
+        for candidate in &self.candidates {
+            groups.entry(&candidate.name).or_default().push(candidate);
+        }
+
+        for (name, candidates) in groups {
+            let reads = self
+                .references
+                .get(name)
+                .map(Vec::as_slice)
+                .unwrap_or_default();
+            let bindings: FxHashSet<u32> = candidates
+                .iter()
+                .map(|candidate| candidate.binding.start)
+                .collect();
+            let direct = match candidates.as_slice() {
+                [candidate] => candidate.direct.map(|call| (*candidate, call)),
+                _ => None,
+            };
+
+            // Any member read other than a call could replace the member, as `styles.dot = other` does.
+            if direct.is_none()
+                && !reads.iter().all(|reference| {
+                    bindings.contains(&reference.span.start)
+                        || reference.resolved
+                        || member_name(reference.parent, reference.span).is_some_and(
+                            |(_, member)| call_of(reference.grandparent, member).is_some(),
+                        )
+                })
+            {
+                continue;
+            }
+
+            // A member declared by two merged declarations has no single definition.
+            let mut members: FxHashMap<&str, Option<(&Candidate<'c, 'a>, &'c Call<'a>)>> =
+                FxHashMap::default();
+
+            if direct.is_none() {
+                for candidate in &candidates {
+                    for (member, call) in &candidate.members {
+                        members
+                            .entry(&**member)
+                            .and_modify(|entry| *entry = None)
+                            .or_insert(Some((*candidate, *call)));
+                    }
+                }
+            }
+
+            for reference in reads {
+                let Some(values) = reference.bound else {
+                    continue;
+                };
+
+                if bindings.contains(&reference.span.start) || reference.resolved {
+                    continue;
+                }
+
+                let (candidate, call, callee, application) = if let Some((candidate, call)) = direct
+                {
+                    (candidate, call, reference.span, reference.parent)
+                } else {
+                    let Some((member, span)) = member_name(reference.parent, reference.span) else {
+                        continue;
+                    };
+                    let Some(Some((candidate, call))) = members.get(member).copied() else {
+                        continue;
+                    };
+
+                    (candidate, call, span, reference.grandparent)
+                };
+
+                if call.slots.is_none()
+                    || call.recipe.is_some()
+                    || call.composition.is_some()
+                    || call.runtime_composition.is_some()
+                {
+                    continue;
+                }
+
+                let Some(span) = call_of(application, callee)
+                    .filter(|call| call.arguments.len() == 1)
+                    .map(|call| call.span)
+                else {
+                    continue;
+                };
+
+                // A merged namespace can exist before a member's declaration, so the guard's bare
+                // call would skip evaluating the authored values before it throws.
+                if candidate.namespace.is_some() && self.namespace_counts.get(name) != Some(&1) {
+                    continue;
+                }
+
+                output
+                    .entry(Arc::clone(&call.name))
+                    .or_default()
+                    .push(Bound {
+                        callee_end: callee.end,
+                        end: span.end,
+                        initialized: !reference.deferred && reference.span.start >= candidate.ready,
+                        start: span.start,
+                        values,
+                    });
+            }
+        }
+
+        output
+    }
+
     /// Every foldable application, in candidate order.
     pub fn find(&self) -> impl Iterator<Item = &Application> {
         let collected = if self.evaluation {
@@ -954,6 +1166,44 @@ fn terminal(path: &[AstKind<'_>]) -> bool {
         }
         _ => false,
     }
+}
+
+/// The object literal of a one-argument application spread alone onto a DOM element.
+fn bound<'a>(path: &[AstKind<'a>]) -> Option<&'a ObjectExpression<'a>> {
+    let mut index = path.len().checked_sub(1)?;
+    let mut node = path.get(index)?.span();
+
+    if let Some(AstKind::StaticMemberExpression(member)) =
+        index.checked_sub(1).and_then(|at| path.get(at))
+        && member.object.span() == node
+    {
+        index -= 1;
+        node = member.span;
+    }
+
+    let call_index = index.checked_sub(1)?;
+    let AstKind::CallExpression(call) = *path.get(call_index)? else {
+        return None;
+    };
+    let [Argument::ObjectExpression(values)] = call.arguments.as_slice() else {
+        return None;
+    };
+
+    if call.optional || call.callee.span() != node {
+        return None;
+    }
+
+    let spread_index = call_index.checked_sub(1)?;
+    let AstKind::JSXSpreadAttribute(spread) = *path.get(spread_index)? else {
+        return None;
+    };
+
+    (spread.argument.span() == call.span
+        && alone(
+            spread_index.checked_sub(1).and_then(|at| path.get(at)),
+            spread.span,
+        ))
+    .then_some(&**values)
 }
 
 /// Matches `^class(?:Name)?$`.

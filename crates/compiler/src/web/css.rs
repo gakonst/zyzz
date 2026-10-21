@@ -368,12 +368,18 @@ struct Lines {
     outline: bool,
 }
 
+#[expect(
+    clippy::struct_excessive_bools,
+    reason = "Each flag records one independent property of the compilation."
+)]
 struct Compiler<'a> {
     conditional_rules: FxHashMap<String, Conditional>,
     /// The style index that created each rule, by rule index.
     creators: Vec<usize>,
     conflicts: FxHashMap<&'a str, u32>,
     css_names: FxHashMap<&'a str, Box<str>>,
+    /// Keeps readable contextual names, which survive value edits.
+    development: bool,
     diagnostics: Vec<Diagnostic>,
     domains: Domains,
     groups: FxHashMap<u32, Shareable>,
@@ -891,6 +897,10 @@ impl<'a> Compiler<'a> {
         ));
     }
 
+    #[expect(
+        clippy::too_many_arguments,
+        reason = "Every emission site supplies its rule, naming context, and unit registry."
+    )]
     fn emit(
         &mut self,
         state: &mut Application<'a>,
@@ -899,6 +909,7 @@ impl<'a> Compiler<'a> {
         shared: bool,
         output: CssOutput,
         conditional: Option<Conditional>,
+        units: &mut Units<'_>,
     ) -> Option<String> {
         if body.is_empty() {
             return None;
@@ -968,6 +979,18 @@ impl<'a> Compiler<'a> {
                 slot: (!shared).then_some(slot),
             })
         };
+        // Production names generated rules like shared units. The readable identity keys the
+        // short name, so equal identities keep one name and the collision checks below still
+        // compare readable identities. A shared readable name carries the module qualifier, so
+        // its short name stays within the module and keeps consumer overrides after it.
+        let identity = if self.development || state.explicit.is_some() {
+            identity
+        } else {
+            self.unit_key.clear();
+            self.unit_key.push('\u{1}');
+            self.unit_key.push_str(&identity);
+            units.name(&self.unit_key, namespace)
+        };
         let owner =
             (state.mode == CssOutput::Atomic && !shared).then(|| (Arc::clone(state.name), slot));
 
@@ -1024,6 +1047,7 @@ impl<'a> Compiler<'a> {
         style: &'a NamedStyle,
         conditions: &[Arc<str>],
         prepared: Option<&Prepared>,
+        units: &mut Units<'_>,
     ) {
         if style.css_output == Some(CssOutput::Grouped) {
             let inner = self.nested(style);
@@ -1035,6 +1059,7 @@ impl<'a> Compiler<'a> {
                 false,
                 CssOutput::Grouped,
                 None,
+                units,
             );
             return;
         }
@@ -1047,13 +1072,13 @@ impl<'a> Compiler<'a> {
                     let all = with(conditions, rule.condition.as_ref());
                     let mode = state.mode;
 
-                    self.emit(state, wrap(&all, &inner), "layer", false, mode, None);
+                    self.emit(state, wrap(&all, &inner), "layer", false, mode, None, units);
                     continue;
                 }
 
                 let next = with(conditions, rule.condition.as_ref());
 
-                self.atoms(state, &rule.style, &next, None);
+                self.atoms(state, &rule.style, &next, None, units);
             }
 
             return;
@@ -1124,6 +1149,7 @@ impl<'a> Compiler<'a> {
                     conditions: Rc::clone(&shared_conditions),
                     value: value.into(),
                 }),
+                units,
             );
 
             if let Some(identity) = identity {
@@ -1179,7 +1205,7 @@ impl<'a> Compiler<'a> {
         }
 
         let Some(items) = self.flatten(style, &[], prepared) else {
-            self.atoms(state, style, &[], prepared);
+            self.atoms(state, style, &[], prepared, units);
             return;
         };
 
@@ -1203,6 +1229,7 @@ impl<'a> Compiler<'a> {
                             conditions: Rc::clone(&item.conditions),
                             value: Rc::clone(&item.value),
                         }),
+                        units,
                     );
                 }
 
@@ -1315,6 +1342,7 @@ fn compile_with(options: &Options<'_>, units: &mut Units<'_>) -> Result<Output> 
         conflicts: FxHashMap::default(),
         creators: Vec::new(),
         css_names: FxHashMap::default(),
+        development: options.development,
         diagnostics: Vec::new(),
         domains: Domains::default(),
         groups: FxHashMap::default(),
@@ -1731,8 +1759,8 @@ fn run<'a>(
                 }
 
                 if !shared.is_empty() && !local.is_empty() {
-                    compiler.emit(&mut state, shared, "shared", false, mode, None);
-                    compiler.emit(&mut state, local, "style", false, mode, None);
+                    compiler.emit(&mut state, shared, "shared", false, mode, None, units);
+                    compiler.emit(&mut state, local, "style", false, mode, None, units);
                 } else {
                     let body = match (flat, application) {
                         (Some((_, text)), _) => text.to_owned(),
@@ -1740,13 +1768,15 @@ fn run<'a>(
                         (None, None) => compiler.nested(style),
                     };
 
-                    compiler.emit(&mut state, body, "style", false, mode, None);
+                    compiler.emit(&mut state, body, "style", false, mode, None, units);
                 }
             }
             CssOutput::Atomic if explicit.is_none() && independent => {
                 compiler.share(&mut state, style, prepared.get(index), units);
             }
-            CssOutput::Atomic => compiler.atoms(&mut state, style, &[], prepared.get(index)),
+            CssOutput::Atomic => {
+                compiler.atoms(&mut state, style, &[], prepared.get(index), units);
+            }
         }
 
         let mut list = String::with_capacity(state.names.iter().map(|name| name.len() + 1).sum());

@@ -225,7 +225,7 @@ function afterType(other = style({ color: '#f00' })) { var style; }
           "style({ color: '#f00' })",
           "style({ color: '#f00' })",
         ],
-        "css": ".z-text-\\5b \\23 f00\\5d {color:#f00;}",
+        "css": ".z_0{color:#f00;}",
       }
     `)
   })
@@ -404,10 +404,10 @@ type Definition = ReturnType<typeof define>;
           "themeReferences": [],
           "vars": {},
         },
-        "rules": ".z-BHk_aD-card-p-0{padding:8px;}
-      .z-BHk_aD-card-pl-1{padding-left:0;}
-      .z-text-\\5b \\23 fff\\5d {color:#fff;}
-      .z-opacity-\\5b 0\\2e 5\\5d {opacity:0.5;}",
+        "rules": ".z_0{padding:8px;}
+      .z_1{padding-left:0;}
+      .z_2{color:#fff;}
+      .z_3{opacity:0.5;}",
       }
     `)
   })

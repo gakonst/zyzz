@@ -255,6 +255,9 @@ fn decode(
         )?
         .unwrap_or_default(),
         native,
+        references: field("references")
+            .and_then(Value::as_bool)
+            .unwrap_or_default(),
         reset: text(field("reset")),
         shared,
     };
@@ -951,6 +954,7 @@ pub fn transform(input: &Value, separate: Option<&str>) -> Result<String> {
             module_id,
             owners: None,
             placeholder: separate,
+            referenced: None,
             schemes: field("schemes").and_then(Value::as_bool),
             shared: options.shared,
             source,

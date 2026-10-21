@@ -587,10 +587,10 @@ export const button=variants({variants:{intent:{primary:{color:'brand'},quiet:{c
         .z_scheme-dark{color-scheme:dark;}
         .z_scheme-light{color-scheme:light;}
         .z_scheme-light-dark{color-scheme:light dark;}
-        .z-Zf5JrJ-button-pl-0{padding-left:8px;}
-        .z-Zf5JrJ-button-pr-1{padding-right:8px;}
-        .z-Zf5JrJ-button-text-2{&:where([data-intent="primary"]){color:var(--z-color-brand,#06c);}}
-        .z-Zf5JrJ-button-text-3{&:where([data-intent="quiet"]){color:black;}}"
+        .z_Zf5JrJ0{padding-left:8px;}
+        .z_Zf5JrJ1{padding-right:8px;}
+        .z_Zf5JrJ2{&:where([data-intent="primary"]){color:var(--z-color-brand,#06c);}}
+        .z_Zf5JrJ3{&:where([data-intent="quiet"]){color:black;}}"
       `,
       )
       expect(
@@ -675,12 +675,12 @@ export const button=variants({variants:{intent:{primary:{color:'brand'},quiet:{c
       )
       expect(module.exports.a()).toMatchInlineSnapshot(`
         {
-          "className": "z-Zf5JrJ-text-[var(--z-color-brand,#06c)] z-style-Zf5JrJ-a",
+          "className": "z_Zf5JrJ0 z-style-Zf5JrJ-a",
         }
       `)
       expect(module.exports.b()).toMatchInlineSnapshot(`
         {
-          "className": "z-Zf5JrJ-text-[var(--z-color-brand,#06c)] z-style-Zf5JrJ-b",
+          "className": "z_Zf5JrJ0 z-style-Zf5JrJ-b",
         }
       `)
     })

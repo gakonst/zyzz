@@ -334,17 +334,17 @@ describe('create', () => {
     expect(typeof result.dynamic.style).toMatchInlineSnapshot('"string"')
     expect(result.direct).toMatchInlineSnapshot(`
       {
-        "class": "z-library-Zf5JrJ-direct-pl-0 z-library-Zf5JrJ-direct-pr-1",
+        "class": "z_library-Zf5JrJ6 z_library-Zf5JrJ7",
       }
     `)
     expect(result.source).toMatchInlineSnapshot(`
       {
-        "class": "z-library-r-SNdO-staticStyle-pl-0 z-library-r-SNdO-staticStyle-pr-1 z-style-library-r-SNdO-staticStyle",
+        "class": "z_library-r-SNdO0 z_library-r-SNdO1 z-style-library-r-SNdO-staticStyle",
       }
     `)
     expect(result.dynamic).toMatchInlineSnapshot(`
       {
-        "class": "z-library-Zf5JrJ-dynamic-pl-0 z-library-Zf5JrJ-dynamic-pr-1",
+        "class": "z_library-Zf5JrJ4 z_library-Zf5JrJ5",
         "style": "--z-library-Zf5JrJ-dynamic-width:8px",
       }
     `)
@@ -468,8 +468,8 @@ describe('create', () => {
       .z-theme-library-extended{--z-library-spacing-sm:8px;}
       .z-theme-library-next{--z-library-spacing-sm:12px;}
       .z-theme-app-theme{--z-app-spacing-sm:12px;}
-      .z-app-Zf5JrJ-card-pl-0{padding-left:var(--z-app-spacing-sm,12px);}
-      .z-app-Zf5JrJ-card-pr-1{padding-right:var(--z-app-spacing-sm,12px);}"
+      .z_app-Zf5JrJ0{padding-left:var(--z-app-spacing-sm,12px);}
+      .z_app-Zf5JrJ1{padding-right:var(--z-app-spacing-sm,12px);}"
     `)
   })
   test('accepts quoted aliases and independently validates numeric targets', () => {
@@ -485,10 +485,10 @@ describe('create', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-Zf5JrJ-styles-card-pl-0{padding-left:var(--z-spacing-sm,8px);}
-      .z-Zf5JrJ-styles-card-pr-1{padding-right:var(--z-spacing-sm,8px);}
-      .z-Zf5JrJ-scale-\\5b var\\28 --z-Zf5JrJ-styles-dynamic-n\\29 \\5d {scale:var(--z-Zf5JrJ-styles-dynamic-n);}
-      .z-Zf5JrJ-order-\\5b var\\28 --z-Zf5JrJ-styles-dynamic-n\\29 \\5d {order:var(--z-Zf5JrJ-styles-dynamic-n);}"
+      .z_Zf5JrJ0{padding-left:var(--z-spacing-sm,8px);}
+      .z_Zf5JrJ1{padding-right:var(--z-spacing-sm,8px);}
+      .z_Zf5JrJ2{scale:var(--z-Zf5JrJ-styles-dynamic-n);}
+      .z_Zf5JrJ3{order:var(--z-Zf5JrJ-styles-dynamic-n);}"
     `)
   })
   test('preserves ordered targets and spacing precedence across packed imports', () => {
@@ -496,17 +496,17 @@ describe('create', () => {
 
     expect(app.modules['app.ts']!.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-margin-sm:-8px;--z-padding-sm:12px;--z-spacing-sm:4px;}
-      .z-Zf5JrJ-styles-card-pl-0{padding-left:var(--z-padding-sm,12px);}
-      .z-Zf5JrJ-styles-card-pr-1{padding-right:var(--z-padding-sm,12px);}
-      .z-Zf5JrJ-styles-card-pl-2{padding-left:2px;}
-      .z-Zf5JrJ-styles-card-pl-3{&:hover{padding-left:var(--z-padding-sm,12px)!important;}}
-      .z-Zf5JrJ-styles-card-pr-4{&:hover{padding-right:var(--z-padding-sm,12px)!important;}}
-      .z-Zf5JrJ-styles-mixed-ml-0{margin-left:var(--z-margin-sm,-8px);}
-      .z-Zf5JrJ-styles-mixed-pl-1{padding-left:var(--z-padding-sm,12px);}
-      .z-Zf5JrJ-styles-handle-pl-0{padding-left:var(--z-padding-sm,12px);}
-      .z-Zf5JrJ-styles-handle-pr-1{padding-right:var(--z-padding-sm,12px);}
-      .z-Zf5JrJ-styles-dynamic-pl-0{padding-left:var(--z-Zf5JrJ-styles-dynamic-width);}
-      .z-Zf5JrJ-styles-dynamic-pr-1{padding-right:var(--z-Zf5JrJ-styles-dynamic-width);}"
+      .z_Zf5JrJ0{padding-left:var(--z-padding-sm,12px);}
+      .z_Zf5JrJ1{padding-right:var(--z-padding-sm,12px);}
+      .z_Zf5JrJ2{padding-left:2px;}
+      .z_Zf5JrJ3{&:hover{padding-left:var(--z-padding-sm,12px)!important;}}
+      .z_Zf5JrJ4{&:hover{padding-right:var(--z-padding-sm,12px)!important;}}
+      .z_Zf5JrJ5{margin-left:var(--z-margin-sm,-8px);}
+      .z_Zf5JrJ6{padding-left:var(--z-padding-sm,12px);}
+      .z_Zf5JrJ7{padding-left:var(--z-padding-sm,12px);}
+      .z_Zf5JrJ8{padding-right:var(--z-padding-sm,12px);}
+      .z_Zf5JrJ9{padding-left:var(--z-Zf5JrJ-styles-dynamic-width);}
+      .z_Zf5JrJa{padding-right:var(--z-Zf5JrJ-styles-dynamic-width);}"
     `)
     expect(app.modules['app.ts']!.code.includes('px:')).toMatchInlineSnapshot(
       'false',

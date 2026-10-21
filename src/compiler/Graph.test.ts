@@ -60,8 +60,8 @@ describe('compile', () => {
     const result = Graph.compile(options)
     expect(result.modules['item.ts']!.css).toMatchInlineSnapshot(`
       ".z-theme-packed-theme{--z-packed-spacing-gap:7px;--z-packed-color-ink:#123456;}
-      .z-packed-mhCyMV-item-p-0{padding:var(--z-packed-spacing-gap,7px);}
-      .z-packed-mhCyMV-item-text-1{&[data-highlighted]{color:var(--z-packed-color-ink,#123456);}}"
+      .z_packed-mhCyMV0{padding:var(--z-packed-spacing-gap,7px);}
+      .z_packed-mhCyMV1{&[data-highlighted]{color:var(--z-packed-color-ink,#123456);}}"
     `)
 
     const contract = JSON.parse(publisher.contracts['index.ts']!)
@@ -155,13 +155,13 @@ describe('compile', () => {
 
     expect(Object.values(first.classes)).toMatchInlineSnapshot(`
       [
-        "z-9Ak_08-inline-grid z-9Ak_08-opacity-0 z-9Ak_08-filter-[blur(4px)]",
+        "z_9Ak_080 z_9Ak_081 z_9Ak_082",
       ]
     `)
     expect(first.css).toMatchInlineSnapshot(`
-      ".z-9Ak_08-inline-grid{display:inline-grid;}
-      .z-9Ak_08-opacity-0{opacity:0;}
-      .z-9Ak_08-filter-\\5b blur\\28 4px\\29 \\5d {filter:blur(4px);}"
+      ".z_9Ak_080{display:inline-grid;}
+      .z_9Ak_081{opacity:0;}
+      .z_9Ak_082{filter:blur(4px);}"
     `)
     expect(first.css === second.css).toMatchInlineSnapshot(`false`)
     expect(
@@ -177,7 +177,7 @@ describe('compile', () => {
     expect(Object.values(Css.compile({ styles: contextual.styles }).classes))
       .toMatchInlineSnapshot(`
         [
-          "z-mRVEHL-heading-opacity-0 z-mRVEHL-heading-opacity-1",
+          "z_0 z_1",
         ]
       `)
 
@@ -343,10 +343,10 @@ export const nested=style({color:fields.foo.bar,vars:{[fields['foo-bar']]:'red',
       right: { className: string }
     }
     expect(fixture.left.className).toMatchInlineSnapshot(
-      '"z-a_2d_b-card-text-0 z-a_2d_b-card-text-1"',
+      `"z_a_2d_b-A4MzJF0 z_a_2d_b-A4MzJF1"`,
     )
     expect(fixture.right.className).toMatchInlineSnapshot(
-      '"z-a-b_2d_card-text-0 z-a-b_2d_card-text-1"',
+      `"z_a-oRmHDO0 z_a-oRmHDO1"`,
     )
     const browser = await chromium.launch()
     try {
@@ -410,8 +410,8 @@ export const nested=style({color:fields.foo.bar,vars:{[fields['foo-bar']]:'red',
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-first-bugww8-heading-text-0{color:var(--z-first-color-brand,red);}
-      .z-first-bugww8-heading-opacity-1{&:hover{opacity:1;}}"
+      .z_first-bugww80{color:var(--z-first-color-brand,red);}
+      .z_first-bugww81{&:hover{opacity:1;}}"
     `)
     expect(output.modules['second.js']!.css).toMatchInlineSnapshot(`
       ".z-theme-first-theme{--z-first-color-brand:red;}
@@ -419,8 +419,8 @@ export const nested=style({color:fields.foo.bar,vars:{[fields['foo-bar']]:'red',
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-second-XWlTb2-heading-text-0{color:var(--z-second-color-brand,blue);}
-      .z-second-XWlTb2-heading-opacity-1{&:hover{opacity:1;}}"
+      .z_second-XWlTb20{color:var(--z-second-color-brand,blue);}
+      .z_second-XWlTb21{&:hover{opacity:1;}}"
     `)
     const code = await Packed.bundle({
       entry: 'entry.js',
@@ -489,8 +489,8 @@ export const nested=style({color:fields.foo.bar,vars:{[fields['foo-bar']]:'red',
     })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-CqGk9p-w-\\5b var\\28 --z-variables-offset\\29 \\5d {width:var(--z-variables-offset);}
-      .z-CqGk9p-h-\\5b var\\28 --z-heading_5f_2d_5f_offset\\29 \\5d {height:var(--z-heading_2d_offset);}"
+      ".z_CqGk9p0{width:var(--z-variables-offset);}
+      .z_CqGk9p1{height:var(--z-heading_2d_offset);}"
     `)
     expect(output.code.includes('--z-variables-offset')).toMatchInlineSnapshot(
       'true',
@@ -1631,16 +1631,16 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-LMAxOH-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}"
+      .z_LMAxOH0{padding:var(--z-spacing-md,8px);}
+      .z_LMAxOH1{color:var(--z-color-brand,#06c);}"
     `)
     expect(output.modules['pkg/card.ts']!.code).toMatchInlineSnapshot(`
       "
       import { Props as __zyzzProps } from 'zyzz/runtime';
       import { style, theme } from './index.js'; export namespace styles {
-        export const card = __zyzzProps.create({className:"z-LMAxOH-p-[var(--z-spacing-md,8px)] z-style-LMAxOH-styles-card"})
+        export const card = /*#__PURE__*/__zyzzProps.create({className:"z_LMAxOH0 z-style-LMAxOH-styles-card"})
 
-        export const label = __zyzzProps.create({className:"z-LMAxOH-text-[var(--z-color-brand,#06c)] z-style-LMAxOH-styles-label"})
+        export const label = /*#__PURE__*/__zyzzProps.create({className:"z_LMAxOH1 z-style-LMAxOH-styles-label"})
       } export const props = styles.card(); export const scope = theme().className;"
     `)
 
@@ -1659,7 +1659,7 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-rnRBDm-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}"
+      .z_rnRBDm0{color:var(--z-color-brand,#06c);}"
     `)
   })
 
@@ -1676,7 +1676,7 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-rnRBDm-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}"
+      .z_rnRBDm0{color:var(--z-color-brand,#06c);}"
     `)
   })
 
@@ -1694,7 +1694,7 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-vqLXml-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}"
+      .z_vqLXml0{color:var(--z-color-brand,#06c);}"
     `)
     expect(
       output.modules['pkg/config.ts']!.code.includes('Config.create('),
@@ -1711,8 +1711,8 @@ ${web.modules['app.ts']!.code}`,
 
     expect(output.modules['pkg/config.ts']!.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-color-brand-500:#06c;--z-spacing-2:8px;}
-      .z-vqLXml-text-\\5b var\\28 --z-color-brand-500\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand-500,#06c);}
-      .z-vqLXml-p-\\5b var\\28 --z-spacing-2\\2c 8px\\29 \\5d {padding:var(--z-spacing-2,8px);}"
+      .z_vqLXml0{color:var(--z-color-brand-500,#06c);}
+      .z_vqLXml1{padding:var(--z-spacing-2,8px);}"
     `)
     expect(() =>
       Graph.compile({
@@ -1738,7 +1738,7 @@ ${web.modules['app.ts']!.code}`,
       `
       "
       import { Appearance as __zyzzAppearance, Selection as __zyzzSelection } from 'zyzz/runtime';
-       export const zyzz = ({appearance:__zyzzAppearance.root([["brand.dark","z-theme-brand_2e_dark"]],{"defaultVars":"brand.dark"}),script:__zyzzAppearance.create([["brand.dark","z-theme-brand_2e_dark"]]),vars:__zyzzSelection.create([["brand.dark","z-theme-brand_2e_dark"]],false,'set',"brand.dark")}); export const props = ({className:"z-TqLXxb-text-[var(--z-color-brand,#06c)]"}); export const scope = zyzz.vars({set:'brand.dark'}).className;"
+       export const zyzz = ({appearance:__zyzzAppearance.root([["brand.dark","z-theme-brand_2e_dark"]],{"defaultVars":"brand.dark"}),script:__zyzzAppearance.create([["brand.dark","z-theme-brand_2e_dark"]]),vars:__zyzzSelection.create([["brand.dark","z-theme-brand_2e_dark"]],false,'set',"brand.dark")}); export const props = ({className:"z_TqLXxb0"}); export const scope = zyzz.vars({set:'brand.dark'}).className;"
     `,
     )
 
@@ -1756,7 +1756,7 @@ ${web.modules['app.ts']!.code}`,
         .z_scheme-dark{color-scheme:dark;}
         .z_scheme-light{color-scheme:light;}
         .z_scheme-light-dark{color-scheme:light dark;}
-        .z-jnRBM8-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}"
+        .z_jnRBM80{color:var(--z-color-brand,#06c);}"
       `)
     expect(() =>
       Graph.compile({
@@ -1783,8 +1783,8 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c light-dark\\28 \\23 06c\\2c \\23 9cf\\29 \\29 \\5d {color:var(--z-color-brand,light-dark(#06c,#9cf));}
-      .z-LMAxOH-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_LMAxOH0{color:var(--z-color-brand,light-dark(#06c,#9cf));}
+      .z_LMAxOH1{padding:var(--z-spacing-md,8px);}"
     `)
     expect(output.modules['pkg/zyzz.config.ts']!.code).toMatchInlineSnapshot(
       `
@@ -1794,7 +1794,7 @@ ${web.modules['app.ts']!.code}`,
     `,
     )
     expect(output.modules['pkg/card.ts']!.code).toMatchInlineSnapshot(
-      `"import { design } from './index.js'; const zyzz = (design as import('zyzz').Config.VariableConfig<{readonly "layers":readonly ["reset","components"];readonly "vars":{readonly "mint":{readonly "color":{readonly "brand":{readonly "light":"#175";readonly "dark":"#afa"}};readonly "spacing":{readonly "md":"12px"}};readonly "base":{readonly "color":{readonly "brand":{readonly "light":"#06c";readonly "dark":"#9cf"}};readonly "spacing":{readonly "md":"8px"}}};readonly "defaultVars":"base"}>); const { style } = (zyzz as import('zyzz').Config.VariableConfig<{readonly "layers":readonly ["reset","components"];readonly "vars":{readonly "mint":{readonly "color":{readonly "brand":{readonly "light":"#175";readonly "dark":"#afa"}};readonly "spacing":{readonly "md":"12px"}};readonly "base":{readonly "color":{readonly "brand":{readonly "light":"#06c";readonly "dark":"#9cf"}};readonly "spacing":{readonly "md":"8px"}}};readonly "defaultVars":"base"}>); export const props = ({className:"z-LMAxOH-text-[var(--z-color-brand,light-dark(#06c,#9cf))] z-LMAxOH-p-[var(--z-spacing-md,8px)]"}); export const scope = zyzz.vars({set:'mint'}).className;"`,
+      `"import { design } from './index.js'; const zyzz = (design as import('zyzz').Config.VariableConfig<{readonly "layers":readonly ["reset","components"];readonly "vars":{readonly "mint":{readonly "color":{readonly "brand":{readonly "light":"#175";readonly "dark":"#afa"}};readonly "spacing":{readonly "md":"12px"}};readonly "base":{readonly "color":{readonly "brand":{readonly "light":"#06c";readonly "dark":"#9cf"}};readonly "spacing":{readonly "md":"8px"}}};readonly "defaultVars":"base"}>); const { style } = (zyzz as import('zyzz').Config.VariableConfig<{readonly "layers":readonly ["reset","components"];readonly "vars":{readonly "mint":{readonly "color":{readonly "brand":{readonly "light":"#175";readonly "dark":"#afa"}};readonly "spacing":{readonly "md":"12px"}};readonly "base":{readonly "color":{readonly "brand":{readonly "light":"#06c";readonly "dark":"#9cf"}};readonly "spacing":{readonly "md":"8px"}}};readonly "defaultVars":"base"}>); export const props = ({className:"z_LMAxOH0 z_LMAxOH1"}); export const scope = zyzz.vars({set:'mint'}).className;"`,
     )
 
     const updated = compiler.compile({
@@ -1812,8 +1812,8 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c light-dark\\28 \\23 06c\\2c \\23 9cf\\29 \\29 \\5d {color:var(--z-color-brand,light-dark(#06c,#9cf));}
-      .z-LMAxOH-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_LMAxOH0{color:var(--z-color-brand,light-dark(#06c,#9cf));}
+      .z_LMAxOH1{padding:var(--z-spacing-md,8px);}"
     `)
 
     const mapping = new Trace.TraceMap(output.modules['pkg/card.ts']!.cssMap)
@@ -1837,11 +1837,11 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-rnRBDm-text-\\5b var\\28 --z-color-brand\\2c light-dark\\28 \\23 06c\\2c \\23 9cf\\29 \\29 \\5d {color:var(--z-color-brand,light-dark(#06c,#9cf));}
-      .z-rnRBDm-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_rnRBDm0{color:var(--z-color-brand,light-dark(#06c,#9cf));}
+      .z_rnRBDm1{padding:var(--z-spacing-md,8px);}"
     `)
     expect(packed.modules['app/card.ts']!.code).toMatchInlineSnapshot(
-      `"import { design as zyzz } from '@acme/theme'; export const props = ({className:"z-rnRBDm-text-[var(--z-color-brand,light-dark(#06c,#9cf))] z-rnRBDm-p-[var(--z-spacing-md,8px)]"}); export const scope = zyzz.vars({set:'mint'}).className;"`,
+      `"import { design as zyzz } from '@acme/theme'; export const props = ({className:"z_rnRBDm0 z_rnRBDm1"}); export const scope = zyzz.vars({set:'mint'}).className;"`,
     )
   })
 
@@ -1857,7 +1857,7 @@ ${web.modules['app.ts']!.code}`,
       `
       "
       import { Appearance as __zyzzAppearance, Selection as __zyzzSelection } from 'zyzz/runtime';
-       export const empty = ({appearance:__zyzzAppearance.root([]),script:__zyzzAppearance.create([])} as import('zyzz').Config.create.ReturnType<{}>); const base = ({} as import('zyzz').Vars.Definition<{readonly "color":{readonly "brand":"#06c"}}>); export const zyzz = ({appearance:__zyzzAppearance.root([]),script:__zyzzAppearance.create([]),vars:__zyzzSelection.create([["default","z-theme-theme"]],false,'set',"default")} as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "brand":"#06c"}}}>); const theme = (zyzz.vars as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "brand":"#06c"}}}>['vars']); export const mint = ({} as import('zyzz').Vars.Definition<{readonly "color":{readonly "brand":"#06c"}}>); export const props = ({className:"z-vqLXml-text-[var(--z-color-brand,#06c)]"}); export const plain = ({className:"z-vqLXml-p-8px"});"
+       export const empty = ({appearance:__zyzzAppearance.root([]),script:__zyzzAppearance.create([])} as import('zyzz').Config.create.ReturnType<{}>); const base = ({} as import('zyzz').Vars.Definition<{readonly "color":{readonly "brand":"#06c"}}>); export const zyzz = ({appearance:__zyzzAppearance.root([]),script:__zyzzAppearance.create([]),vars:__zyzzSelection.create([["default","z-theme-theme"]],false,'set',"default")} as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "brand":"#06c"}}}>); const theme = (zyzz.vars as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "brand":"#06c"}}}>['vars']); export const mint = ({} as import('zyzz').Vars.Definition<{readonly "color":{readonly "brand":"#06c"}}>); export const props = ({className:"z_vqLXml0"}); export const plain = ({className:"z_vqLXml1"});"
     `,
     )
     expect(output.modules['pkg/config.ts']!.css).toMatchInlineSnapshot(`
@@ -1865,8 +1865,8 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-vqLXml-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}
-      .z-vqLXml-p-8px{padding:8px;}"
+      .z_vqLXml0{color:var(--z-color-brand,#06c);}
+      .z_vqLXml1{padding:8px;}"
     `)
   })
 
@@ -1975,14 +1975,14 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-rnRBDm-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}
-      .z-rnRBDm-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_rnRBDm0{color:var(--z-color-brand,#06c);}
+      .z_rnRBDm1{padding:var(--z-spacing-md,8px);}"
     `)
     expect(output.modules['app/card.ts']!.code).toMatchInlineSnapshot(
       `
       "
       import { Selection as __zyzzSelection } from 'zyzz/runtime';
-      import { mint, style, theme } from '@acme/theme';  export const local = ({} as import('zyzz').Vars.Definition<{readonly "color":{readonly "brand":"#06c"};readonly "spacing":{readonly "md":"8px"}}>); export const props = ({className:"z-rnRBDm-text-[var(--z-color-brand,#06c)] z-rnRBDm-p-[var(--z-spacing-md,8px)]"}); const scopeConfig=({vars:__zyzzSelection.create([["default","z-theme-mint-theme"]],false,'set',"default")} as import('zyzz').Config.VariableConfig<{readonly "id":"mint";readonly "vars":{readonly "color":{readonly "brand":"#175"};readonly "spacing":{readonly "md":"8px"}}}>);export const scope=scopeConfig.vars().className;"
+      import { mint, style, theme } from '@acme/theme';  export const local = ({} as import('zyzz').Vars.Definition<{readonly "color":{readonly "brand":"#06c"};readonly "spacing":{readonly "md":"8px"}}>); export const props = ({className:"z_rnRBDm0 z_rnRBDm1"}); const scopeConfig=({vars:__zyzzSelection.create([["default","z-theme-mint-theme"]],false,'set',"default")} as import('zyzz').Config.VariableConfig<{readonly "id":"mint";readonly "vars":{readonly "color":{readonly "brand":"#175"};readonly "spacing":{readonly "md":"8px"}}}>);export const scope=scopeConfig.vars().className;"
     `,
     )
 
@@ -1998,7 +1998,7 @@ ${web.modules['app.ts']!.code}`,
 
     expect(updated.modules['app/card.ts']!.classes).toMatchInlineSnapshot(`
       {
-        "style-ujlnau19561g8-192": "z-rnRBDm-text-[var(--z-color-brand,#06c)] z-rnRBDm-p-[var(--z-spacing-md,8px)]",
+        "style-ujlnau19561g8-192": "z_rnRBDm0 z_rnRBDm1",
       }
     `)
     expect(updated.modules['app/card.ts']!.css).toMatchInlineSnapshot(`
@@ -2009,8 +2009,8 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-rnRBDm-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}
-      .z-rnRBDm-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_rnRBDm0{color:var(--z-color-brand,#06c);}
+      .z_rnRBDm1{padding:var(--z-spacing-md,8px);}"
     `)
     expect(() =>
       compiler.compile({
@@ -2197,7 +2197,7 @@ ${web.modules['app.ts']!.code}`,
       }
     `)
     expect(output.modules['pkg/card.ts']!.code).toMatchInlineSnapshot(
-      `"import { vars, style } from './index.js'; export const props = ({className:"z-LMAxOH-text-[var(--z-color-brand,#06c)] z-LMAxOH-p-[var(--z-spacing-md,8px)]"}); export const scope = vars({set:'mint'}).className;"`,
+      `"import { vars, style } from './index.js'; export const props = ({className:"z_LMAxOH0 z_LMAxOH1"}); export const scope = vars({set:'mint'}).className;"`,
     )
     expect(output.modules['pkg/card.ts']!.css).toMatchInlineSnapshot(`
       ".z-theme-base{--z-color-brand:#06c;--z-spacing-md:8px;}
@@ -2205,8 +2205,8 @@ ${web.modules['app.ts']!.code}`,
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}
-      .z-LMAxOH-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}
+      .z_LMAxOH1{padding:var(--z-spacing-md,8px);}"
     `)
     expect(
       Trace.originalPositionFor(
@@ -2256,7 +2256,7 @@ ${web.modules['app.ts']!.code}`,
       )
 
       expect(executed.stdout).toMatchInlineSnapshot(`
-        "{"props":{"className":"z-LMAxOH-text-[var(--z-color-brand,#06c)] z-LMAxOH-p-[var(--z-spacing-md,8px)]"},"scope":"z-theme-mint"}
+        "{"props":{"className":"z_LMAxOH0 z_LMAxOH1"},"scope":"z-theme-mint"}
         "
       `)
 
@@ -2297,7 +2297,7 @@ ${web.modules['app.ts']!.code}`,
 
     expect(after.modules['pkg/card.ts']!.classes).toMatchInlineSnapshot(`
       {
-        "style-5ngs574r5xr9-63": "z-LMAxOH-text-[var(--z-color-brand,#f00)] z-LMAxOH-p-[var(--z-spacing-md,8px)]",
+        "style-5ngs574r5xr9-63": "z_LMAxOH0 z_LMAxOH1",
       }
     `)
     expect(after.modules['pkg/card.ts']!.vars).toMatchInlineSnapshot(`
@@ -2310,7 +2310,7 @@ ${web.modules['app.ts']!.code}`,
     `)
     expect(before.modules['pkg/card.ts']!.classes).toMatchInlineSnapshot(`
       {
-        "style-5ngs574r5xr9-63": "z-LMAxOH-text-[var(--z-color-brand,#06c)] z-LMAxOH-p-[var(--z-spacing-md,8px)]",
+        "style-5ngs574r5xr9-63": "z_LMAxOH0 z_LMAxOH1",
       }
     `)
 
@@ -2444,53 +2444,53 @@ ${web.modules['app.ts']!.code}`,
     expect(stylesheets).toMatchInlineSnapshot(`
       {
         "pkg/theme.cjs": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.cjsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.cts": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.ctsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.js": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.jsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.mjs": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.mjsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.mts": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.mtsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.ts": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme.tsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.cjs": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.cjsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.cts": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.ctsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.js": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.jsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.mjs": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.mjsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.mts": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.mtsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.ts": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
         "pkg/theme/index.tsx": ".z-theme-theme{--z-color-brand:#06c;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}",
+      .z_LMAxOH0{color:var(--z-color-brand,#06c);}",
       }
     `)
   })
@@ -2593,10 +2593,10 @@ ${web.modules['app.ts']!.code}`,
     })
 
     expect(output.modules['a.ts']!.css).toMatchInlineSnapshot(
-      `".z-ZYrHvJ-text-red{color:red;}"`,
+      `".z_ZYrHvJ0{color:red;}"`,
     )
     expect(output.modules['b.ts']!.css).toMatchInlineSnapshot(
-      `".z-hYrPIe-p-8px{padding:8px;}"`,
+      `".z_hYrPIe0{padding:8px;}"`,
     )
   })
 
@@ -2672,7 +2672,7 @@ describe('create', () => {
     const after = compiler.compile({ modules: edited })
 
     expect(after.modules['app.ts']!.css).toMatchInlineSnapshot(
-      `".z-Zf5JrJ-text-blue{color:blue;}"`,
+      `".z_Zf5JrJ0{color:blue;}"`,
     )
     expect(
       after.modules['root.ts']!.code === before.modules['root.ts']!.code,
@@ -2686,7 +2686,7 @@ describe('create', () => {
     const linked = compiler.compile({ modules: styled })
 
     expect(linked.modules['app.ts']!.css).toMatchInlineSnapshot(
-      `".z-Zf5JrJ-text-green{color:green;}"`,
+      `".z_Zf5JrJ0{color:green;}"`,
     )
     expect(linked.modules['root.ts']!.css).toMatchInlineSnapshot(`""`)
     expect(Object.keys(JSON.parse(linked.contracts['root.ts']!).exports))
@@ -2700,7 +2700,7 @@ describe('create', () => {
     const restored = compiler.compile({ modules: sources })
 
     expect(restored.modules['app.ts']!.css).toMatchInlineSnapshot(
-      `".z-Zf5JrJ-text-red{color:red;}"`,
+      `".z_Zf5JrJ0{color:red;}"`,
     )
     expect(
       restored.modules['root.ts']!.code === before.modules['root.ts']!.code,
@@ -2866,8 +2866,8 @@ describe('create', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-I2R_br-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}
-      .z-I2R_br-p-20px{padding:20px;}"
+      .z_I2R_br0{color:var(--z-color-brand,#06c);}
+      .z_I2R_br1{padding:20px;}"
     `)
     expect(before.modules['pkg/card0.ts']!.css).toMatchInlineSnapshot(`
       ".z-theme-base{--z-color-brand:#06c;}
@@ -2875,8 +2875,8 @@ describe('create', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-I2R_br-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}
-      .z-I2R_br-p-0px{padding:0px;}"
+      .z_I2R_br0{color:var(--z-color-brand,#06c);}
+      .z_I2R_br1{padding:0px;}"
     `)
   })
 
@@ -2899,8 +2899,8 @@ describe('create', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 f00\\29 \\5d {color:var(--z-color-brand,#f00);}
-      .z-LMAxOH-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_LMAxOH0{color:var(--z-color-brand,#f00);}
+      .z_LMAxOH1{padding:var(--z-spacing-md,8px);}"
     `)
 
     const map = new Trace.TraceMap(after.modules['pkg/card.ts']!.cssMap)
@@ -3023,7 +3023,7 @@ describe('create', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-mint-LMAxOH-text-\\5b var\\28 --z-mint-color-brand\\2c \\23 f00\\29 \\5d {color:var(--z-mint-color-brand,#f00);}"
+      .z_mint-LMAxOH0{color:var(--z-mint-color-brand,#f00);}"
     `)
   })
 
@@ -3267,7 +3267,7 @@ describe('create', () => {
     `)
     expect(after.modules['pkg/card.ts']!.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-color-brand:#fff;}
-      .z-LMAxOH-text-\\5b var\\28 --z-color-brand\\2c \\23 fff\\29 \\5d {color:var(--z-color-brand,#fff);}"
+      .z_LMAxOH0{color:var(--z-color-brand,#fff);}"
     `)
     expect(after === before).toMatchInlineSnapshot(`false`)
     expect(() =>
@@ -3568,14 +3568,14 @@ export function sample(active:boolean){return cx(controls.button({size:active?{c
       expect(result.modules['a.ts']!.css).toMatchInlineSnapshot(`
         ".z-theme-src_2d_first_2d_dcTfYzugwnm_2d_style{}
         .z_ZYrHvJ0{opacity:0.5;}
-        .z-props-0-z-style-zugwnm-base-first_2d_local-style-0{color:red;padding:8px;}
-        .z-props-0-z-style-zugwnm-base-first_2d_local-opacity-1{opacity:0.5;}"
+        .z_ZYrHvJ1{color:red;padding:8px;}
+        .z_ZYrHvJ2{opacity:0.5;}"
       `)
       expect(result.modules['b.ts']!.css).toMatchInlineSnapshot(`
         ".z-theme-src_2d_first_2d_dcTfYzugwnm_2d_style{}
         .z_hYrPIe0{opacity:1;}
-        .z-props-0-z-style-zugwnm-base-second_2d_local-style-0{color:red;padding:8px;}
-        .z-props-0-z-style-zugwnm-base-second_2d_local-opacity-1{opacity:1;}"
+        .z_hYrPIe1{color:red;padding:8px;}
+        .z_hYrPIe2{opacity:1;}"
       `)
     })
 
@@ -3624,7 +3624,7 @@ export function sample(active:boolean){return cx(controls.button({size:active?{c
       })
       expect(consumer.modules['app.ts']!.css).toMatchInlineSnapshot(`
         ".z-theme-src_2d_config_2d_6Q0EnEZaLq6_2d_config{}
-        .z-consumer_2d_card{color:blue;padding:2px;}"
+        .z_Zf5JrJ0{color:blue;padding:2px;}"
       `)
     })
 
@@ -4076,7 +4076,7 @@ describe('stylesheets', () => {
       })
 
       expect(app.modules['app.ts']!.css).toMatchInlineSnapshot(
-        `".z-Zf5JrJ-animation-name-z-k-fade{animation-name:z-k-fade;}"`,
+        `".z_Zf5JrJ0{animation-name:z-k-fade;}"`,
       )
       expect(app.sharedCss).toMatchInlineSnapshot(
         `"@keyframes z-k-fade{from{opacity:0;}to{opacity:1;}}"`,
@@ -4184,7 +4184,7 @@ describe('stylesheets', () => {
       })
 
       expect(app.modules['app.ts']!.css).toMatchInlineSnapshot(
-        `".z-Zf5JrJ-animation-name-z-k-fade{animation-name:z-k-fade;}"`,
+        `".z_Zf5JrJ0{animation-name:z-k-fade;}"`,
       )
       expect(new Trace.TraceMap(app.sharedCssMap!).sourcesContent)
         .toMatchInlineSnapshot(`
@@ -4598,9 +4598,9 @@ describe('variables', () => {
       })
 
       expect(result.modules['app.ts']!.css).toMatchInlineSnapshot(`
-        ".z-Zf5JrJ-styles-a-w-0{width:10px;}
-        .z-Zf5JrJ-styles-b-w-0{width:30px;}
-        .z-Zf5JrJ-styles-c-w-0{width:40px;}"
+        ".z_Zf5JrJ0{width:10px;}
+        .z_Zf5JrJ1{width:30px;}
+        .z_Zf5JrJ2{width:40px;}"
       `)
     })
 
@@ -4654,7 +4654,7 @@ describe('variables', () => {
 
       expect(
         Graph.compile({ modules: { 'app.ts': source } }).modules['app.ts']!.css,
-      ).toMatchInlineSnapshot(`".z-Zf5JrJ-w-10px{width:10px;}"`)
+      ).toMatchInlineSnapshot(`".z_Zf5JrJ0{width:10px;}"`)
 
       const errors = [
         "for(base.width of ['20px']){}",
@@ -4735,9 +4735,9 @@ export const vars=({gap:variable('signedLength', {inherits:false,initialValue:'}
       })
 
       expect(result.modules['app.ts']!.css).toMatchInlineSnapshot(`
-        ".z-Zf5JrJ-text-red{color:red;}
-        .z-Zf5JrJ-w-\\5b var\\28 --z-Zf5JrJ-styles-dynamic-width\\29 \\5d {width:var(--z-Zf5JrJ-styles-dynamic-width);}
-        .z-Zf5JrJ-z-index-\\5b var\\28 --z-Zf5JrJ-styles-dynamic-zIndex\\29 \\5d {z-index:var(--z-Zf5JrJ-styles-dynamic-zIndex);}"
+        ".z_Zf5JrJ0{color:red;}
+        .z_Zf5JrJ1{width:var(--z-Zf5JrJ-styles-dynamic-width);}
+        .z_Zf5JrJ2{z-index:var(--z-Zf5JrJ-styles-dynamic-zIndex);}"
       `)
     })
 
@@ -4766,8 +4766,8 @@ export const vars=({gap:variable('signedLength', {inherits:false,initialValue:'}
 
       expect(app.modules['app.ts']!.css).toMatchInlineSnapshot(
         `
-        ".z-Zf5JrJ-w-\\5b var\\28 --z-vars-gap\\29 \\5d {width:var(--z-vars-gap);}
-        .z-Zf5JrJ-p-\\5b var\\28 --z-vars-gap\\29 \\5d {padding:var(--z-vars-gap);}"
+        ".z_Zf5JrJ0{width:var(--z-vars-gap);}
+        .z_Zf5JrJ1{padding:var(--z-vars-gap);}"
       `,
       )
     })
@@ -4784,8 +4784,8 @@ export const vars=({gap:variable('signedLength', {inherits:false,initialValue:'}
         .z_scheme-dark{color-scheme:dark;}
         .z_scheme-light{color-scheme:light;}
         .z_scheme-light-dark{color-scheme:light dark;}
-        .z-Zf5JrJ-w-10px{width:10px;}
-        .z-Zf5JrJ-text-\\5b var\\28 --z-color-ink\\2c \\23 123\\29 \\5d {color:var(--z-color-ink,#123);}"
+        .z_Zf5JrJ0{width:10px;}
+        .z_Zf5JrJ1{color:var(--z-color-ink,#123);}"
       `)
     })
     test('links default variable exports through packed contracts', () => {
@@ -4806,7 +4806,7 @@ export const vars=({gap:variable('signedLength', {inherits:false,initialValue:'}
       })
 
       expect(app.modules['app.ts']!.css).toMatchInlineSnapshot(
-        `".z-Zf5JrJ-w-\\5b var\\28 --z-vars-gap\\29 \\5d {width:var(--z-vars-gap);}"`,
+        `".z_Zf5JrJ0{width:var(--z-vars-gap);}"`,
       )
     })
     test('rejects static records returned to runtime code', () => {
@@ -5108,10 +5108,10 @@ export const vars=({gap:variable('signedLength', {inherits:false,initialValue:'}
     `)
       expect(css).toMatchInlineSnapshot(`
         "@property --z-vars-amount{syntax:"<percentage>";inherits:false;initial-value:25%;}
-        @property --z-vars-gap{syntax:"<length>";inherits:true;initial-value:4px;}.z-Zf5JrJ-h-20px{height:20px;}
-        .z-Zf5JrJ-p-\\5b var\\28 --z-vars-gap\\29 \\5d {padding:var(--z-vars-gap);}
-        .z-Zf5JrJ-styles-registered-w-2{width:var(--z-vars-amount);}
-        .z-Zf5JrJ-styles-dynamic-w-0{width:var(--z-Zf5JrJ-styles-dynamic-width);}"
+        @property --z-vars-gap{syntax:"<length>";inherits:true;initial-value:4px;}.z_Zf5JrJ0{height:20px;}
+        .z_Zf5JrJ1{padding:var(--z-vars-gap);}
+        .z_Zf5JrJ2{width:var(--z-vars-amount);}
+        .z_Zf5JrJ3{width:var(--z-Zf5JrJ-styles-dynamic-width);}"
       `)
     })
     test('expands immutable members and shorthand while retaining dynamic intersections', () => {
@@ -5126,10 +5126,10 @@ export const vars=({gap:variable('signedLength', {inherits:false,initialValue:'}
       })
 
       expect(graph.modules['static.ts']!.css).toMatchInlineSnapshot(`
-        ".z-r9-r0Q-styles-card-w-0{width:12px;}
-        .z-r9-r0Q-p-8px{padding:8px;}
-        .z-r9-r0Q-styles-dynamic-w-0{width:var(--z-r9-r0Q-styles-dynamic-width);}
-        .z-r9-r0Q-opacity-\\5b var\\28 --z-r9-r0Q-styles-dynamic-opacity\\29 \\5d {opacity:var(--z-r9-r0Q-styles-dynamic-opacity);}"
+        ".z_r9-r0Q0{width:12px;}
+        .z_r9-r0Q1{padding:8px;}
+        .z_r9-r0Q2{width:var(--z-r9-r0Q-styles-dynamic-width);}
+        .z_r9-r0Q3{opacity:var(--z-r9-r0Q-styles-dynamic-opacity);}"
       `)
       expect(graph.sharedCss).toMatchInlineSnapshot(
         `"@property --z-count-n{syntax:"<number>";inherits:false;initial-value:-1;}"`,

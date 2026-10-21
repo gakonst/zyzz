@@ -114,9 +114,11 @@ const later = style({ color: 'green' })
         fold style-42: initialized false
         fold style-81: initialized true
         fold style-216: initialized false
+        fold style-261: initialized false
         fold style-497: initialized false
         apply style-42 at 335..341 initialized false terminal true
         apply style-216 at 360..374 initialized false terminal true
+        apply style-261 at 402..433 initialized false terminal false
         apply style-497 at 475..482 initialized false terminal false
         "#);
     }

@@ -26,7 +26,7 @@ mod compile {
         .z_scheme-dark{color-scheme:dark;}
         .z_scheme-light{color-scheme:light;}
         .z_scheme-light-dark{color-scheme:light dark;}
-        .z-PAxzm4-item-text-0{&[data-highlighted]{color:var(--z-color-brand,red);}}
+        .z_PAxzm40{&[data-highlighted]{color:var(--z-color-brand,red);}}
         ");
 
         let packed = serde_json::json!({
@@ -40,8 +40,45 @@ mod compile {
         insta::assert_snapshot!(output["error"], @"null");
         insta::assert_snapshot!(output["modules"]["select.ts"]["css"].as_str().unwrap_or_default(), @"
         .z-theme-theme{--z-color-brand:red;}
-        .z-PAxzm4-item-text-0{&[data-highlighted]{color:var(--z-color-brand,red);}}
+        .z_PAxzm40{&[data-highlighted]{color:var(--z-color-brand,red);}}
         ");
+    }
+
+    #[test]
+    fn references_keep_interpolated_identities() {
+        let input = |references: bool| {
+            serde_json::json!({
+                "imports": {
+                    "card.ts": {"zyzz": null},
+                    "page.ts": {"zyzz": null, "./card.js": "card.ts"}
+                },
+                "modules": {
+                    "card.ts": "import {style} from 'zyzz';export const card=style({color:'red'});export const label=style({color:'blue'});",
+                    "page.ts": "import {style} from 'zyzz';import {card,label} from './card.js';export const title=style({selectors:{[`${card}:hover &`]:{color:'green'}}});export const page=()=>[card(),label(),title()];"
+                },
+                "references": references
+            })
+            .to_string()
+        };
+        let classes = |output: &str| {
+            let output: serde_json::Value = serde_json::from_str(output).unwrap();
+
+            output["modules"]["card.ts"]["code"]
+                .as_str()
+                .unwrap_or_default()
+                .to_owned()
+        };
+
+        insta::assert_snapshot!(classes(&api::call("graph.compile", &input(false))), @r#"
+
+        import { Props as __zyzzProps } from 'zyzz/runtime';
+        export const card=/*#__PURE__*/__zyzzProps.create({className:"z_bgXhTU0 z-style-bgXhTU-card"});export const label=/*#__PURE__*/__zyzzProps.create({className:"z_bgXhTU1 z-style-bgXhTU-label"});
+        "#);
+        insta::assert_snapshot!(classes(&api::call("graph.compile", &input(true))), @r#"
+
+        import { Props as __zyzzProps } from 'zyzz/runtime';
+        export const card=/*#__PURE__*/__zyzzProps.create({className:"z_bgXhTU0 z-style-bgXhTU-card"});export const label=/*#__PURE__*/__zyzzProps.create({className:"z_bgXhTU1"});
+        "#);
     }
 
     #[test]
@@ -233,7 +270,7 @@ mod transform {
 
             insta::allow_duplicates! {
                 insta::assert_snapshot!(output["error"], @"null");
-                insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z-PAxzm4-text-red{color:red;}");
+                insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z_PAxzm40{color:red;}");
             }
         }
 
@@ -255,7 +292,7 @@ mod transform {
         let (output, _) = compile(&input.to_string());
 
         insta::assert_snapshot!(output["error"], @"null");
-        insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z-item-text-0{.z-style-id-parent:hover &{&[data-highlighted]{color:red;}}}");
+        insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z_PAxzm40{.z-style-id-parent:hover &{&[data-highlighted]{color:red;}}}");
     }
 
     #[test]
@@ -268,11 +305,11 @@ mod transform {
         let (output, _) = compile(&input.to_string());
 
         insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @r#"
-        .z-item-text-0{&[data-highlighted]{color:red;}}
-        .z-item-text-1{&[data-highlighted]/*base-ui-1*/{color:blue;}}
-        .z-item-text-2{&[data-highlighted]/*base-ui-2*/{color:green;}}
-        .z-item-opacity-3{&[data-highlighted]/*base-ui-2*/{&[data-disabled]{opacity:0.5;}}}
-        .z-PAxzm4-popup-text-0{&[data-side="bottom"]{color:red;}}
+        .z_PAxzm40{&[data-highlighted]{color:red;}}
+        .z_PAxzm41{&[data-highlighted]/*base-ui-1*/{color:blue;}}
+        .z_PAxzm42{&[data-highlighted]/*base-ui-2*/{color:green;}}
+        .z_PAxzm43{&[data-highlighted]/*base-ui-2*/{&[data-disabled]{opacity:0.5;}}}
+        .z_PAxzm44{&[data-side="bottom"]{color:red;}}
         "#);
         insta::assert_snapshot!(output["error"], @"null");
         insta::assert_snapshot!(output["code"].as_str().unwrap_or_default().contains("zyzz/base-ui/react"), @"false");
@@ -292,7 +329,7 @@ mod transform {
 
             insta::allow_duplicates! {
                 insta::assert_snapshot!(output["error"], @"null");
-                insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z-PAxzm4-item-text-0{&[data-highlighted]{color:red;}}");
+                insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z_PAxzm40{&[data-highlighted]{color:red;}}");
             }
         }
 
@@ -303,7 +340,7 @@ mod transform {
         let (output, _) = compile(&input.to_string());
 
         insta::assert_snapshot!(output["error"], @"null");
-        insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z-button-text-0{&[data-disabled]{color:red;}}");
+        insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z_zaclPW0{&[data-disabled]{color:red;}}");
     }
 
     #[test]
@@ -351,7 +388,7 @@ mod transform {
         .z_scheme-dark{color-scheme:dark;}
         .z_scheme-light{color-scheme:light;}
         .z_scheme-light-dark{color-scheme:light dark;}
-        .z-PAxzm4-item-text-0{&[data-highlighted]{color:var(--z-color-brand,red);}}
+        .z_PAxzm40{&[data-highlighted]{color:var(--z-color-brand,red);}}
         ");
     }
 
@@ -380,7 +417,7 @@ mod transform {
             r#"{"composition":"mixed","moduleId":"card.ts","source":"import {style} from 'zyzz';export const card=style({color:'red'});"}"#,
         );
 
-        insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z-bgXhTU-text-red{color:red;}");
+        insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z_bgXhTU0{color:red;}");
     }
 
     #[test]
@@ -389,10 +426,10 @@ mod transform {
             "{\"moduleId\":\"card.ts\"}\0import {style} from 'zyzz';export const card=style({color:'red'});",
         );
 
-        insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z-bgXhTU-text-red{color:red;}");
+        insta::assert_snapshot!(output["css"].as_str().unwrap_or_default(), @".z_bgXhTU0{color:red;}");
         insta::assert_snapshot!(output["map"]["sourcesContent"], @"[0]");
         insta::assert_snapshot!(output["cssMap"]["sourcesContent"], @"[0]");
-        insta::assert_snapshot!(records, @r#"{"classes":{"style-1slxe42dbli7u-45":"z-bgXhTU-text-red z-style-bgXhTU-card"},"rules":{"z-bgXhTU-text-red":"color:red;"},"units":[]}"#);
+        insta::assert_snapshot!(records, @r#"{"classes":{"style-1slxe42dbli7u-45":"z_bgXhTU0 z-style-bgXhTU-card"},"rules":{"z_bgXhTU0":"color:red;"},"units":[["\u0001z-bgXhTU-text-red",false,"z_bgXhTU0"]]}"#);
     }
 
     #[test]

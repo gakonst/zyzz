@@ -627,11 +627,11 @@ export const body=style({
 
     expect(consumer.modules['app.ts']!.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-typography-copy-14-fontSize:14px;--z-typography-copy-14-fontWeight:400;--z-typography-copy-14-lineHeight:20px;}
-      .z-Zf5JrJ-body-font-size-0{font-size:var(--z-typography-copy-14-fontSize,14px);}
-      .z-Zf5JrJ-body-font-weight-1{font-weight:var(--z-typography-copy-14-fontWeight,400);}
-      .z-Zf5JrJ-body-line-height-2{line-height:var(--z-typography-copy-14-lineHeight,20px);}
-      .z-Zf5JrJ-text-font-weight-0{font-weight:var(--z-typography-copy-14-fontWeight,400);}
-      .z-Zf5JrJ-text-font-weight-1{&:where([data-strong="true"]){font-weight:550;}}"
+      .z_Zf5JrJ0{font-size:var(--z-typography-copy-14-fontSize,14px);}
+      .z_Zf5JrJ1{font-weight:var(--z-typography-copy-14-fontWeight,400);}
+      .z_Zf5JrJ2{line-height:var(--z-typography-copy-14-lineHeight,20px);}
+      .z_Zf5JrJ3{font-weight:var(--z-typography-copy-14-fontWeight,400);}
+      .z_Zf5JrJ4{&:where([data-strong="true"]){font-weight:550;}}"
     `)
   })
 
@@ -677,7 +677,7 @@ export const body=style({
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z0{--z0:#fff;}
-      .z-text-\\5b var\\28 --z0\\2c \\23 fff\\29 \\5d {color:var(--z0,#fff);}"
+      .z_0{color:var(--z0,#fff);}"
     `)
   })
 
@@ -778,15 +778,15 @@ export const body=style({
     expect(result.css).toMatchInlineSnapshot(`
       ".z0{--z0:light-dark(#fff,#111);--z1:#06c;--z2:8px;}
       .z1{--z3:#06c;}
-      .z-bg-\\5b var\\28 --z0\\2c light-dark\\28 \\23 fff\\2c \\23 111\\29 \\29 \\5d {background-color:var(--z0,light-dark(#fff,#111));}
-      .z-button-text-1{color:var(--z1,#06c);}
-      .z-p-\\5b var\\28 --z2\\2c 8px\\29 \\5d {padding:var(--z2,8px);}
-      .z-independent-text-0{color:var(--z3,#06c);}"
+      .z_0{background-color:var(--z0,light-dark(#fff,#111));}
+      .z_1{color:var(--z1,#06c);}
+      .z_2{padding:var(--z2,8px);}
+      .z_3{color:var(--z3,#06c);}"
     `)
     expect(result.classes).toMatchInlineSnapshot(`
       {
-        "button": "z-bg-[var(--z0,light-dark(#fff,#111))] z-button-text-1 z-p-[var(--z2,8px)]",
-        "independent": "z-independent-text-0",
+        "button": "z_0 z_1 z_2",
+        "independent": "z_3",
       }
     `)
     expect(result.vars).toMatchInlineSnapshot(`
@@ -796,19 +796,19 @@ export const body=style({
       }
     `)
     expect(Css.compile({ styles }).css).toMatchInlineSnapshot(`
-      ".z-bg-\\5b var\\28 --z0\\2c light-dark\\28 \\23 fff\\2c \\23 111\\29 \\29 \\5d {background-color:var(--z0,light-dark(#fff,#111));}
-      .z-button-text-1{color:var(--z1,#06c);}
-      .z-p-\\5b var\\28 --z2\\2c 8px\\29 \\5d {padding:var(--z2,8px);}
-      .z-independent-text-0{color:var(--z3,#06c);}"
+      ".z_0{background-color:var(--z0,light-dark(#fff,#111));}
+      .z_1{color:var(--z1,#06c);}
+      .z_2{padding:var(--z2,8px);}
+      .z_3{color:var(--z3,#06c);}"
     `)
     expect(Css.compile({ styles, vars: { independent, renamed: theme } }).css)
       .toMatchInlineSnapshot(`
         ".z0{--z3:#06c;}
         .z1{--z0:light-dark(#fff,#111);--z1:#06c;--z2:8px;}
-        .z-bg-\\5b var\\28 --z0\\2c light-dark\\28 \\23 fff\\2c \\23 111\\29 \\29 \\5d {background-color:var(--z0,light-dark(#fff,#111));}
-        .z-button-text-1{color:var(--z1,#06c);}
-        .z-p-\\5b var\\28 --z2\\2c 8px\\29 \\5d {padding:var(--z2,8px);}
-        .z-independent-text-0{color:var(--z3,#06c);}"
+        .z_0{background-color:var(--z0,light-dark(#fff,#111));}
+        .z_1{color:var(--z1,#06c);}
+        .z_2{padding:var(--z2,8px);}
+        .z_3{color:var(--z3,#06c);}"
       `)
     expect(Object.isFrozen(theme.tokens.spacing.md)).toMatchInlineSnapshot(
       'true',
@@ -833,7 +833,7 @@ export const body=style({
     expect(Css.compile({ styles, vars: { base: theme } }).css)
       .toMatchInlineSnapshot(`
         ".z0{--z0:#06c;}
-        .z-text-\\5b var\\28 --z0\\2c \\23 06c\\29 \\5d {color:var(--z0,#06c);}"
+        .z_0{color:var(--z0,#06c);}"
       `)
   })
 
@@ -913,7 +913,7 @@ describe('extend', () => {
       .toMatchInlineSnapshot(`
         ".z0{--z0:1lh;}
         .z1{--z0:1lh;}
-        .z-p-\\5b var\\28 --z0\\2c 1lh\\29 \\5d {padding:var(--z0,1lh);}"
+        .z_0{padding:var(--z0,1lh);}"
       `)
     expect(() =>
       Theme.extend(theme, { spacing: { md: undefined } } as never),
@@ -949,8 +949,8 @@ describe('extend', () => {
       ".z0{--z0:#f00;--z1:8px;}
       .z1{--z0:#06c;--z1:8px;}
       .z2{--z0:#f00;--z1:12px;}
-      .z-text-\\5b var\\28 --z0\\2c \\23 06c\\29 \\5d {color:var(--z0,#06c);}
-      .z-p-\\5b var\\28 --z1\\2c 8px\\29 \\5d {padding:var(--z1,8px);}"
+      .z_0{color:var(--z0,#06c);}
+      .z_1{padding:var(--z1,8px);}"
     `)
     expect(
       Css.compile({
@@ -958,9 +958,7 @@ describe('extend', () => {
           button: { color: alternate.tokens.color.blue[500] },
         }),
       }).css,
-    ).toMatchInlineSnapshot(
-      `".z-text-\\5b var\\28 --z0\\2c \\23 f00\\29 \\5d {color:var(--z0,#f00);}"`,
-    )
+    ).toMatchInlineSnapshot(`".z_0{color:var(--z0,#f00);}"`)
     expect(input).toMatchInlineSnapshot(`
       {
         "color": {
@@ -1137,8 +1135,8 @@ describe('queries', () => {
         }).css,
       ).toMatchInlineSnapshot(
         `
-        ".z-font-size-\\5b var\\28 --z0\\2c 1\\2e 5rem\\29 \\5d {font-size:var(--z0,1.5rem);}
-        .z-border-radius-\\5b var\\28 --z1\\2c 1rem\\29 \\5d {border-radius:var(--z1,1rem);}"
+        ".z_0{font-size:var(--z0,1.5rem);}
+        .z_1{border-radius:var(--z1,1rem);}"
       `,
       )
     })
@@ -1175,9 +1173,9 @@ describe('queries', () => {
         .z_scheme-dark{color-scheme:dark;}
         .z_scheme-light{color-scheme:light;}
         .z_scheme-light-dark{color-scheme:light dark;}
-        .z-default-Zf5JrJ-font-family-\\5b var\\28 --z-default-fontFamily-sans\\2c Geist\\2c _20_-apple-system\\2c _20_BlinkMacSystemFont\\2c _20__22_Segoe_20_UI_22_\\2c _20_Roboto\\2c _20__22_Helvetica_20_Neue_22_\\2c _20__22_Noto_20_Sans_22_\\2c _20_Arial\\2c _20_sans-serif\\2c _20__22_Apple_20_Color_20_Emoji_22_\\2c _20__22_Segoe_20_UI_20_Emoji_22_\\2c _20__22_Segoe_20_UI_20_Symbol_22_\\2c _20__22_Noto_20_Color_20_Emoji_22_\\29 \\5d {font-family:var(--z-default-fontFamily-sans,Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");}
-        .z-default-Zf5JrJ-font-size-\\5b var\\28 --z-default-fontSize-base\\2c 1rem\\29 \\5d {font-size:var(--z-default-fontSize-base,1rem);}
-        .z-default-Zf5JrJ-text-\\5b var\\28 --z-default-color-blue-500\\2c light-dark\\28 \\23 99ceff\\2c \\23 0a4380\\29 \\29 \\5d {color:var(--z-default-color-blue-500,light-dark(#99ceff,#0a4380));}"
+        .z_default-Zf5JrJ0{font-family:var(--z-default-fontFamily-sans,Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");}
+        .z_default-Zf5JrJ1{font-size:var(--z-default-fontSize-base,1rem);}
+        .z_default-Zf5JrJ2{color:var(--z-default-color-blue-500,light-dark(#99ceff,#0a4380));}"
       `)
 
       const built = await Esbuild.build({
@@ -1249,8 +1247,8 @@ describe('queries', () => {
       expect(output.css).toMatchInlineSnapshot(`
         ".z0{--z0:1rem;--z1:500;}
         .z1{--z0:1.25rem;--z1:500;}
-        .z-font-size-\\5b var\\28 --z0\\2c 1rem\\29 \\5d {font-size:var(--z0,1rem);}
-        .z-font-weight-\\5b var\\28 --z1\\2c 500\\29 \\5d {font-weight:var(--z1,500);}"
+        .z_0{font-size:var(--z0,1rem);}
+        .z_1{font-weight:var(--z1,500);}"
       `)
       expect(Object.keys(theme.vars)).toMatchInlineSnapshot(`
       [
@@ -1282,7 +1280,7 @@ describe('queries', () => {
 
       expect(consumer.modules['app.ts']!.css).toMatchInlineSnapshot(`
         ".z-theme-theme{--z-fontSize-body:1rem;}
-        .z-Zf5JrJ-font-size-\\5b var\\28 --z-fontSize-body\\2c 1rem\\29 \\5d {font-size:var(--z-fontSize-body,1rem);}"
+        .z_Zf5JrJ0{font-size:var(--z-fontSize-body,1rem);}"
       `)
     })
     test('Chromium applies bundled typography and Geist colors across schemes', async () => {
@@ -1343,10 +1341,10 @@ describe('queries', () => {
 
       expect(output.css).toMatchInlineSnapshot(`
         ".z0{--z0:light-dark(#171717,#ededed);--z1:Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";--z2:1rem;--z3:1rem;}
-        .z-text-\\5b var\\28 --z0\\2c light-dark\\28 \\23 171717\\2c \\23 ededed\\29 \\29 \\5d {color:var(--z0,light-dark(#171717,#ededed));}
-        .z-font-family-\\5b var\\28 --z1\\2c Geist\\2c _20_-apple-system\\2c _20_BlinkMacSystemFont\\2c _20__22_Segoe_20_UI_22_\\2c _20_Roboto\\2c _20__22_Helvetica_20_Neue_22_\\2c _20__22_Noto_20_Sans_22_\\2c _20_Arial\\2c _20_sans-serif\\2c _20__22_Apple_20_Color_20_Emoji_22_\\2c _20__22_Segoe_20_UI_20_Emoji_22_\\2c _20__22_Segoe_20_UI_20_Symbol_22_\\2c _20__22_Noto_20_Color_20_Emoji_22_\\29 \\5d {font-family:var(--z1,Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");}
-        .z-font-size-\\5b var\\28 --z2\\2c 1rem\\29 \\5d {font-size:var(--z2,1rem);}
-        .z-p-\\5b var\\28 --z3\\2c 1rem\\29 \\5d {padding:var(--z3,1rem);}"
+        .z_0{color:var(--z0,light-dark(#171717,#ededed));}
+        .z_1{font-family:var(--z1,Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");}
+        .z_2{font-size:var(--z2,1rem);}
+        .z_3{padding:var(--z3,1rem);}"
       `)
       expect(contextTokens.breakpoint.md).toMatchInlineSnapshot(`"48rem"`)
     })

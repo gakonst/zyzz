@@ -20,6 +20,13 @@ export const units = Symbol('zyzz.css.units')
  */
 export const complete = Symbol('zyzz.css.complete')
 
+/**
+ * Marks an application graph holding every module that may interpolate a style definition into
+ * a selector, whose contracts no consumer reads. Production class lists then omit identity
+ * classes that no selector references.
+ */
+export const references = Symbol('zyzz.css.references')
+
 /** One compilation's unit names. */
 export type Units = {
   /** Names a declaration unit, reusing a visible earlier name for an equal body. */

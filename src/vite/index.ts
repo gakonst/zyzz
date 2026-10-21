@@ -31,6 +31,7 @@ import type {
 } from 'vite'
 import * as Graph from '../compiler/Graph.js'
 import * as Source from '../compiler/Source.js'
+import * as ClassName from '../web/internal/ClassName.js'
 import * as ThemeRules from '../web/internal/Themes.js'
 
 /**
@@ -276,6 +277,8 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
   }
 
   const discoveries = new WeakMap<Environment, Promise<Map<string, string>>>()
+  // Sources compiled in every graph: stylesheet contributions, and in builds, selector
+  // interpolations of style definitions.
   const contributionFiles = new WeakMap<Environment, Set<string>>()
   const assets = new Map<string, string>()
   const catalogs = new Map<string, Catalogs.Catalog>()
@@ -460,7 +463,11 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
 
           sources.set(file, source)
 
-          if (contributes(environment, file, source)) eagerFiles.add(file)
+          if (
+            contributes(environment, file, source) ||
+            (environment.mode === 'build' && interpolates(source))
+          )
+            eagerFiles.add(file)
         }
 
         return sources
@@ -647,6 +654,33 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
     return found
   }
 
+  /**
+   * Whether a source may interpolate a style definition into a selector key. Builds compile
+   * these files in every graph, so each graph sees every selector that names a definition.
+   */
+  function interpolates(source: string) {
+    if (!source.includes('${')) return false
+
+    const { program } = Parser.parseSync('source.tsx', source, {
+      sourceType: 'module',
+    })
+    let found = false
+
+    Walker.walk(program, {
+      enter(node) {
+        if (
+          node.type === 'Property' &&
+          node.computed &&
+          node.key.type === 'TemplateLiteral' &&
+          node.key.expressions.length
+        )
+          found = true
+      },
+    })
+
+    return found
+  }
+
   async function updateDiscovery(
     environment: Environment,
     file: string,
@@ -724,7 +758,10 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
 
       sources.set(file, source)
 
-      if (contributes(environment, file, source))
+      if (
+        contributes(environment, file, source) ||
+        (environment.mode === 'build' && interpolates(source))
+      )
         contributionFiles.get(environment)?.add(file)
       else contributionFiles.get(environment)?.delete(file)
     }
@@ -1344,6 +1381,8 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       )
 
     const input: Graph.compile.Options = {
+      // Builds add every selector-interpolating source to each graph during discovery.
+      [ClassName.references]: entry.environment.mode === 'build',
       [Results.lean]: true,
       [ThemeRules.shared]: native ? undefined : 'all',
       compiler: options.compiler,

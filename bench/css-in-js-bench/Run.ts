@@ -6,6 +6,7 @@
 import * as ChildProcess from 'node:child_process'
 import * as Fs from 'node:fs'
 import * as Path from 'node:path'
+import * as Url from 'node:url'
 
 const commit =
   process.env.CSS_BENCH_COMMIT ?? 'bcaa3d316b1b6f897eed19da8545a9291197a66a'
@@ -15,7 +16,7 @@ const lanes = (
 const measures = process.env.CSS_BENCH_MEASURES ?? 'microbench,payload'
 const repository = 'https://github.com/jantimon/css-in-js-bench.git'
 
-const here = Path.dirname(new URL(import.meta.url).pathname)
+const here = Path.dirname(Url.fileURLToPath(import.meta.url))
 const root = Path.resolve(here, '../..')
 const directory = Path.join(root, 'bench/results/css-in-js-bench')
 
@@ -57,7 +58,12 @@ if (process.env.CSS_BENCH_VERIFY) {
   run('node', ['verify.local.ts'])
 }
 
+// The suite commits historical results, so only measures this run requested are read.
+const requested = new Set(measures.split(','))
+
 const read = (name: string): Record<string, unknown> | undefined => {
+  if (!requested.has(name)) return undefined
+
   const file = Path.join(directory, 'result', `measurement-${name}.json`)
   return Fs.existsSync(file)
     ? JSON.parse(Fs.readFileSync(file, 'utf8'))

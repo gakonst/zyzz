@@ -198,8 +198,8 @@ describe('keyframes API page', () => {
       `"@keyframes z-k-enter{from{opacity:0;}to{opacity:1;}}"`,
     )
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-3PBZzK-animation-name-z-k-enter{animation-name:z-k-enter;}
-      .z-3PBZzK-animation-duration-200ms{animation-duration:200ms;}"
+      ".z_3PBZzK0{animation-name:z-k-enter;}
+      .z_3PBZzK1{animation-duration:200ms;}"
     `)
   })
 
@@ -398,15 +398,15 @@ describe('customMedia API page', () => {
       `"@custom-media --z-custommedia-compact (width < 40rem);"`,
     )
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-oRwC0_-styles-sidebar-display-0{display:block;}
-      @media (--z-custommedia-compact){.z-oRwC0_-styles-sidebar-display-1{display:none;}}"
+      ".z_oRwC0_0{display:block;}
+      @media (--z-custommedia-compact){.z_oRwC0_1{display:none;}}"
     `)
     expect(compile(combined!).shared).toMatchInlineSnapshot(
       `"@custom-media --z-custommedia-wideHover (width >= 64rem) and (hover: hover);"`,
     )
     expect(compile(nested!).css).toMatchInlineSnapshot(`
-      ".z-3oDDjY-link-text-0{color:blue;}
-      @media (--z-custommedia-print){.z-3oDDjY-link-text-decoration-1{&:hover{text-decoration:none;}}}"
+      ".z_3oDDjY0{color:blue;}
+      @media (--z-custommedia-print){.z_3oDDjY1{&:hover{text-decoration:none;}}}"
     `)
   })
 
@@ -580,7 +580,7 @@ describe('colorProfile API page', () => {
       }
     `)
     expect(output.modules[overview!.name!]?.css).toMatchInlineSnapshot(
-      `".z-gW2-fM-text-\\5b color\\28 --z-colorprofile-swop_20_0_20_0\\2e 5_20_1_20_0\\29 \\5d {color:color(--z-colorprofile-swop 0 0.5 1 0);}"`,
+      `".z_gW2-fM0{color:color(--z-colorprofile-swop 0 0.5 1 0);}"`,
     )
   })
 
@@ -656,10 +656,10 @@ describe('Css API page', () => {
       .toMatchInlineSnapshot(`
         {
           "classes": {
-            "card": "z-text-black z-p-1rem",
+            "card": "z_0 z_1",
           },
-          "css": ".z-text-black{color:black;}
-        .z-p-1rem{padding:1rem;}",
+          "css": ".z_0{color:black;}
+        .z_1{padding:1rem;}",
           "vars": {},
         }
       `)
@@ -667,9 +667,9 @@ describe('Css API page', () => {
       .toMatchInlineSnapshot(`
         {
           "classes": {
-            "card": "z-card",
+            "card": "z_0",
           },
-          "css": ".z-card{color:black;padding:1rem;}",
+          "css": ".z_0{color:black;padding:1rem;}",
           "vars": {},
         }
       `)
@@ -677,12 +677,12 @@ describe('Css API page', () => {
       .toMatchInlineSnapshot(`
         {
           "classes": {
-            "card": "z-card z-card__1",
-            "title": "z-card z-title",
+            "card": "z_0 z_1",
+            "title": "z_0 z_2",
           },
-          "css": ".z-card{padding:1rem;}
-        .z-card__1{color:black;}
-        .z-title{font-size:2rem;}",
+          "css": ".z_0{padding:1rem;}
+        .z_1{color:black;}
+        .z_2{font-size:2rem;}",
           "vars": {},
         }
       `)
@@ -698,9 +698,9 @@ describe('Css API page', () => {
     expect((await run('scope', scope!.source)).output).toMatchInlineSnapshot(`
       {
         "classes": {
-          "card": "z-card-p-1rem",
+          "card": "z_card-0",
         },
-        "css": ".z-card-p-1rem{padding:1rem;}",
+        "css": ".z_card-0{padding:1rem;}",
         "vars": {},
       }
     `)
@@ -716,12 +716,12 @@ describe('Css API page', () => {
       .toMatchInlineSnapshot(`
         {
           "classes": {
-            "card": "z-p-1rem",
+            "card": "z_0",
           },
           "contributionCss": "@layer reset,base;",
           "css": "@layer reset,base;
-        .z-p-1rem{padding:1rem;}",
-          "scopedCss": ".z-p-1rem{padding:1rem;}",
+        .z_0{padding:1rem;}",
+          "scopedCss": ".z_0{padding:1rem;}",
           "vars": {},
         }
       `)
@@ -733,10 +733,10 @@ describe('Css API page', () => {
     expect((await run('vars', vars!.source)).output).toMatchInlineSnapshot(`
       {
         "classes": {
-          "card": "z-text-[var(--z0,#171717)]",
+          "card": "z_0",
         },
         "css": ".z0{--z0:#171717;}
-      .z-text-\\5b var\\28 --z0\\2c \\23 171717\\29 \\5d {color:var(--z0,#171717);}",
+      .z_0{color:var(--z0,#171717);}",
         "vars": {
           "base": "z0",
         },
@@ -800,7 +800,7 @@ describe('At-Rule Contract page', () => {
       @media print{nav{display:none;}}"
     `)
     expect(output.css).toMatchInlineSnapshot(
-      `"@media print{.z-acI-je-card-box-shadow-0{box-shadow:none;}}"`,
+      `"@media print{.z_acI-je0{box-shadow:none;}}"`,
     )
   })
 
@@ -808,9 +808,9 @@ describe('At-Rule Contract page', () => {
     const [card] = await examples('at-rules', 'Grouping Keys')
 
     expect(compile(card!).css).toMatchInlineSnapshot(`
-      ".z-3oDDjY-card-text-0{@scope (&) to (.boundary){& h2{color:red;}}}
-      .z-3oDDjY-card-box-shadow-1{@container scroll-state(stuck: top){box-shadow:0 2px 8px #0002;}}
-      .z-3oDDjY-card-opacity-2{@starting-style{opacity:0;}}"
+      ".z_3oDDjY0{@scope (&) to (.boundary){& h2{color:red;}}}
+      .z_3oDDjY1{@container scroll-state(stuck: top){box-shadow:0 2px 8px #0002;}}
+      .z_3oDDjY2{@starting-style{opacity:0;}}"
     `)
   })
 

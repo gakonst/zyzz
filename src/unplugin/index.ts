@@ -289,6 +289,8 @@ const portable = createUnplugin<Options | undefined, false>(
           // Only the combined stylesheet is emitted, so generated theme rules are shared once.
           const result = compiler.compile({
             [ClassName.complete]: true,
+            // Only this application's sources reference its definitions.
+            [ClassName.references]: true,
             [ThemeRules.shared]: 'all',
             compiler: options.compiler,
             reset: options.reset ? Reset.read() : undefined,

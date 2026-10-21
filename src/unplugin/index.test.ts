@@ -466,7 +466,7 @@ describe('zyzz', () => {
             --z-acme-color-ink: #123456;
           }
 
-          .z-acme-YiE3S9-p-\\[var\\(--z-acme-spacing-16\\,16px\\)\\] {
+          .z_acme-YiE3S90 {
             padding: var(--z-acme-spacing-16, 16px);
           }
 

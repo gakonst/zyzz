@@ -41,18 +41,21 @@ export const dynamic=style((values:{padding:'7px'})=>({padding:\`\${values.paddi
       expect(
         result.modules['app.ts']!.css.split('\n')
           .filter(
-            (line) => line.startsWith('.z-') && !line.startsWith('.z-theme-'),
+            (line) =>
+              /^\.z[-_]/.test(line) &&
+              !line.startsWith('.z-theme-') &&
+              !line.startsWith('.z_scheme-'),
           )
           .join('\n'),
       ).toMatchInlineSnapshot(`
-        ".z-Zf5JrJ-card-text-0{color:var(--z-color-red,blue);}
-        .z-Zf5JrJ-card-p-1{padding:var(--z-spacing-md,8px);padding:7px;}
-        .z-Zf5JrJ-card-display-2{display:flex;}
-        .z-Zf5JrJ-card-w-3{width:calc(100% - 2rem);}
-        .z-Zf5JrJ-card-text-4{&:hover{color:#123456;}}
-        .z-Zf5JrJ-button-p-0{padding:var(--z-spacing-md,8px);}
-        .z-Zf5JrJ-button-text-1{&:where([data-tone="brand"]){color:red!important;}}
-        .z-Zf5JrJ-dynamic-p-0{padding:var(--z-Zf5JrJ-dynamic-padding);}"
+        ".z_Zf5JrJ0{color:var(--z-color-red,blue);}
+        .z_Zf5JrJ1{padding:var(--z-spacing-md,8px);padding:7px;}
+        .z_Zf5JrJ2{display:flex;}
+        .z_Zf5JrJ3{width:calc(100% - 2rem);}
+        .z_Zf5JrJ4{&:hover{color:#123456;}}
+        .z_Zf5JrJ5{padding:var(--z-spacing-md,8px);}
+        .z_Zf5JrJ6{&:where([data-tone="brand"]){color:red!important;}}
+        .z_Zf5JrJ7{padding:var(--z-Zf5JrJ-dynamic-padding);}"
       `)
       expect(
         [
@@ -131,9 +134,9 @@ export const third=configured.style({width:'calc(1px /* ] */ + 2px) !custom'});`
       },
     })
     expect(result.modules['app.ts']!.css).toMatchInlineSnapshot(`
-      ".z-Zf5JrJ-first-text-0{color:red;}
-      .z-Zf5JrJ-second-text-0{color:blue;}
-      .z-Zf5JrJ-w-\\5b calc\\28 1px_20_\\2f \\2a _20_\\5d _20_\\2a \\2f _20_\\2b _20_2px\\29 \\5d {width:calc(1px /* ] */ + 2px);}"
+      ".z_Zf5JrJ0{color:red;}
+      .z_Zf5JrJ1{color:blue;}
+      .z_Zf5JrJ2{width:calc(1px /* ] */ + 2px);}"
     `)
     expect(() =>
       Graph.compile({
@@ -153,10 +156,10 @@ export const third=configured.style({width:'calc(1px /* ] */ + 2px) !custom'});`
       },
     })
     expect(result.modules['app.ts']!.css).toMatchInlineSnapshot(`
-      ".z-Zf5JrJ-opacity-\\5b 0\\2e 5\\5d {opacity:0.5;}
-      .z-Zf5JrJ-content-\\5b _22_\\5b label\\5d _22_\\5d {content:"[label]";}
-      .z-Zf5JrJ-grid-template-columns-\\5b \\5b start\\5d _20_1fr_20_\\5b end\\5d \\5d {grid-template-columns:[start] 1fr [end];}
-      .z-Zf5JrJ-w-\\5b 7px\\21 important\\5d {width:7px!important;}"
+      ".z_Zf5JrJ0{opacity:0.5;}
+      .z_Zf5JrJ1{content:"[label]";}
+      .z_Zf5JrJ2{grid-template-columns:[start] 1fr [end];}
+      .z_Zf5JrJ3{width:7px!important;}"
     `)
   })
 
@@ -198,8 +201,8 @@ export const third=configured.style({width:'calc(1px /* ] */ + 2px) !custom'});`
       },
     })
     expect(result.modules['app.ts']!.css).toMatchInlineSnapshot(`
-      ".z-Zf5JrJ-content-\\5b _22_\\21 custom_22_\\5d {content:"!custom";}
-      .z-Zf5JrJ-w-\\5b 7px\\21 important\\5d {width:7px!important;}"
+      ".z_Zf5JrJ0{content:"!custom";}
+      .z_Zf5JrJ1{width:7px!important;}"
     `)
   })
 
@@ -220,9 +223,9 @@ export const third=configured.style({width:'calc(1px /* ] */ + 2px) !custom'});`
       ),
     ).toMatchInlineSnapshot(`
       [
-        ".z-Zf5JrJ-text-\\5b red\\3b color\\3a blue\\5d {color:red;color:blue;}",
-        ".z-Zf5JrJ-text-\\5b red\\3b color\\3a blue\\5d {color:red;color:blue;}",
-        ".z-Zf5JrJ-text-\\5b red\\3b color\\3a blue\\5d {color:red;color:blue;}",
+        ".z_Zf5JrJ0{color:red;color:blue;}",
+        ".z_Zf5JrJ0{color:red;color:blue;}",
+        ".z_Zf5JrJ0{color:red;color:blue;}",
       ]
     `)
     const { style } = PublicConfig.create({
@@ -835,8 +838,8 @@ pane()
     expect(output.css).toMatchInlineSnapshot(`
       ".z0{--z0:#06c;--z1:8px;}
       .z1{--z0:light-dark(#175,#afa);--z1:12px;}
-      .z-text-\\5b var\\28 --z0\\2c \\23 06c\\29 \\5d {color:var(--z0,#06c);}
-      .z-p-\\5b var\\28 --z1\\2c 8px\\29 \\5d {padding:var(--z1,8px);}"
+      .z_0{color:var(--z0,#06c);}
+      .z_1{padding:var(--z1,8px);}"
     `)
     expect(Object.isFrozen(zyzz.themes)).toMatchInlineSnapshot(`true`)
     expect(zyzz.themes.base === base).toMatchInlineSnapshot(`false`)
@@ -848,9 +851,7 @@ pane()
         }),
         vars: { original: base },
       }).css,
-    ).toMatchInlineSnapshot(
-      `".z-text-\\5b var\\28 --z0\\2c \\23 06c\\29 \\5d {color:var(--z0,#06c);}"`,
-    )
+    ).toMatchInlineSnapshot(`".z_0{color:var(--z0,#06c);}"`)
 
     const other = Config.create({ theme: base })
 
@@ -861,9 +862,7 @@ pane()
         }),
         vars: zyzz.themes,
       }).css,
-    ).toMatchInlineSnapshot(
-      `".z-text-\\5b var\\28 --z0\\2c \\23 06c\\29 \\5d {color:var(--z0,#06c);}"`,
-    )
+    ).toMatchInlineSnapshot(`".z_0{color:var(--z0,#06c);}"`)
   })
 
   test('normalized themes inherit and select schemes in Chromium', async () => {
@@ -948,7 +947,7 @@ pane()
       }).css,
     ).toMatchInlineSnapshot(`
       ".z0{--z0:12px;}
-      .z-p-\\5b var\\28 --z0\\2c 12px\\29 \\5d {padding:var(--z0,12px);}"
+      .z_0{padding:var(--z0,12px);}"
     `)
 
     const inline = Config.create({ theme: { spacing: { md: '1rem' } } })
@@ -959,9 +958,7 @@ pane()
           card: { padding: inline.theme.tokens.spacing.md },
         }),
       }).css,
-    ).toMatchInlineSnapshot(
-      `".z-p-\\5b var\\28 --z0\\2c 1rem\\29 \\5d {padding:var(--z0,1rem);}"`,
-    )
+    ).toMatchInlineSnapshot(`".z_0{padding:var(--z0,1rem);}"`)
     expect(() =>
       zyzz.style({ padding: 'md' }),
     ).toThrowErrorMatchingInlineSnapshot(
@@ -1065,7 +1062,7 @@ describe('defineConfig', () => {
         .z_scheme-dark{color-scheme:dark;}
         .z_scheme-light{color-scheme:light;}
         .z_scheme-light-dark{color-scheme:light dark;}
-        .z-Zf5JrJ-text-\\5b var\\28 --z-color-brand\\2c \\23 123456\\29 \\5d {color:var(--z-color-brand,#123456);}"
+        .z_Zf5JrJ0{color:var(--z-color-brand,#123456);}"
       `)
     },
   )
@@ -1120,7 +1117,7 @@ describe('defineConfig', () => {
 
     expect(numeric.modules['app.ts']!.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-fontWeight-medium:500;}
-      .z-Zf5JrJ-font-weight-\\5b var\\28 --z-fontWeight-medium\\2c 500\\29 \\5d {font-weight:var(--z-fontWeight-medium,500);}"
+      .z_Zf5JrJ0{font-weight:var(--z-fontWeight-medium,500);}"
     `)
     expect(() =>
       compile(`{vars:{fontWeight:{medium:500}}}`, '600'),

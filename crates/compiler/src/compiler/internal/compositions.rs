@@ -244,10 +244,12 @@ impl<'a> Visit<'a> for Walker<'_, 'a> {
                     };
                     let application = Application {
                         callee_end: node.callee.span().end,
+                        class_override: None,
                         class_read: None,
                         end: node.span.end,
                         initialized: true,
                         name: Arc::clone(&name),
+                        spread: None,
                         start: node.span.start,
                         terminal: false,
                     };

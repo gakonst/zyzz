@@ -106,8 +106,8 @@ describe('create', () => {
       'App.tsx': `import { style } from 'zyzz'; export const box = style({ paddingTop: '7px', paddingLeft: '13px' }); export default function App() { return <div {...box()}>修正 ✓</div> }`,
     })
     expect(fixed.css).toMatchInlineSnapshot(`
-      ".z-l0kPgl-box-pt-0{padding-top:7px;}
-      .z-l0kPgl-box-pl-1{padding-left:13px;}"
+      ".z_l0kPgl0{padding-top:7px;}
+      .z_l0kPgl1{padding-left:13px;}"
     `)
     expect(fixed.files['App.tsx']?.includes('修正 ✓')).toMatchInlineSnapshot(
       'true',
@@ -152,7 +152,7 @@ export const popup = style(Select.Popup, {
       'Popup.tsx': source.replace('botom', 'bottom'),
     })
     expect(fixed.css).toMatchInlineSnapshot(
-      `".z-NIbkau-popup-text-0{&[data-side="bottom"]{color:red;}}"`,
+      `".z_NIbkau0{&[data-side="bottom"]{color:red;}}"`,
     )
   })
 })

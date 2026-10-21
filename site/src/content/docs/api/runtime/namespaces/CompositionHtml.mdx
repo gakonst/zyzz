@@ -13,7 +13,7 @@ const card = CompositionHtml.bind(Props.create({ className: 'z-card' }))
 
 const compose = CompositionHtml.create({
   className: 'z-card-composed',
-  inputs: [{ className: 'z-card', owners: [] }],
+  inputs: [{ className: 'z-card' }],
 })
 
 // { class: 'z-card-composed', style: 'padding:1rem' }
@@ -90,7 +90,7 @@ The precompiled class lists and argument metadata of [`Composition.create`](/doc
 // One argument whose generated class the composition replaces
 CompositionHtml.create({
   className: 'z-card-composed',
-  inputs: [{ className: 'z-card', owners: [] }],
+  inputs: [{ className: 'z-card' }],
 })
 ```
 

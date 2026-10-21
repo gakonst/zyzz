@@ -385,6 +385,8 @@ namespace styles {
 </Tab>
 </Tabs>
 
+When a call is spread alone onto an element, a field that fills one unconditional declaration is written to that property inline, such as `style="width:40%"`, so the element skips variable substitution during style recalculation. A field typed `string` can hold a CSS-wide keyword, so it keeps its variable, as every other call does.
+
 A changing value has a narrower tool in most cases:
 
 - **Fixed choices**, such as size or tone: [Variants](/docs/guides/variants).

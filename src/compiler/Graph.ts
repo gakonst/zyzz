@@ -53,6 +53,7 @@ function encode(options: compile.Options) {
     lean: options[Results.lean],
     modules: options.modules,
     native: options.native && Results.native(options.native),
+    references: options[ClassName.references],
     reset: options.reset,
     shared: options[ThemeRules.shared],
   }
@@ -74,6 +75,8 @@ export declare namespace compile {
     readonly [Stylesheets.entry]?: string | undefined
     /** Lets modules reuse shared rule names from unrelated modules of this one graph. */
     readonly [ClassName.complete]?: boolean | undefined
+    /** Holds every module whose selectors may interpolate a style definition. */
+    readonly [ClassName.references]?: boolean | undefined
     /** Leaves out per-module records and publishes only configuration catalogs as contracts. */
     readonly [Results.lean]?: boolean | undefined
     /** Rewrite authoring calls. False emits CSS for unchanged source. */

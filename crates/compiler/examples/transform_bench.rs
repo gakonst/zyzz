@@ -86,6 +86,7 @@ fn options(input: &Input) -> transform::Options<'_, '_> {
         module_id: &input.module_id,
         owners: None,
         placeholder: None,
+        referenced: None,
         schemes: None,
         shared: None,
         source: &input.source,

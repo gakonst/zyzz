@@ -742,12 +742,12 @@ describe('bindings', () => {
       )
       expect(module.exports.apply(false)).toMatchInlineSnapshot(`
         {
-          "className": "z-apply-inner-0-bCW_kc-b-p-0",
+          "className": "z_bCW_kc2",
         }
       `)
       expect(module.exports.apply(true)).toMatchInlineSnapshot(`
         {
-          "className": "z-apply-inner-0-bCW_kc-b-p-0 z-bCW_kc-a-text-0",
+          "className": "z_bCW_kc2 z_bCW_kc0",
         }
       `)
     })

@@ -91,14 +91,14 @@ describe('CSS Output examples', () => {
 
     expect(rules(card.css)).toMatchInlineSnapshot(`
       [
-        ".z-X8T0-w-styles-card{color:red;padding:8px}",
-        ".z-X8T0-w-styles-label{color:red}",
+        ".z_X8T0-w0{color:red;padding:8px}",
+        ".z_X8T0-w1{color:red}",
       ]
     `)
     expect(documented('grouped.css')).toMatchInlineSnapshot(`
       [
-        ".z-X8T0-w-styles-card{color:red;padding:8px}",
-        ".z-X8T0-w-styles-label{color:red}",
+        ".z_X8T0-w0{color:red;padding:8px}",
+        ".z_X8T0-w1{color:red}",
       ]
     `)
     expect(

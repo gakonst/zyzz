@@ -89,14 +89,14 @@ describe('compile', () => {
         }),
       ).toMatchInlineSnapshot(`
         [
-          ".z-zKSbOi-shell-display-0 { display: block; }",
+          ".z_zKSbOi0 { display: block; }",
         ]
       `)
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-zKSbOi-shell-display-0{display:block;}
-        @media (max-width: 1023px){.z-zKSbOi-shell-display-1{&[data-mobile-menu]{display:grid;}}}
-        @media (max-width: 1023px){.z-zKSbOi-shell-min-height-2{&[data-mobile-menu]{& main{min-height:100px;}}}}
-        @media (max-width: 1023px){@supports (display: grid){.z-zKSbOi-shell-border-top-3{&[data-mobile-menu]{border-top:2px solid red;}}}}"
+        ".z_zKSbOi0{display:block;}
+        @media (max-width: 1023px){.z_zKSbOi1{&[data-mobile-menu]{display:grid;}}}
+        @media (max-width: 1023px){.z_zKSbOi2{&[data-mobile-menu]{& main{min-height:100px;}}}}
+        @media (max-width: 1023px){@supports (display: grid){.z_zKSbOi3{&[data-mobile-menu]{border-top:2px solid red;}}}}"
       `)
       await page.setViewportSize({ width: 390, height: 900 })
       expect(
@@ -130,10 +130,10 @@ describe('compile', () => {
     })
 
     expect(Css.compile({ styles }).css).toMatchInlineSnapshot(`
-      ".z-text--webkit-font-smoothing-0{-webkit-font-smoothing:antialiased;}
-      .z-text--moz-osx-font-smoothing-1{-moz-osx-font-smoothing:grayscale;}
-      .z--webkit-animation-delay-\\5b 0s\\2c _20_250ms\\5d {-webkit-animation-delay:0s, 250ms;}
-      .z-row-rule-color-\\5b repeat\\28 2\\2c _20_red\\2c _20_blue\\29 \\5d {row-rule-color:repeat(2, red, blue);}"
+      ".z_0{-webkit-font-smoothing:antialiased;}
+      .z_1{-moz-osx-font-smoothing:grayscale;}
+      .z_2{-webkit-animation-delay:0s, 250ms;}
+      .z_3{row-rule-color:repeat(2, red, blue);}"
     `)
   })
 
@@ -307,17 +307,17 @@ describe('compile', () => {
 
     expect(output.classes).toMatchInlineSnapshot(`
       {
-        "a": "z-a z-a__1",
-        "b": "z-a z-b",
-        "c": "z-a z-a__1",
-        "d": "z-a z-d",
+        "a": "z_0 z_1",
+        "b": "z_0 z_2",
+        "c": "z_0 z_1",
+        "d": "z_0 z_3",
       }
     `)
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-a{padding:1px;}
-      .z-a__1{display:block;display:grid;}
-      .z-b{display:grid;display:block;}
-      .z-d{display:block;display:grid!important;}"
+      ".z_0{padding:1px;}
+      .z_1{display:block;display:grid;}
+      .z_2{display:grid;display:block;}
+      .z_3{display:block;display:grid!important;}"
     `)
   })
 
@@ -341,15 +341,15 @@ describe('compile', () => {
     })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-a-scroll-snap-align-0{scroll-snap-align:start end;}
-      .z-a-scroll-snap-stop-1{scroll-snap-stop:normal;}
-      .z-a-scroll-snap-type-2{scroll-snap-type:x proximity;}
-      .z-b-scroll-snap-align-0{scroll-snap-align:center;scroll-snap-align:none start!important;}
-      .z-b-scroll-snap-stop-1{scroll-snap-stop:always;}
-      .z-b-scroll-snap-type-2{scroll-snap-type:both mandatory;}
-      .z-c-scroll-snap-align-0{scroll-snap-align:start end;}
-      .z-c-scroll-snap-stop-1{scroll-snap-stop:normal;}
-      .z-c-scroll-snap-type-2{scroll-snap-type:x proximity;}"
+      ".z_0{scroll-snap-align:start end;}
+      .z_1{scroll-snap-stop:normal;}
+      .z_2{scroll-snap-type:x proximity;}
+      .z_3{scroll-snap-align:center;scroll-snap-align:none start!important;}
+      .z_4{scroll-snap-stop:always;}
+      .z_5{scroll-snap-type:both mandatory;}
+      .z_6{scroll-snap-align:start end;}
+      .z_7{scroll-snap-stop:normal;}
+      .z_8{scroll-snap-type:x proximity;}"
     `)
   })
 
@@ -373,15 +373,15 @@ describe('compile', () => {
     })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-a-scroll-margin-0{scroll-margin:4px;}
-      .z-a-scroll-padding-1{scroll-padding:8px;}
-      .z-a-overscroll-behavior-2{overscroll-behavior:contain;}
-      .z-b-scroll-margin-inline-start-0{scroll-margin-inline-start:-2px;}
-      .z-b-scroll-padding-block-start-1{scroll-padding-block-start:20px;}
-      .z-b-overscroll-behavior-x-2{overscroll-behavior-x:none;}
-      .z-c-scroll-margin-0{scroll-margin:4px;}
-      .z-c-scroll-padding-1{scroll-padding:8px;}
-      .z-c-overscroll-behavior-2{overscroll-behavior:contain;}"
+      ".z_0{scroll-margin:4px;}
+      .z_1{scroll-padding:8px;}
+      .z_2{overscroll-behavior:contain;}
+      .z_3{scroll-margin-inline-start:-2px;}
+      .z_4{scroll-padding-block-start:20px;}
+      .z_5{overscroll-behavior-x:none;}
+      .z_6{scroll-margin:4px;}
+      .z_7{scroll-padding:8px;}
+      .z_8{overscroll-behavior:contain;}"
     `)
   })
 
@@ -600,18 +600,18 @@ describe('compile', () => {
     })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-a-border-color-0{border-color:#000;}
-      .z-a-border-radius-1{border-radius:4px;}
-      .z-a-border-style-2{border-style:solid;}
-      .z-a-border-width-3{border-width:2px;}
-      .z-b-border-inline-start-color-0{border-inline-start-color:#fff;}
-      .z-b-border-start-start-radius-1{border-start-start-radius:8px;}
-      .z-b-border-inline-start-style-2{border-inline-start-style:dashed;}
-      .z-b-border-inline-start-width-3{border-inline-start-width:6px;}
-      .z-c-border-color-0{border-color:#000;}
-      .z-c-border-radius-1{border-radius:4px;}
-      .z-c-border-style-2{border-style:solid;}
-      .z-c-border-width-3{border-width:2px;}"
+      ".z_0{border-color:#000;}
+      .z_1{border-radius:4px;}
+      .z_2{border-style:solid;}
+      .z_3{border-width:2px;}
+      .z_4{border-inline-start-color:#fff;}
+      .z_5{border-start-start-radius:8px;}
+      .z_6{border-inline-start-style:dashed;}
+      .z_7{border-inline-start-width:6px;}
+      .z_8{border-color:#000;}
+      .z_9{border-radius:4px;}
+      .z_a{border-style:solid;}
+      .z_b{border-width:2px;}"
     `)
 
     const browser = await chromium.launch()
@@ -657,9 +657,9 @@ describe('compile', () => {
     })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-a-overflow-0{overflow:hidden;}
-      .z-b-overflow-x-0{overflow-x:scroll;}
-      .z-c-overflow-0{overflow:hidden;}"
+      ".z_0{overflow:hidden;}
+      .z_1{overflow-x:scroll;}
+      .z_2{overflow:hidden;}"
     `)
 
     const browser = await chromium.launch()
@@ -695,18 +695,18 @@ describe('compile', () => {
 
     expect(output.classes).toMatchInlineSnapshot(`
       {
-        "a": "z-a-text-0 z-a-p-1",
-        "b": "z-a-text-0 z-a-p-1",
-        "c": "z-c-text-0 z-c-p-1",
-        "d": "z-d-text-0",
+        "a": "z_0 z_1",
+        "b": "z_0 z_1",
+        "c": "z_2 z_3",
+        "d": "z_4",
       }
     `)
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-a-text-0{color:red;}
-      .z-a-p-1{padding:8px;}
-      .z-c-text-0{color:blue;}
-      .z-c-p-1{padding:2px;}
-      .z-d-text-0{color:red;}"
+      ".z_0{color:red;}
+      .z_1{padding:8px;}
+      .z_2{color:blue;}
+      .z_3{padding:2px;}
+      .z_4{color:red;}"
     `)
 
     const browser = await chromium.launch()
@@ -775,9 +775,9 @@ describe('compile', () => {
 
     expect(output.classes).toMatchInlineSnapshot(`
       {
-        "a": "z-a-border-color-0",
-        "b": "z-b-border-0",
-        "c": "z-c-border-color-0",
+        "a": "z_0",
+        "b": "z_1",
+        "c": "z_2",
       }
     `)
 
@@ -879,36 +879,36 @@ describe('compile', () => {
   test('logical boxes compile the complete scalar property vocabulary', () => {
     expect(Css.compile({ styles: Style.define(Logical.styles) }).css)
       .toMatchInlineSnapshot(`
-        ".z-dimensions-block-size-0{block-size:40px;}
-        .z-dimensions-inline-size-1{inline-size:80px;}
-        .z-dimensions-max-block-size-2{max-block-size:100px;}
-        .z-dimensions-max-inline-size-3{max-inline-size:120px;}
-        .z-dimensions-min-block-size-4{min-block-size:10px;}
-        .z-dimensions-min-inline-size-5{min-inline-size:20px;}
-        .z-position-relative{position:relative;}
-        .z-offsets-inset-1{inset:1px;}
-        .z-offsets-inset-block-2{inset-block:2px;}
-        .z-offsets-inset-block-start-3{inset-block-start:-3px;}
-        .z-offsets-inset-block-end-4{inset-block-end:4px;}
-        .z-offsets-inset-inline-5{inset-inline:5px;}
-        .z-offsets-inset-inline-start-6{inset-inline-start:-6px;}
-        .z-offsets-inset-inline-end-7{inset-inline-end:7px;}
-        .z-offsets-top-8{top:8px;}
-        .z-offsets-right-9{right:9px;}
-        .z-offsets-bottom-10{bottom:10px;}
-        .z-offsets-left-11{left:11px;}
-        .z-spacing-margin-block-0{margin-block:-2px;}
-        .z-spacing-margin-block-start-1{margin-block-start:3px;}
-        .z-spacing-margin-block-end-2{margin-block-end:4px;}
-        .z-spacing-margin-inline-3{margin-inline:5px;}
-        .z-spacing-margin-inline-start-4{margin-inline-start:6px;}
-        .z-spacing-margin-inline-end-5{margin-inline-end:7px;}
-        .z-spacing-padding-block-6{padding-block:8px;}
-        .z-spacing-padding-block-start-7{padding-block-start:9px;}
-        .z-spacing-padding-block-end-8{padding-block-end:10px;}
-        .z-spacing-padding-inline-9{padding-inline:11px;}
-        .z-spacing-padding-inline-start-10{padding-inline-start:12px;}
-        .z-spacing-padding-inline-end-11{padding-inline-end:13px;}"
+        ".z_0{block-size:40px;}
+        .z_1{inline-size:80px;}
+        .z_2{max-block-size:100px;}
+        .z_3{max-inline-size:120px;}
+        .z_4{min-block-size:10px;}
+        .z_5{min-inline-size:20px;}
+        .z_6{position:relative;}
+        .z_7{inset:1px;}
+        .z_8{inset-block:2px;}
+        .z_9{inset-block-start:-3px;}
+        .z_a{inset-block-end:4px;}
+        .z_b{inset-inline:5px;}
+        .z_c{inset-inline-start:-6px;}
+        .z_d{inset-inline-end:7px;}
+        .z_e{top:8px;}
+        .z_f{right:9px;}
+        .z_g{bottom:10px;}
+        .z_h{left:11px;}
+        .z_i{margin-block:-2px;}
+        .z_j{margin-block-start:3px;}
+        .z_k{margin-block-end:4px;}
+        .z_l{margin-inline:5px;}
+        .z_m{margin-inline-start:6px;}
+        .z_n{margin-inline-end:7px;}
+        .z_o{padding-block:8px;}
+        .z_p{padding-block-start:9px;}
+        .z_q{padding-block-end:10px;}
+        .z_r{padding-inline:11px;}
+        .z_s{padding-inline-start:12px;}
+        .z_t{padding-inline-end:13px;}"
       `)
   })
 
@@ -938,24 +938,24 @@ describe('compile', () => {
     const output = Css.compile({ styles })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-a-w-0{width:80px;}
-      .z-a-min-width-1{min-width:20px;}
-      .z-a-max-width-2{max-width:100px;}
-      .z-a-top-3{top:4px;}
-      .z-a-ml-4{margin-left:6px;}
-      .z-a-pl-5{padding-left:8px;}
-      .z-b-inline-size-0{inline-size:40px;}
-      .z-b-min-inline-size-1{min-inline-size:30px;}
-      .z-b-max-inline-size-2{max-inline-size:60px;}
-      .z-b-inset-block-start-3{inset-block-start:12px;}
-      .z-b-margin-inline-start-4{margin-inline-start:14px;}
-      .z-b-padding-inline-start-5{padding-inline-start:16px;}
-      .z-c-w-0{width:80px;}
-      .z-c-min-width-1{min-width:20px;}
-      .z-c-max-width-2{max-width:100px;}
-      .z-c-top-3{top:4px;}
-      .z-c-ml-4{margin-left:6px;}
-      .z-c-pl-5{padding-left:8px;}"
+      ".z_0{width:80px;}
+      .z_1{min-width:20px;}
+      .z_2{max-width:100px;}
+      .z_3{top:4px;}
+      .z_4{margin-left:6px;}
+      .z_5{padding-left:8px;}
+      .z_6{inline-size:40px;}
+      .z_7{min-inline-size:30px;}
+      .z_8{max-inline-size:60px;}
+      .z_9{inset-block-start:12px;}
+      .z_a{margin-inline-start:14px;}
+      .z_b{padding-inline-start:16px;}
+      .z_c{width:80px;}
+      .z_d{min-width:20px;}
+      .z_e{max-width:100px;}
+      .z_f{top:4px;}
+      .z_g{margin-left:6px;}
+      .z_h{padding-left:8px;}"
     `)
 
     const browser = await chromium.launch()
@@ -1003,7 +1003,7 @@ describe('compile', () => {
     })
 
     expect(Css.compile({ styles }).css).toMatchInlineSnapshot(
-      `".z-w-\\5b 1px\\3b width\\3a 1px\\3b width\\3a 1cm\\3b width\\3a 1mm\\3b width\\3a 1q\\3b width\\3a 1Q\\3b width\\3a 1in\\3b width\\3a 1pc\\3b width\\3a 1pt\\3b width\\3a 1em\\3b width\\3a 1ex\\3b width\\3a 1cap\\3b width\\3a 1ch\\3b width\\3a 1ic\\3b width\\3a 1lh\\3b width\\3a 1rem\\3b width\\3a 1rex\\3b width\\3a 1rcap\\3b width\\3a 1rch\\3b width\\3a 1ric\\3b width\\3a 1rlh\\3b width\\3a 1vw\\3b width\\3a 1vh\\3b width\\3a 1vi\\3b width\\3a 1vb\\3b width\\3a 1vmin\\3b width\\3a 1vmax\\3b width\\3a 1svw\\3b width\\3a 1svh\\3b width\\3a 1svi\\3b width\\3a 1svb\\3b width\\3a 1svmin\\3b width\\3a 1svmax\\3b width\\3a 1lvw\\3b width\\3a 1lvh\\3b width\\3a 1lvi\\3b width\\3a 1lvb\\3b width\\3a 1lvmin\\3b width\\3a 1lvmax\\3b width\\3a 1dvw\\3b width\\3a 1dvh\\3b width\\3a 1dvi\\3b width\\3a 1dvb\\3b width\\3a 1dvmin\\3b width\\3a 1dvmax\\3b width\\3a 1cqw\\3b width\\3a 1cqh\\3b width\\3a 1cqi\\3b width\\3a 1cqb\\3b width\\3a 1cqmin\\3b width\\3a 1cqmax\\3b width\\3a 1\\25 \\5d {width:1px;width:1px;width:1cm;width:1mm;width:1q;width:1Q;width:1in;width:1pc;width:1pt;width:1em;width:1ex;width:1cap;width:1ch;width:1ic;width:1lh;width:1rem;width:1rex;width:1rcap;width:1rch;width:1ric;width:1rlh;width:1vw;width:1vh;width:1vi;width:1vb;width:1vmin;width:1vmax;width:1svw;width:1svh;width:1svi;width:1svb;width:1svmin;width:1svmax;width:1lvw;width:1lvh;width:1lvi;width:1lvb;width:1lvmin;width:1lvmax;width:1dvw;width:1dvh;width:1dvi;width:1dvb;width:1dvmin;width:1dvmax;width:1cqw;width:1cqh;width:1cqi;width:1cqb;width:1cqmin;width:1cqmax;width:1%;}"`,
+      `".z_0{width:1px;width:1px;width:1cm;width:1mm;width:1q;width:1Q;width:1in;width:1pc;width:1pt;width:1em;width:1ex;width:1cap;width:1ch;width:1ic;width:1lh;width:1rem;width:1rex;width:1rcap;width:1rch;width:1ric;width:1rlh;width:1vw;width:1vh;width:1vi;width:1vb;width:1vmin;width:1vmax;width:1svw;width:1svh;width:1svi;width:1svb;width:1svmin;width:1svmax;width:1lvw;width:1lvh;width:1lvi;width:1lvb;width:1lvmin;width:1lvmax;width:1dvw;width:1dvh;width:1dvi;width:1dvb;width:1dvmin;width:1dvmax;width:1cqw;width:1cqh;width:1cqi;width:1cqb;width:1cqmin;width:1cqmax;width:1%;}"`,
     )
   })
 
@@ -1059,11 +1059,11 @@ describe('compile', () => {
     })
 
     expect(Css.compile({ styles }).css).toMatchInlineSnapshot(`
-      ".z-first-text-0{color:#fff!important;color:#000!important;}
-      .z-normal-text-0{color:#fff;}
-      .z-last-text-0{color:#fff!important;}
-      .z-opacity-\\5b 0\\2e 5\\21 important\\5d {opacity:0.5!important;}
-      .z-p-\\5b 0\\21 important\\5d {padding:0!important;}"
+      ".z_0{color:#fff!important;color:#000!important;}
+      .z_1{color:#fff;}
+      .z_2{color:#fff!important;}
+      .z_3{opacity:0.5!important;}
+      .z_4{padding:0!important;}"
     `)
   })
 
@@ -1238,9 +1238,9 @@ describe('compile', () => {
     })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-card-all-0{all:unset;}
-      .z-card-text-1{color:red;}
-      @media (min-width: 0px){.z-card-all-2{all:initial;}}"
+      ".z_0{all:unset;}
+      .z_1{color:red;}
+      @media (min-width: 0px){.z_2{all:initial;}}"
     `)
 
     const browser = await chromium.launch()
@@ -1278,19 +1278,19 @@ describe('compile', () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "classes": {
-          " ": "z-block",
-          "1 space:💪": "z-mt--2px z-text-[#fff]",
-          "_20_": "z-block",
-          "__proto__": "z-block",
-          "card": "z-card-p-0 z-card-pl-1 z-opacity-[0.5]",
+          " ": "z_5",
+          "1 space:💪": "z_3 z_4",
+          "_20_": "z_5",
+          "__proto__": "z_5",
+          "card": "z_0 z_1 z_2",
           "empty": "",
         },
-        "css": ".z-card-p-0{padding:1rem;}
-      .z-card-pl-1{padding-left:0;}
-      .z-opacity-\\5b 0\\2e 5\\5d {opacity:0.5;}
-      .z-mt--2px{margin-top:-2px;}
-      .z-text-\\5b \\23 fff\\5d {color:#fff;}
-      .z-block{display:block;}",
+        "css": ".z_0{padding:1rem;}
+      .z_1{padding-left:0;}
+      .z_2{opacity:0.5;}
+      .z_3{margin-top:-2px;}
+      .z_4{color:#fff;}
+      .z_5{display:block;}",
         "vars": {},
       }
     `)
@@ -1312,7 +1312,7 @@ describe('compile', () => {
     }).toMatchInlineSnapshot(`
       {
         "frozen": true,
-        "reordered": true,
+        "reordered": false,
         "repeated": true,
         "unique": 4,
       }
@@ -1733,16 +1733,16 @@ describe('names', () => {
       })
 
       expect(output.css).toMatchInlineSnapshot(`
-      ".z-display-flex{display:flex;}
-      .z-p-8px{padding:8px;}
-      .z-text-red{color:red;}"
-    `)
+        ".z_0{display:flex;}
+        .z_1{padding:8px;}
+        .z_2{color:red;}"
+      `)
       expect(output.classes).toMatchInlineSnapshot(`
-      {
-        "card": "z-display-flex z-p-8px z-text-red",
-        "label": "z-text-red",
-      }
-    `)
+        {
+          "card": "z_0 z_1 z_2",
+          "label": "z_2",
+        }
+      `)
     })
 
     test('names conditions, fallback sequences, and complex values distinctly', () => {
@@ -1758,14 +1758,12 @@ describe('names', () => {
       })
 
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-card-w-0{width:calc(100% - 8px);}
-        .z-card-display-1{display:block;display:grid!important;}
-        .z-card-text-2{&:hover{color:blue;}}
-        .z-card-text-3{&:focus{color:blue;}}"
+        ".z_0{width:calc(100% - 8px);}
+        .z_1{display:block;display:grid!important;}
+        .z_2{&:hover{color:blue;}}
+        .z_3{&:focus{color:blue;}}"
       `)
-      expect(output.classes.card).toMatchInlineSnapshot(
-        `"z-card-w-0 z-card-display-1 z-card-text-2 z-card-text-3"`,
-      )
+      expect(output.classes.card).toMatchInlineSnapshot(`"z_0 z_1 z_2 z_3"`)
     })
 
     test('retains separate identities for repeated overrides', () => {
@@ -1778,15 +1776,15 @@ describe('names', () => {
       })
 
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-first-p-0{padding:8px;}
-        .z-middle-pl-0{padding-left:2px;}
-        .z-last-p-0{padding:8px;}"
+        ".z_0{padding:8px;}
+        .z_1{padding-left:2px;}
+        .z_2{padding:8px;}"
       `)
       expect(output.classes).toMatchInlineSnapshot(`
         {
-          "first": "z-first-p-0",
-          "last": "z-last-p-0",
-          "middle": "z-middle-pl-0",
+          "first": "z_0",
+          "last": "z_2",
+          "middle": "z_1",
         }
       `)
     })
@@ -1799,18 +1797,18 @@ describe('names', () => {
 
       expect(first.css).toMatchInlineSnapshot(`
         ".z-theme-theme{--z-color-brand:red;}
-        .z-zugwnm-display-flex{display:flex;}
-        .z-zugwnm-text-\\5b var\\28 --z-color-brand\\2c red\\29 \\5d {color:var(--z-color-brand,red);}"
+        .z_zugwnm0{display:flex;}
+        .z_zugwnm1{color:var(--z-color-brand,red);}"
       `)
       expect(second.css).toMatchInlineSnapshot(`
         ".z-theme-theme{--z-color-brand:red;}
-        .z-PWlT8s-display-flex{display:flex;}
-        .z-PWlT8s-text-\\5b var\\28 --z-color-brand\\2c red\\29 \\5d {color:var(--z-color-brand,red);}"
+        .z_PWlT8s0{display:flex;}
+        .z_PWlT8s1{color:var(--z-color-brand,red);}"
       `)
       expect(first.code).toMatchInlineSnapshot(`
         "
         import { Props as __zyzzProps } from 'zyzz/runtime';
-        const {style}=({} as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "brand":"red"}}}>);export const card=__zyzzProps.create({className:"z-zugwnm-display-flex z-zugwnm-text-[var(--z-color-brand,red)] z-style-zugwnm-card"});"
+        const {style}=({} as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "brand":"red"}}}>);export const card=/*#__PURE__*/__zyzzProps.create({className:"z_zugwnm0 z_zugwnm1 z-style-zugwnm-card"});"
       `)
     })
 
@@ -1827,12 +1825,12 @@ export const grid = style({ display: 'grid', grid: 'auto / 1fr' })();`,
       })
 
       expect(flex.css).toMatchInlineSnapshot(`
-        ".z-BNRM2r-display-flex{display:flex;}
-        .z-BNRM2r-flex-\\5b 1_20_1_20_auto\\5d {flex:1 1 auto;}"
+        ".z_BNRM2r0{display:flex;}
+        .z_BNRM2r1{flex:1 1 auto;}"
       `)
       expect(grid.css).toMatchInlineSnapshot(`
-        ".z-ySDaVk-display-grid{display:grid;}
-        .z-ySDaVk-grid-\\5b auto_20_\\2f _20_1fr\\5d {grid:auto / 1fr;}"
+        ".z_ySDaVk0{display:grid;}
+        .z_ySDaVk1{grid:auto / 1fr;}"
       `)
 
       const browser = await chromium.launch()
@@ -1885,9 +1883,9 @@ export const grid = style({ display: 'grid', grid: 'auto / 1fr' })();`,
 
       expect(Object.values(output.classes)).toMatchInlineSnapshot(`
         [
-          "z-collisionpybsvm1mvm-text-0",
-          "z-middle-text-0",
-          "z-collision1gqwj5h1wwv-text-0",
+          "z_0",
+          "z_1",
+          "z_2",
         ]
       `)
       const browser = await chromium.launch()
@@ -1967,8 +1965,8 @@ export const grid = style({ display: 'grid', grid: 'auto / 1fr' })();`,
       })
 
       expect(production.modules['card.ts']!.css).toMatchInlineSnapshot(`
-        ".z-bgXhTU-text-red{color:red;}
-        .z-bgXhTU-p-8px{padding:8px;}"
+        ".z_bgXhTU0{color:red;}
+        .z_bgXhTU1{padding:8px;}"
       `)
       expect(development.modules['card.ts']!.css).toMatchInlineSnapshot(`
         ".z-bgXhTU-text-red{color:red;}
@@ -1985,8 +1983,8 @@ export const grid = style({ display: 'grid', grid: 'auto / 1fr' })();`,
       `)
       expect(compiler.compile({ modules }).modules['card.ts']!.css)
         .toMatchInlineSnapshot(`
-          ".z-bgXhTU-text-red{color:red;}
-          .z-bgXhTU-p-8px{padding:8px;}"
+          ".z_bgXhTU0{color:red;}
+          .z_bgXhTU1{padding:8px;}"
         `)
     })
 
@@ -2189,22 +2187,25 @@ export const grid = style({ display: 'grid', grid: 'auto / 1fr' })();`,
       })
 
       expect(output.modules['second.ts']!.css).toMatchInlineSnapshot(
-        `".z-PWlT8s-text-red{color:red;}"`,
+        `".z_PWlT8s0{color:red;}"`,
       )
     })
 
-    test('rejects incompatible contextual rules across packed and source modules', () => {
+    test('names contextual rules of equal style ids apart across packed and source modules', () => {
       const source =
         "import {style} from 'zyzz';export const card=style({selectors:{'&:hover':{color:'red'}}},{id:'card'})"
       const library = Graph.compile({ modules: { 'first.ts': source } })
+      const output = Graph.compile({
+        contracts: { 'library.js': library.contracts['first.ts']! },
+        modules: { 'second.ts': source.replace("'red'", "'blue'") },
+      })
 
-      expect(() =>
-        Graph.compile({
-          contracts: { 'library.js': library.contracts['first.ts']! },
-          modules: { 'second.ts': source.replace("'red'", "'blue'") },
-        }),
-      ).toThrowErrorMatchingInlineSnapshot(
-        `[Css.CompileError: ["second.ts"]: Generated class z-card-text-0 conflicts with module library.js. Supply distinct config or style ids.]`,
+      // Production names carry a module hash, so equal ids no longer share a contextual class.
+      expect(library.modules['first.ts']!.css).toMatchInlineSnapshot(
+        `".z_zugwnm0{&:hover{color:red;}}"`,
+      )
+      expect(output.modules['second.ts']!.css).toMatchInlineSnapshot(
+        `".z_PWlT8s0{&:hover{color:blue;}}"`,
       )
     })
   })
@@ -2318,7 +2319,7 @@ describe('output', () => {
         }),
       })
       expect(output.css).toMatchInlineSnapshot(
-        `".z-card-layer-0{@layer{&.special{color:blue;}color:red;}}"`,
+        `".z_0{@layer{&.special{color:blue;}color:red;}}"`,
       )
       const browser = await chromium.launch()
       try {
@@ -2349,44 +2350,44 @@ describe('output', () => {
       expect(output).toMatchInlineSnapshot(`
         {
           "classes": {
-            "card": "z-text-red z-p-8px",
-            "label": "z-text-red",
+            "card": "z_0 z_1",
+            "label": "z_0",
           },
-          "css": ".z-text-red{color:red;}
-        .z-p-8px{padding:8px;}",
+          "css": ".z_0{color:red;}
+        .z_1{padding:8px;}",
           "vars": {},
         }
       `)
       expect(atomic).toMatchInlineSnapshot(`
         {
           "classes": {
-            "card": "z-text-red z-p-8px",
-            "label": "z-text-red",
+            "card": "z_0 z_1",
+            "label": "z_0",
           },
-          "css": ".z-text-red{color:red;}
-        .z-p-8px{padding:8px;}",
+          "css": ".z_0{color:red;}
+        .z_1{padding:8px;}",
           "vars": {},
         }
       `)
       expect(grouped).toMatchInlineSnapshot(`
         {
           "classes": {
-            "card": "z-card",
-            "label": "z-label",
+            "card": "z_0",
+            "label": "z_1",
           },
-          "css": ".z-card{color:red;padding:8px;}
-        .z-label{color:red;}",
+          "css": ".z_0{color:red;padding:8px;}
+        .z_1{color:red;}",
           "vars": {},
         }
       `)
       expect(Css.compile({ styles })).toMatchInlineSnapshot(`
         {
           "classes": {
-            "card": "z-text-red z-p-8px",
-            "label": "z-text-red",
+            "card": "z_0 z_1",
+            "label": "z_0",
           },
-          "css": ".z-text-red{color:red;}
-        .z-p-8px{padding:8px;}",
+          "css": ".z_0{color:red;}
+        .z_1{padding:8px;}",
           "vars": {},
         }
       `)
@@ -2410,13 +2411,13 @@ describe('output', () => {
         if (cssOutput === 'atomic')
           expect(output.css).toMatchInlineSnapshot(`
             "body{margin:0;}
-            .z-display-\\5b block\\3b display\\3a grid\\21 important\\5d {display:block;display:grid!important;}
-            .z-text-red{color:red;}"
+            .z_0{display:block;display:grid!important;}
+            .z_1{color:red;}"
           `)
         else
           expect(output.css).toMatchInlineSnapshot(`
             "body{margin:0;}
-            .z-card{display:block;display:grid!important;color:red;}"
+            .z_0{display:block;display:grid!important;color:red;}"
           `)
         expect(output.contributionCss).toMatchInlineSnapshot(
           `"body{margin:0;}"`,
@@ -2439,15 +2440,15 @@ describe('output', () => {
       ).toMatchInlineSnapshot(`
         {
           "classes": {
-            "card": "z-card z-card__1",
-            "card-1": "z-card-1",
-            "card_s1": "z-card_5f_s1",
-            "x": "z-card",
+            "card": "z_0 z_1",
+            "card-1": "z_2",
+            "card_s1": "z_3",
+            "x": "z_0",
           },
-          "css": ".z-card{color:red;}
-        .z-card__1{padding:1px;}
-        .z-card-1{margin:2px;}
-        .z-card_5f_s1{display:block;}",
+          "css": ".z_0{color:red;}
+        .z_1{padding:1px;}
+        .z_2{margin:2px;}
+        .z_3{display:block;}",
           "vars": {},
         }
       `)

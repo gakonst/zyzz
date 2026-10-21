@@ -6,14 +6,17 @@ use oxc_ast::ast::{
     Expression, ObjectExpression, PropertyKey, TSLiteral, TSSignature, TSType, UnaryOperator,
 };
 use oxc_span::GetSpan;
-use rustc_hash::FxHashMap;
+use rustc_hash::{FxHashMap, FxHashSet};
 
 use crate::compiler::internal::expression::unwrap;
 use crate::error::{Error, Result};
+use crate::generated::cascade;
 use crate::generated::literal::Kind;
 use crate::internal::binding::{self, Domain};
+use crate::internal::token::Part;
 use crate::internal::{identity, literal};
 use crate::js::Record;
+use crate::style::{NamedStyle, Value};
 
 /// Typed runtime slots by field name.
 pub type Slots = Record<Arc<binding::Reference>>;
@@ -34,6 +37,8 @@ pub struct Read<'a> {
     pub body: &'a ObjectExpression<'a>,
     /// The concise body as an expression, without TypeScript wrappers.
     pub expression: &'a Expression<'a>,
+    /// Fields whose declared type admits a CSS-wide keyword such as `inherit`.
+    pub keywords: Vec<Arc<str>>,
     numeric: FxHashMap<Arc<str>, Vec<f64>>,
     parameter: &'a str,
     /// Slots by field name.
@@ -108,6 +113,7 @@ pub fn read<'a>(
     };
     let mut slots = Slots::new();
     let mut numeric = FxHashMap::default();
+    let mut keywords = Vec::new();
 
     for member in &fields.members {
         let TSSignature::TSPropertySignature(signature) = member else {
@@ -156,6 +162,10 @@ pub fn read<'a>(
             numeric.insert(Arc::from(key.as_str()), values);
         }
 
+        if kind != ScalarKind::Number && keyword(field) {
+            keywords.push(Arc::from(key.as_str()));
+        }
+
         slots.insert(key, slot);
     }
 
@@ -174,6 +184,7 @@ pub fn read<'a>(
     Ok(Some(Read {
         body,
         expression,
+        keywords,
         numeric,
         parameter: name.name.as_str(),
         slots,
@@ -248,6 +259,169 @@ impl<'a> Read<'a> {
                 node.span(),
             )),
         }
+    }
+}
+
+/// The properties that string fields fill directly, by field name.
+///
+/// A field qualifies when its only read is the whole value of one top-level declaration of a
+/// style without conditions or web branches, and no later declaration of the style can affect
+/// the same property. Writing such a value as an inline declaration then wins exactly where the
+/// variable-backed declaration did. Other fields keep their variables.
+///
+/// A field in `keywords` stays on its variable: a CSS-wide keyword assigned to a custom property
+/// applies to the property itself, not to the declaration that reads it.
+pub fn inline<'s>(style: &'s NamedStyle, slots: &Slots, keywords: &[Arc<str>]) -> Record<&'s str> {
+    let mut output = Record::new();
+
+    if style.rules.is_some()
+        || style
+            .targets
+            .as_ref()
+            .is_some_and(|targets| targets.web.is_some())
+    {
+        return output;
+    }
+
+    let declarations = &style.declarations;
+    let keywords: FxHashSet<&str> = keywords.iter().map(|field| &**field).collect();
+    // Each binding's read count and first declaration, from one pass over the declarations.
+    let mut reads: FxHashMap<&str, (usize, usize)> = FxHashMap::default();
+
+    for (index, declaration) in declarations.iter().enumerate() {
+        let mut read = |name: &'s str| {
+            reads.entry(name).or_insert((0, index)).0 += 1;
+        };
+
+        match &declaration.value {
+            Value::Binding(binding) => read(&binding.name),
+            Value::Expression(expression) => {
+                for part in &expression.parts {
+                    if let Part::Binding(binding) = part {
+                        read(&binding.name);
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
+    for (field, slot) in slots.iter() {
+        if slot.domain != Domain::Length || slot.zero || keywords.contains(&**field) {
+            continue;
+        }
+
+        let Some((1, index)) = reads.get(slot.name.as_str()).copied() else {
+            continue;
+        };
+        let Some(declaration) = declarations.get(index) else {
+            continue;
+        };
+        let property = &*declaration.property;
+
+        if declaration.important
+            || !matches!(declaration.value, Value::Binding(_))
+            || !property.starts_with(|character: char| character.is_ascii_lowercase())
+            || declarations
+                .get(index + 1..)
+                .unwrap_or_default()
+                .iter()
+                .any(|later| related(property, &later.property))
+        {
+            continue;
+        }
+
+        output.insert(Arc::clone(field), property);
+    }
+
+    output
+}
+
+/// Whether two declarations can set one computed property, conservatively by property family.
+fn related(left: &str, right: &str) -> bool {
+    let left = literal::alias(left).unwrap_or(left);
+    let right = literal::alias(right).unwrap_or(right);
+    // `all` resets every property except `direction` and `unicode-bidi`.
+    left == right
+        || left == "all"
+        || right == "all"
+        || family(left) == family(right)
+        || expands(left, right)
+        || expands(right, left)
+        || (sizing(left) && sizing(right))
+        || (inset(left) && inset(right))
+}
+
+/// The first camelCase word of a property, which longhands of one shorthand usually share.
+fn family(property: &str) -> &str {
+    property
+        .split(|character: char| character.is_ascii_uppercase())
+        .next()
+        .unwrap_or(property)
+}
+
+/// Whether a shorthand resets a property, directly or through nested shorthands.
+fn expands(shorthand: &str, property: &str) -> bool {
+    cascade::shorthand(shorthand).is_some_and(|children| {
+        children
+            .iter()
+            .any(|child| *child == property || expands(child, property))
+    })
+}
+
+/// Physical and logical inset properties share computed values.
+fn inset(property: &str) -> bool {
+    property.starts_with("inset") || matches!(property, "bottom" | "left" | "right" | "top")
+}
+
+/// Physical and logical sizes share computed values.
+fn sizing(property: &str) -> bool {
+    let property = property
+        .strip_prefix("min")
+        .or_else(|| property.strip_prefix("max"))
+        .unwrap_or(property);
+
+    matches!(
+        property,
+        "blockSize"
+            | "BlockSize"
+            | "height"
+            | "Height"
+            | "inlineSize"
+            | "InlineSize"
+            | "width"
+            | "Width"
+    )
+}
+
+/// Whether a string type admits a CSS-wide keyword, which CSS matches after trimming whitespace.
+/// String literals are already checked, and unresolved references count as unconstrained.
+fn keyword(node: &TSType<'_>) -> bool {
+    match node {
+        TSType::TSLiteralType(_) | TSType::TSNumberKeyword(_) => false,
+        TSType::TSTemplateLiteralType(template) => {
+            template.quasis.iter().all(|part| {
+                part.value.raw.bytes().all(|byte| {
+                    byte.is_ascii_alphabetic() || byte.is_ascii_whitespace() || byte == b'-'
+                })
+            }) && (template.types.is_empty() || template.types.iter().any(hole))
+        }
+        TSType::TSIntersectionType(intersection) => intersection.types.iter().all(keyword),
+        TSType::TSUnionType(union) => union.types.iter().any(keyword),
+        _ => true,
+    }
+}
+
+/// Whether a template hole can supply letters, as string literals and unconstrained types can.
+fn hole(node: &TSType<'_>) -> bool {
+    match node {
+        TSType::TSNumberKeyword(_) => false,
+        TSType::TSLiteralType(literal) => !matches!(
+            literal.literal,
+            TSLiteral::NumericLiteral(_) | TSLiteral::UnaryExpression(_)
+        ),
+        TSType::TSUnionType(union) => union.types.iter().any(hole),
+        _ => true,
     }
 }
 

@@ -122,10 +122,10 @@ describe('style API page', () => {
     const [card] = await examples('style')
 
     expect(css(card!.source)).toMatchInlineSnapshot(`
-      ".z-border-radius-8px{border-radius:8px;}
-      .z-p-16px{padding:16px;}
-      .z-font-size-\\5b 1\\2e 25rem\\5d {font-size:1.25rem;}
-      .z-m-0{margin:0;}"
+      ".z_0{border-radius:8px;}
+      .z_1{padding:16px;}
+      .z_2{font-size:1.25rem;}
+      .z_3{margin:0;}"
     `)
   })
 
@@ -136,24 +136,24 @@ describe('style API page', () => {
     )
 
     expect(css(declarations!.source)).toMatchInlineSnapshot(`
-      ".z-text-\\5b black\\21 important\\5d {color:black!important;}
-      .z-display-\\5b block\\3b display\\3a grid\\5d {display:block;display:grid;}
-      .z-p-16px{padding:16px;}"
+      ".z_0{color:black!important;}
+      .z_1{display:block;display:grid;}
+      .z_2{padding:16px;}"
     `)
     expect(css(conditions!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-link-text-0{color:blue;}
-      .z-3oDDjY-link-text-1{&:hover{color:navy;}}
-      @media (width >= 48rem){.z-3oDDjY-link-font-size-2{font-size:1.125rem;}}"
+      ".z_0{color:blue;}
+      .z_1{&:hover{color:navy;}}
+      @media (width >= 48rem){.z_2{font-size:1.125rem;}}"
     `)
     expect(css(callback!.source)).toMatchInlineSnapshot(`
-      ".z-bg-green{background-color:green;}
-      .z-w-\\5b var\\28 --z-3oDDjY-meter-amount\\29 \\5d {width:var(--z-3oDDjY-meter-amount);}"
+      ".z_0{background-color:green;}
+      .z_1{width:var(--z-3oDDjY-meter-amount);}"
     `)
     expect(css(exported(composition!.source))).toMatchInlineSnapshot(`
-      ".z-3oDDjY-button-text-0{color:black;}
-      .z-3oDDjY-button-p-1{padding:8px 16px;}
-      .z-3oDDjY-primary-text-0{color:black;}
-      .z-3oDDjY-primary-text-1{color:white;}"
+      ".z_0{color:black;}
+      .z_1{padding:8px 16px;}
+      .z_2{color:black;}
+      .z_3{color:white;}"
     `)
   })
 
@@ -161,9 +161,9 @@ describe('style API page', () => {
     const [label] = await examples('style', 'styles.selectors')
 
     expect(css(label!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-styles-label-text-0{color:gray;}
-      .z-3oDDjY-styles-label-text-1{[data-state="open"] &{color:blue;}}
-      .z-3oDDjY-styles-label-text-2{.z-style-3oDDjY-styles-card:hover &{color:black;}}"
+      ".z_0{color:gray;}
+      .z_1{[data-state="open"] &{color:blue;}}
+      .z_2{.z-style-3oDDjY-styles-card:hover &{color:black;}}"
     `)
   })
 
@@ -171,9 +171,9 @@ describe('style API page', () => {
     const [button] = await examples('style', 'styles.vars')
 
     expect(css(button!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-button-bg-0{background-color:var(--z-variables-accent);}
-      .z-3oDDjY-button---z-variables-accent-1{--z-variables-accent:royalblue;}
-      .z-3oDDjY-button---z-variables-accent-2{&:hover{--z-variables-accent:navy;}}"
+      ".z_0{background-color:var(--z-variables-accent);}
+      .z_1{--z-variables-accent:royalblue;}
+      .z_2{&:hover{--z-variables-accent:navy;}}"
     `)
   })
 
@@ -181,8 +181,8 @@ describe('style API page', () => {
     const [balance] = await examples('style', 'styles.targets')
 
     expect(css(balance!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-balance-font-size-0{font-size:16px;}
-      .z-3oDDjY-balance-font-variant-numeric-1{font-variant-numeric:tabular-nums;}"
+      ".z_0{font-size:16px;}
+      .z_1{font-variant-numeric:tabular-nums;}"
     `)
   })
 
@@ -200,9 +200,7 @@ describe('style API page', () => {
   test('compiles the types example', async () => {
     const [panel] = await examples('style', 'Types')
 
-    expect(css(panel!.source)).toMatchInlineSnapshot(
-      `".z-p-16px{padding:16px;}"`,
-    )
+    expect(css(panel!.source)).toMatchInlineSnapshot(`".z_0{padding:16px;}"`)
   })
 
   test('builds the native example as a style table', async () => {
@@ -244,9 +242,9 @@ describe('variants API page', () => {
     const [button] = await examples('variants')
 
     expect(css(button!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-styles-button-border-radius-0{border-radius:6px;}
-      .z-3oDDjY-styles-button-p-1{&:where([data-size="compact"]){padding:4px 8px;}}
-      .z-3oDDjY-styles-button-p-2{&:where([data-size="regular"]){padding:8px 16px;}}"
+      ".z_0{border-radius:6px;}
+      .z_1{&:where([data-size="compact"]){padding:4px 8px;}}
+      .z_2{&:where([data-size="regular"]){padding:8px 16px;}}"
     `)
   })
 
@@ -255,18 +253,18 @@ describe('variants API page', () => {
     const [boolean, dynamic] = await examples('variants', 'definition.variants')
 
     expect(css(base!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-button-border-radius-0{border-radius:6px;}
-      .z-3oDDjY-button-opacity-1{&:hover{opacity:0.9;}}
-      .z-3oDDjY-button-p-2{&:where([data-size="compact"]){padding:4px;}}"
+      ".z_0{border-radius:6px;}
+      .z_1{&:hover{opacity:0.9;}}
+      .z_2{&:where([data-size="compact"]){padding:4px;}}"
     `)
     expect(css(boolean!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-button-opacity-0{&:where([data-loading="true"]){opacity:0.5;}}
-      .z-3oDDjY-button-p-1{&:where([data-size="compact"]){padding:4px;}}
-      .z-3oDDjY-button-p-2{&:where([data-size="regular"]){padding:8px;}}"
+      ".z_0{&:where([data-loading="true"]){opacity:0.5;}}
+      .z_1{&:where([data-size="compact"]){padding:4px;}}
+      .z_2{&:where([data-size="regular"]){padding:8px;}}"
     `)
     expect(css(dynamic!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-button-p-0{&:where([data-size="compact"]){padding:4px;}}
-      .z-3oDDjY-button-p-1{&:where([data-size="custom"]){padding:var(--z-3oDDjY-button-1-1-0-padding);}}"
+      ".z_0{&:where([data-size="compact"]){padding:4px;}}
+      .z_1{&:where([data-size="custom"]){padding:var(--z-3oDDjY-button-1-1-0-padding);}}"
     `)
   })
 
@@ -274,10 +272,10 @@ describe('variants API page', () => {
     const [compound] = await examples('variants', 'definition.compoundVariants')
 
     expect(css(compound!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-button-opacity-0{&:where([data-loading="true"]){opacity:0.5;}}
-      .z-3oDDjY-button-p-1{&:where([data-size="compact"]){padding:4px;}}
-      .z-3oDDjY-button-p-2{&:where([data-size="regular"]){padding:8px;}}
-      .z-3oDDjY-button-font-weight-3{&:where([data-loading="true"]):where([data-size="regular"]):where(*, .__zyzz-compound-0){font-weight:600;}}"
+      ".z_0{&:where([data-loading="true"]){opacity:0.5;}}
+      .z_1{&:where([data-size="compact"]){padding:4px;}}
+      .z_2{&:where([data-size="regular"]){padding:8px;}}
+      .z_3{&:where([data-loading="true"]):where([data-size="regular"]):where(*, .__zyzz-compound-0){font-weight:600;}}"
     `)
   })
 
@@ -285,10 +283,10 @@ describe('variants API page', () => {
     const [conditions] = await examples('variants', 'definition.conditions')
 
     expect(css(conditions!.source)).toMatchInlineSnapshot(`
-      "@media not ((width>=48rem)){.z-3oDDjY-button-p-0{&:where([data-size="compact"]){padding:4px;}}}
-      @media not ((width>=48rem)){.z-3oDDjY-button-p-1{&:where([data-size="regular"]){padding:8px;}}}
-      @media (width >= 48rem){.z-3oDDjY-button-p-2{&:where([data-size="compact"]:not([data-zyzz-condition-0-size]),[data-zyzz-condition-0-size="scompact"]){padding:4px;}}}
-      @media (width >= 48rem){.z-3oDDjY-button-p-3{&:where([data-size="regular"]:not([data-zyzz-condition-0-size]),[data-zyzz-condition-0-size="sregular"]){padding:8px;}}}"
+      "@media not ((width>=48rem)){.z_0{&:where([data-size="compact"]){padding:4px;}}}
+      @media not ((width>=48rem)){.z_1{&:where([data-size="regular"]){padding:8px;}}}
+      @media (width >= 48rem){.z_2{&:where([data-size="compact"]:not([data-zyzz-condition-0-size]),[data-zyzz-condition-0-size="scompact"]){padding:4px;}}}
+      @media (width >= 48rem){.z_3{&:where([data-size="regular"]:not([data-zyzz-condition-0-size]),[data-zyzz-condition-0-size="sregular"]){padding:8px;}}}"
     `)
   })
 
@@ -353,8 +351,8 @@ describe('variants API page', () => {
     const [button] = await examples('variants', 'Types')
 
     expect(css(button!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-styles-button-p-0{&:where([data-size="compact"]){padding:4px;}}
-      .z-3oDDjY-styles-button-p-1{&:where([data-size="regular"]){padding:8px;}}"
+      ".z_0{&:where([data-size="compact"]){padding:4px;}}
+      .z_1{&:where([data-size="regular"]){padding:8px;}}"
     `)
   })
 
@@ -437,12 +435,12 @@ describe('cx API page', () => {
     const [tab] = await examples('cx')
 
     expect(css(tab!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-styles-tab-text-0{color:gray;}
-      .z-3oDDjY-styles-tab-p-1{padding:8px 12px;}
-      .z-3oDDjY-styles-active-text-0{color:black;}
-      .z-Tab-0-3oDDjY-styles-tab-3oDDjY-styles-active-0-text-0{color:gray;}
-      .z-Tab-0-3oDDjY-styles-tab-3oDDjY-styles-active-text-0{color:gray;}
-      .z-Tab-0-3oDDjY-styles-tab-3oDDjY-styles-active-text-1{color:black;}"
+      ".z_0{color:gray;}
+      .z_1{padding:8px 12px;}
+      .z_2{color:black;}
+      .z_3{color:gray;}
+      .z_4{color:gray;}
+      .z_5{color:black;}"
     `)
   })
 
@@ -450,14 +448,14 @@ describe('cx API page', () => {
     const [applied] = await examples('cx', 'applied')
 
     expect(css(applied!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-base-text-0{color:red;}
-      .z-3oDDjY-base-p-1{padding:8px;}
-      .z-3oDDjY-inset-text-0{color:blue;}
-      .z-3oDDjY-inset-pl-1{padding-left:12px;}
-      .z-props-0-3oDDjY-base-3oDDjY-inset-text-0{color:red;}
-      .z-props-0-3oDDjY-base-3oDDjY-inset-p-1{padding:8px;}
-      .z-props-0-3oDDjY-base-3oDDjY-inset-text-2{color:blue;}
-      .z-props-0-3oDDjY-base-3oDDjY-inset-pl-3{padding-left:12px;}"
+      ".z_0{color:red;}
+      .z_1{padding:8px;}
+      .z_2{color:blue;}
+      .z_3{padding-left:12px;}
+      .z_4{color:red;}
+      .z_5{padding:8px;}
+      .z_6{color:blue;}
+      .z_7{padding-left:12px;}"
     `)
   })
 
@@ -482,7 +480,7 @@ describe('cx API page', () => {
         color-scheme: light dark;
       }
 
-      .z_SlmzrP0, .z-Root-0-SlmzrP-styles-page-text-0 {
+      .z_SlmzrP0, .z_SlmzrP1 {
         color: var(--z-color-foreground, light-dark(#171717, #fafafa));
       }
       "
@@ -536,11 +534,11 @@ describe('variable API page', () => {
     const [plan] = await examples('variable')
 
     expect(css(plan!.source)).toMatchInlineSnapshot(`
-      ".z-text-\\5b var\\28 --z-variables-accent\\29 \\5d {color:var(--z-variables-accent);}
-      .z-m-0{margin:0;}
-      .z-3oDDjY-styles-plan-border-left-0{border-left:4px solid;}
-      .z-3oDDjY-styles-plan-border-left-color-1{border-left-color:var(--z-variables-accent);}
-      .z-\\5b --z-variables-accent\\3a \\23 0070f3\\5d {--z-variables-accent:#0070f3;}"
+      ".z_0{color:var(--z-variables-accent);}
+      .z_1{margin:0;}
+      .z_2{border-left:4px solid;}
+      .z_3{border-left-color:var(--z-variables-accent);}
+      .z_4{--z-variables-accent:#0070f3;}"
     `)
   })
 
@@ -548,8 +546,8 @@ describe('variable API page', () => {
     const [grid] = await examples('variable', 'kind')
 
     expect(css(grid!.source)).toMatchInlineSnapshot(`
-      ".z-display-grid{display:grid;}
-      .z-gap-\\5b var\\28 --z-variables-gap\\29 \\5d {gap:var(--z-variables-gap);}"
+      ".z_0{display:grid;}
+      .z_1{gap:var(--z-variables-gap);}"
     `)
   })
 
@@ -643,11 +641,11 @@ describe('defineConfig API page', () => {
         --z-spacing-page: 1rem;
       }
 
-      .z-4G1uCV-text-\\[var\\(--z-color-foreground\\,light-dark\\(\\#171717\\,\\#fafafa\\)\\)\\] {
+      .z_4G1uCV0 {
         color: var(--z-color-foreground, light-dark(#171717, #fafafa));
       }
 
-      .z-4G1uCV-p-\\[var\\(--z-spacing-page\\,1rem\\)\\] {
+      .z_4G1uCV1 {
         padding: var(--z-spacing-page, 1rem);
       }
       "
@@ -673,11 +671,11 @@ describe('defineConfig API page', () => {
         --z-spacing-md: 8px;
       }
 
-      .z-ml1WQ5-p-\\[var\\(--z-spacing-md\\,8px\\)\\] {
+      .z_ml1WQ50 {
         padding: var(--z-spacing-md, 8px);
       }
 
-      .z-ml1WQ5-mt-7px {
+      .z_ml1WQ51 {
         margin-top: 7px;
       }
       "
@@ -688,11 +686,11 @@ describe('defineConfig API page', () => {
         --z-textColor-brand: #004a99;
       }
 
-      .z-UFW1mi-bg-\\[var\\(--z-color-brand\\,\\#06c\\)\\] {
+      .z_UFW1mi0 {
         background-color: var(--z-color-brand, #06c);
       }
 
-      .z-UFW1mi-text-\\[var\\(--z-textColor-brand\\,\\#004a99\\)\\] {
+      .z_UFW1mi1 {
         color: var(--z-textColor-brand, #004a99);
       }
       "
@@ -702,18 +700,18 @@ describe('defineConfig API page', () => {
         --z-spacing-md: 8px;
       }
 
-      .z-Jpn02f-chip-pl-0 {
+      .z_Jpn02f0 {
         padding-left: var(--z-spacing-md, 8px);
       }
 
-      .z-Jpn02f-chip-pr-1 {
+      .z_Jpn02f1 {
         padding-right: var(--z-spacing-md, 8px);
       }
       "
     `)
     expect(await layered('zyzz.css')).toMatchInlineSnapshot(`
       "@layer components, overrides;
-      .z-n9FPFt-label-text-0 {
+      .z_n9FPFt0 {
         @layer overrides {
           color: #00f;
         }
@@ -809,11 +807,11 @@ describe('defineVars API page', () => {
         }
       }
 
-      .z-4G1uCV-text-\\[var\\(--z-color-foreground\\,light-dark\\(\\#171717\\,\\#fafafa\\)\\)\\] {
+      .z_4G1uCV0 {
         color: var(--z-color-foreground, light-dark(#171717, #fafafa));
       }
 
-      .z-4G1uCV-p-\\[var\\(--z-spacing-page\\,var\\(--z-spacing-page-fallback-135haxo1frqfdi\\)\\)\\] {
+      .z_4G1uCV1 {
         padding: var(--z-spacing-page, var(--z-spacing-page-fallback-135haxo1frqfdi));
       }
       "
@@ -829,7 +827,7 @@ describe('defineVars API page', () => {
         }
       }
 
-      .z-u6u0RP-p-\\[var\\(--z-spacing-page\\,var\\(--z-spacing-page-fallback-135haxo1frqfdi\\)\\)\\] {
+      .z_u6u0RP0 {
         padding: var(--z-spacing-page, var(--z-spacing-page-fallback-135haxo1frqfdi));
       }
       "
@@ -840,12 +838,12 @@ describe('defineVars API page', () => {
         --z-typography-heading-_40_media_20__3e__3d_tablet-fontSize: 40px;
       }
 
-      .z-w4OP4a-title-font-size-0 {
+      .z_w4OP4a0 {
         font-size: var(--z-typography-heading-fontSize, 24px);
       }
 
       @media (width >= 48rem) {
-        .z-w4OP4a-title-font-size-1 {
+        .z_w4OP4a1 {
           font-size: var(--z-typography-heading-_40_media_20__3e__3d_tablet-fontSize, 40px);
         }
       }
@@ -907,11 +905,11 @@ describe('extendVars API page', () => {
         --z-spacing-page: 1rem;
       }
 
-      .z-4G1uCV-text-\\[var\\(--z-color-accent\\,\\#2563eb\\)\\] {
+      .z_4G1uCV0 {
         color: var(--z-color-accent, #2563eb);
       }
 
-      .z-4G1uCV-p-\\[var\\(--z-spacing-page\\,1rem\\)\\] {
+      .z_4G1uCV1 {
         padding: var(--z-spacing-page, 1rem);
       }
       "
@@ -1053,10 +1051,10 @@ describe('Style API page', () => {
     expect(Css.compile({ styles })).toMatchInlineSnapshot(`
       {
         "classes": {
-          "card": "z-card-p-0 z-card-pl-1",
+          "card": "z_0 z_1",
         },
-        "css": ".z-card-p-0{padding:1rem;}
-      .z-card-pl-1{padding-left:0;}",
+        "css": ".z_0{padding:1rem;}
+      .z_1{padding-left:0;}",
         "vars": {},
       }
     `)
@@ -1131,7 +1129,7 @@ describe('Vars API page', () => {
         --z-number-opacity: 25;
       }
 
-      .z-Bc99af-text-\\[var\\(--z-color-faded\\,color-mix\\(in_20_srgb\\,_20_var\\(--z-color-ink\\,\\#171717\\)_20_calc\\(var\\(--z-number-opacity\\,25\\)_20_\\*_20_1\\%\\)\\,_20_transparent\\)\\)\\] {
+      .z_Bc99af0 {
         color: var(--z-color-faded, color-mix(in srgb, var(--z-color-ink, #171717) calc(var(--z-number-opacity, 25) * 1%), transparent));
       }
       "
@@ -1161,53 +1159,53 @@ describe('Values API page', () => {
     const [importance] = await examples('values', 'Importance')
 
     expect(css(properties!.source)).toMatchInlineSnapshot(`
-      ".z-3oDDjY-label--webkit-user-select-0{-webkit-user-select:none;}
-      .z-3oDDjY-label-user-select-1{user-select:none;}"
+      ".z_0{-webkit-user-select:none;}
+      .z_1{user-select:none;}"
     `)
     expect(css(clamp!.source)).toMatchInlineSnapshot(`
-      ".z-display--webkit-box{display:-webkit-box;}
-      .z--webkit-box-orient-vertical{-webkit-box-orient:vertical;}
-      .z--webkit-line-clamp-3{-webkit-line-clamp:3;}
-      .z-overflow-hidden{overflow:hidden;}"
+      ".z_0{display:-webkit-box;}
+      .z_1{-webkit-box-orient:vertical;}
+      .z_2{-webkit-line-clamp:3;}
+      .z_3{overflow:hidden;}"
     `)
     expect(css(lengths!.source)).toMatchInlineSnapshot(`
-      ".z-h-100dvh{height:100dvh;}
-      .z-m-0{margin:0;}
-      .z-padding-block-1lh{padding-block:1lh;}"
+      ".z_0{height:100dvh;}
+      .z_1{margin:0;}
+      .z_2{padding-block:1lh;}"
     `)
     expect(css(colors!.source)).toMatchInlineSnapshot(`
-      ".z-bg-\\5b rgb\\28 0_20_112_20_243_20_\\2f _20_50\\25 \\29 \\5d {background-color:rgb(0 112 243 / 50%);}
-      .z-border-color-currentColor{border-color:currentColor;}
-      .z-text-\\5b oklch\\28 0\\2e 7_20_0\\2e 15_20_250\\29 \\5d {color:oklch(0.7 0.15 250);}"
+      ".z_0{background-color:rgb(0 112 243 / 50%);}
+      .z_1{border-color:currentColor;}
+      .z_2{color:oklch(0.7 0.15 250);}"
     `)
     expect(css(numbers!.source)).toMatchInlineSnapshot(`
-      ".z-font-weight-650{font-weight:650;}
-      .z-line-height-\\5b 1\\2e 5\\5d {line-height:1.5;}
-      .z-opacity-\\5b 0\\2e 8\\5d {opacity:0.8;}"
+      ".z_0{font-weight:650;}
+      .z_1{line-height:1.5;}
+      .z_2{opacity:0.8;}"
     `)
     expect(css(keywords!.source)).toMatchInlineSnapshot(`
-      ".z-text-inherit{color:inherit;}
-      .z-display-revert-layer{display:revert-layer;}"
+      ".z_0{color:inherit;}
+      .z_1{display:revert-layer;}"
     `)
     expect(css(multipleValues!.source)).toMatchInlineSnapshot(`
-      ".z-border-\\5b 1px_20_solid_20_currentColor\\5d {border:1px solid currentColor;}
-      .z-m-\\5b 0_20_auto\\5d {margin:0 auto;}
-      .z-transition-\\5b opacity_20_200ms_20_ease\\2c _20_transform_20_300ms\\5d {transition:opacity 200ms ease, transform 300ms;}"
+      ".z_0{border:1px solid currentColor;}
+      .z_1{margin:0 auto;}
+      .z_2{transition:opacity 200ms ease, transform 300ms;}"
     `)
     expect(css(mathFunctions!.source)).toMatchInlineSnapshot(`
-      ".z-font-size-\\5b clamp\\28 1rem\\2c _20_2vw_20_\\2b _20_0\\2e 5rem\\2c _20_2rem\\29 \\5d {font-size:clamp(1rem, 2vw + 0.5rem, 2rem);}
-      .z-w-\\5b calc\\28 100\\25 _20_-_20_2rem\\29 \\5d {width:calc(100% - 2rem);}"
+      ".z_0{font-size:clamp(1rem, 2vw + 0.5rem, 2rem);}
+      .z_1{width:calc(100% - 2rem);}"
     `)
     expect(css(customProperties!.source)).toMatchInlineSnapshot(
-      `".z-text-\\5b var\\28 --brand\\2c _20_blue\\29 \\5d {color:var(--brand, blue);}"`,
+      `".z_0{color:var(--brand, blue);}"`,
     )
     expect(css(fallbacks!.source)).toMatchInlineSnapshot(`
-      ".z-display-\\5b block\\3b display\\3a grid\\5d {display:block;display:grid;}
-      .z-w-\\5b 80vw\\3b width\\3a 80cqi\\5d {width:80vw;width:80cqi;}"
+      ".z_0{display:block;display:grid;}
+      .z_1{width:80vw;width:80cqi;}"
     `)
     expect(css(importance!.source)).toMatchInlineSnapshot(`
-      ".z-display-\\5b none\\21 important\\5d {display:none!important;}
-      .z-opacity-\\5b 0\\21 important\\5d {opacity:0!important;}"
+      ".z_0{display:none!important;}
+      .z_1{opacity:0!important;}"
     `)
   })
 })

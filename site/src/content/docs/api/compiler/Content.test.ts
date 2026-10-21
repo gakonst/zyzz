@@ -113,7 +113,7 @@ describe('Source.extract', () => {
       output: Source.extract.ReturnType
     }>(await example('namespaces/Source'))
 
-    expect(module.css).toMatchInlineSnapshot(`".z-p-1rem{padding:1rem;}"`)
+    expect(module.css).toMatchInlineSnapshot(`".z_0{padding:1rem;}"`)
     expect(module.output.styles.styles[0]?.declarations).toMatchInlineSnapshot(`
       [
         {
@@ -179,7 +179,7 @@ export const empty = style({})
 
     expect(module.result.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-color-brand:#06c;}
-      .z-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}"
+      .z_0{color:var(--z-color-brand,#06c);}"
     `)
     expect(module.result.vars).toMatchInlineSnapshot(`
       {
@@ -523,15 +523,15 @@ describe('Transform.compile', () => {
       import { Props as __zyzzProps } from 'zyzz/runtime';
 
 
-      export const card = __zyzzProps.create({className:"z-FdvK6e-p-1rem z-style-FdvK6e-card"})
+      export const card = /*#__PURE__*/__zyzzProps.create({className:"z_FdvK6e0 z-style-FdvK6e-card"})
       "
     `)
     expect(module.output.css).toMatchInlineSnapshot(
-      `".z-FdvK6e-p-1rem{padding:1rem;}"`,
+      `".z_FdvK6e0{padding:1rem;}"`,
     )
     expect(module.output.classes).toMatchInlineSnapshot(`
       {
-        "style-12aqmga1qxkrpc-50": "z-FdvK6e-p-1rem z-style-FdvK6e-card",
+        "style-12aqmga1qxkrpc-50": "z_FdvK6e0 z-style-FdvK6e-card",
       }
     `)
     expect(module.output.vars).toMatchInlineSnapshot(`{}`)
@@ -563,7 +563,7 @@ describe('Transform.compile', () => {
         moduleId: 'app/Card.tsx',
         source: source!,
       }).css,
-    ).toMatchInlineSnapshot(`".z-FdvK6e-card{padding:1rem;}"`)
+    ).toMatchInlineSnapshot(`".z_FdvK6e0{padding:1rem;}"`)
     expect(
       Transform.compile({
         moduleId: 'app/Card.tsx',
@@ -574,7 +574,7 @@ describe('Transform.compile', () => {
       ".z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-FdvK6e-p-1rem{padding:1rem;}"
+      .z_FdvK6e0{padding:1rem;}"
     `)
   })
 
@@ -648,7 +648,7 @@ export const card = style({ padding: '1rem' })
 
     expect(
       Transform.compile({ moduleId: 'app/Card.tsx', source }).css,
-    ).toMatchInlineSnapshot(`".z-FdvK6e-p-1rem{padding:1rem;}"`)
+    ).toMatchInlineSnapshot(`".z_FdvK6e0{padding:1rem;}"`)
     expect(
       Transform.compile({ development: true, moduleId: 'app/Card.tsx', source })
         .css,
@@ -720,10 +720,10 @@ export const element = React
     `)
     expect(Transform.compile({ moduleId: 'app/Text.tsx', source: source! }).css)
       .toMatchInlineSnapshot(`
-      ".z-JJZ3wD-a-text-0{color:red;}
-      .z-JJZ3wD-b-text-0{color:blue;}
-      .z-JJZ3wD-c-text-0{color:red;}"
-    `)
+        ".z_JJZ3wD0{color:red;}
+        .z_JJZ3wD1{color:blue;}
+        .z_JJZ3wD2{color:red;}"
+      `)
   })
 
   test('returns scope classes for local variable sets', async () => {
@@ -847,7 +847,7 @@ export const vars = defineVars({ spacing: { gap: '4px' } })
       import { Props as __zyzzProps } from 'zyzz/runtime';
       import { style } from './zyzz.config.js'
 
-      export const card = __zyzzProps.create({className:"z-FdvK6e-text-[var(--z-color-brand,#06c)] z-style-FdvK6e-card"})
+      export const card = /*#__PURE__*/__zyzzProps.create({className:"z_FdvK6e0 z-style-FdvK6e-card"})
       "
     `)
     expect(module.output.modules['app/Card.tsx']?.css).toMatchInlineSnapshot(`
@@ -855,7 +855,7 @@ export const vars = defineVars({ spacing: { gap: '4px' } })
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-FdvK6e-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}"
+      .z_FdvK6e0{color:var(--z-color-brand,#06c);}"
     `)
     expect(module.output.sharedCss).toMatchInlineSnapshot(`undefined`)
   })
@@ -889,7 +889,7 @@ export const vars = defineVars({ spacing: { gap: '4px' } })
     `)
     expect(output.modules['app/Card.tsx']?.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-color-brand:#06c;}
-      .z-FdvK6e-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}"
+      .z_FdvK6e0{color:var(--z-color-brand,#06c);}"
     `)
   })
 
@@ -1172,7 +1172,7 @@ describe('Graph.create', () => {
       ".z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-FdvK6e-text-red{color:red;}"
+      .z_FdvK6e0{color:red;}"
     `)
     expect(() =>
       compiler.compile({

@@ -125,6 +125,8 @@ pub struct Call<'a> {
     pub end: u32,
     /// Stable selector identity.
     pub identity: Option<Arc<str>>,
+    /// Fields of a callback definition whose type admits a CSS-wide keyword.
+    pub keywords: Vec<Arc<str>>,
     /// Name of the definition in the extracted styles.
     pub name: Arc<str>,
     /// Native alternatives of the authoring contract.
@@ -2888,6 +2890,10 @@ pub fn extract<'a>(allocator: &'a Allocator, options: &Options<'_, 'a>) -> Resul
             dynamic_recipe,
             end: call.span.end,
             identity: selectors.identities.get(&call.span.start).cloned(),
+            keywords: dynamic
+                .as_ref()
+                .map(|read| read.keywords.clone())
+                .unwrap_or_default(),
             name,
             output: bound.and_then(|(_, output)| output),
             portable: portable.flatten(),

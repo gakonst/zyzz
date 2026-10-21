@@ -7,6 +7,7 @@ export default defineConfig({
     alias: { zyzz: Path.resolve(import.meta.dirname, '../src') },
     globals: true,
     include: ['bench/**/*.test.ts'],
-    exclude: ['bench/native/**'],
+    // Generated reports and cloned comparison suites are not fixture checks.
+    exclude: ['bench/native/**', 'bench/results/**'],
   },
 })

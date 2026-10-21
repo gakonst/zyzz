@@ -52,14 +52,14 @@ export namespace styles {
 
       expect(publisher.modules['group.ts']!.css).toMatchInlineSnapshot(
         `
-        ".z-_drwpj-p-\\5b var\\28 --z-variables-gap\\29 \\5d {padding:var(--z-variables-gap);}
-        .z-_drwpj-opacity-\\5b var\\28 --z-_5f_drwpj-box-opacity\\29 \\5d {opacity:var(--z-_drwpj-box-opacity);}"
+        ".z__drwpj0{padding:var(--z-variables-gap);}
+        .z__drwpj1{opacity:var(--z-_drwpj-box-opacity);}"
       `,
       )
       expect(consumer.modules['app.ts']!.css).toMatchInlineSnapshot(
         `
-        ".z-Zf5JrJ-p-\\5b var\\28 --z-variables-gap\\29 \\5d {padding:var(--z-variables-gap);}
-        .z-Zf5JrJ-opacity-\\5b var\\28 --z-Zf5JrJ-box-opacity\\29 \\5d {opacity:var(--z-Zf5JrJ-box-opacity);}"
+        ".z_Zf5JrJ0{padding:var(--z-variables-gap);}
+        .z_Zf5JrJ1{opacity:var(--z-Zf5JrJ-box-opacity);}"
       `,
       )
     })
@@ -170,9 +170,9 @@ export namespace styles {
 
       expect(consumer.modules['app.ts']!.css).toMatchInlineSnapshot(
         `
-        ".z-Zf5JrJ-card---z-value-0{--z-value:inline-flex;}
-        .z-Zf5JrJ-card-display-1{display:var(--z-value);}
-        .z-Zf5JrJ-card-display-2{&:hover{display:var(--z-value);}}"
+        ".z_Zf5JrJ0{--z-value:inline-flex;}
+        .z_Zf5JrJ1{display:var(--z-value);}
+        .z_Zf5JrJ2{&:hover{display:var(--z-value);}}"
       `,
       )
 
@@ -245,15 +245,15 @@ export namespace styles {
       ).toMatchInlineSnapshot(`31`)
       expect(consumer.modules['app.ts']!.css).toMatchInlineSnapshot(
         `
-        ".z-Zf5JrJ-label---z-variables-accent-0{--z-variables-accent:blue;}
-        .z-Zf5JrJ-label-text-1{color:var(--z-variables-accent);}
-        .z-Zf5JrJ-label---z-variables-accent-2{.z-style-tIp5Cr-styles-card:hover &{--z-variables-accent:green;}}"
+        ".z_Zf5JrJ0{--z-variables-accent:blue;}
+        .z_Zf5JrJ1{color:var(--z-variables-accent);}
+        .z_Zf5JrJ2{.z-style-tIp5Cr-styles-card:hover &{--z-variables-accent:green;}}"
       `,
       )
       expect(consumer.modules['app.ts']!.code).toMatchInlineSnapshot(`
         "
         import { Props as __zyzzProps } from 'zyzz/runtime';
-         import {variables, styles} from './barrel.js'; const accent=variables.accent; export const label=__zyzzProps.create({className:"z-Zf5JrJ-label---z-variables-accent-0 z-Zf5JrJ-label-text-1 z-Zf5JrJ-label---z-variables-accent-2 z-style-Zf5JrJ-label"}); export const inline=accent.set('red')"
+         import {variables, styles} from './barrel.js'; const accent=variables.accent; export const label=/*#__PURE__*/__zyzzProps.create({className:"z_Zf5JrJ0 z_Zf5JrJ1 z_Zf5JrJ2 z-style-Zf5JrJ-label"}); export const inline=accent.set('red')"
       `)
     })
 

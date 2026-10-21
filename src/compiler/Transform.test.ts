@@ -484,19 +484,19 @@ describe('compile', () => {
     })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-7sxPYh-disabled-cursor-0{cursor:not-allowed;}
-      .z-7sxPYh-disabled-pointer-events-1{pointer-events:auto;pointer-events:none!important;pointer-events:auto;}
-      .z-7sxPYh-disabled-resize-2{resize:none;}
-      .z-7sxPYh-disabled-user-select-3{user-select:none;}
-      .z-7sxPYh-disabled-visibility-4{visibility:visible;}
-      .z-7sxPYh-editable-cursor-0{cursor:text;}
-      .z-7sxPYh-editable-pointer-events-1{pointer-events:auto;}
-      .z-7sxPYh-editable-resize-2{resize:both;}
-      .z-7sxPYh-editable-user-select-3{user-select:text;}
-      .z-7sxPYh-hidden-cursor-0{cursor:default;}
-      .z-7sxPYh-hidden-resize-1{resize:none;}
-      .z-7sxPYh-hidden-user-select-2{user-select:auto;}
-      .z-7sxPYh-hidden-visibility-3{visibility:hidden;}"
+      ".z_7sxPYh0{cursor:not-allowed;}
+      .z_7sxPYh1{pointer-events:auto;pointer-events:none!important;pointer-events:auto;}
+      .z_7sxPYh2{resize:none;}
+      .z_7sxPYh3{user-select:none;}
+      .z_7sxPYh4{visibility:visible;}
+      .z_7sxPYh5{cursor:text;}
+      .z_7sxPYh6{pointer-events:auto;}
+      .z_7sxPYh7{resize:both;}
+      .z_7sxPYh8{user-select:text;}
+      .z_7sxPYh9{cursor:default;}
+      .z_7sxPYha{resize:none;}
+      .z_7sxPYhb{user-select:auto;}
+      .z_7sxPYhc{visibility:hidden;}"
     `)
 
     const lines = output.css.split('\n')
@@ -650,20 +650,20 @@ describe('compile', () => {
     })
 
     expect(output.css).toMatchInlineSnapshot(`
-      ".z-FG6gl6-collapsed-border-collapse-0{border-collapse:collapse;}
-      .z-FG6gl6-collapsed-border-spacing-1{border-spacing:12px;}
-      .z-FG6gl6-collapsed-caption-side-2{caption-side:top;}
-      .z-FG6gl6-collapsed-empty-cells-3{empty-cells:show;}
-      .z-FG6gl6-collapsed-table-layout-4{table-layout:auto;}
-      .z-FG6gl6-separated-border-collapse-0{border-collapse:separate;}
-      .z-FG6gl6-separated-border-spacing-1{border-spacing:2px;border-spacing:8px!important;border-spacing:4px;}
-      .z-FG6gl6-separated-caption-side-2{caption-side:bottom;}
-      .z-FG6gl6-separated-empty-cells-3{empty-cells:hide;}
-      .z-FG6gl6-separated-table-layout-4{table-layout:fixed;}
-      .z-FG6gl6-zero-border-collapse-0{border-collapse:separate;}
-      .z-FG6gl6-zero-border-spacing-1{border-spacing:0;}
-      .z-FG6gl6-zero-caption-side-2{caption-side:top;}
-      .z-FG6gl6-zero-empty-cells-3{empty-cells:show;}"
+      ".z_FG6gl60{border-collapse:collapse;}
+      .z_FG6gl61{border-spacing:12px;}
+      .z_FG6gl62{caption-side:top;}
+      .z_FG6gl63{empty-cells:show;}
+      .z_FG6gl64{table-layout:auto;}
+      .z_FG6gl65{border-collapse:separate;}
+      .z_FG6gl66{border-spacing:2px;border-spacing:8px!important;border-spacing:4px;}
+      .z_FG6gl67{caption-side:bottom;}
+      .z_FG6gl68{empty-cells:hide;}
+      .z_FG6gl69{table-layout:fixed;}
+      .z_FG6gl6a{border-collapse:separate;}
+      .z_FG6gl6b{border-spacing:0;}
+      .z_FG6gl6c{caption-side:top;}
+      .z_FG6gl6d{empty-cells:show;}"
     `)
 
     const lines = output.css.split('\n')
@@ -811,19 +811,19 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-color-brand:#06c;--z-spacing-stroke:2px;--z-textUnderlineOffset-offset:4px;}
-      .z-Y21ZU9-automatic-text-decoration-line-0{text-decoration-line:underline;}
-      .z-Y21ZU9-automatic-text-decoration-thickness-1{text-decoration-thickness:from-font;}
-      .z-Y21ZU9-automatic-text-underline-offset-2{text-underline-offset:auto;}
-      .z-Y21ZU9-automatic-text-decoration-skip-ink-3{text-decoration-skip-ink:auto;}
-      .z-Y21ZU9-decorated-text-decoration-line-0{text-decoration-line:underline;text-decoration-line:underline overline!important;}
-      .z-Y21ZU9-text-decoration-color-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {text-decoration-color:var(--z-color-brand,#06c);}
-      .z-Y21ZU9-text-decoration-style-wavy{text-decoration-style:wavy;}
-      .z-Y21ZU9-decorated-text-decoration-thickness-3{text-decoration-thickness:var(--z-spacing-stroke,2px);}
-      .z-Y21ZU9-decorated-text-underline-offset-4{text-underline-offset:var(--z-textUnderlineOffset-offset,4px);}
-      .z-Y21ZU9-decorated-text-decoration-skip-ink-5{text-decoration-skip-ink:none;}
-      .z-Y21ZU9-percentage-text-decoration-line-0{text-decoration-line:line-through;}
-      .z-Y21ZU9-percentage-text-decoration-thickness-1{text-decoration-thickness:10%;}
-      .z-Y21ZU9-percentage-text-underline-offset-2{text-underline-offset:-10%;}"
+      .z_Y21ZU90{text-decoration-line:underline;}
+      .z_Y21ZU91{text-decoration-thickness:from-font;}
+      .z_Y21ZU92{text-underline-offset:auto;}
+      .z_Y21ZU93{text-decoration-skip-ink:auto;}
+      .z_Y21ZU94{text-decoration-line:underline;text-decoration-line:underline overline!important;}
+      .z_Y21ZU95{text-decoration-color:var(--z-color-brand,#06c);}
+      .z_Y21ZU96{text-decoration-style:wavy;}
+      .z_Y21ZU97{text-decoration-thickness:var(--z-spacing-stroke,2px);}
+      .z_Y21ZU98{text-underline-offset:var(--z-textUnderlineOffset-offset,4px);}
+      .z_Y21ZU99{text-decoration-skip-ink:none;}
+      .z_Y21ZU9a{text-decoration-line:line-through;}
+      .z_Y21ZU9b{text-decoration-thickness:10%;}
+      .z_Y21ZU9c{text-underline-offset:-10%;}"
     `)
 
     const lines = output.css.split('\n')
@@ -950,21 +950,21 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-spacing-indent:12px;}
-      .z-xcRSGS-breaks-w-0{width:65px;}
-      .z-xcRSGS-word-break-break-all{word-break:break-all;}
-      .z-xcRSGS-letter-spacing-\\5b normal\\3b letter-spacing\\3a 2px\\5d {letter-spacing:normal;letter-spacing:2px;}
-      .z-xcRSGS-paragraph-w-0{width:200px;}
-      .z-xcRSGS-text-indent-\\5b var\\28 --z-spacing-indent\\2c 12px\\29 \\5d {text-indent:var(--z-spacing-indent,12px);}
-      .z-xcRSGS-text-align-last-start{text-align-last:start;}
-      .z-xcRSGS-hyphens-manual{hyphens:manual;}
-      .z-xcRSGS-text-transform-uppercase{text-transform:uppercase;}
-      .z-xcRSGS-truncate-w-0{width:65px;}
-      .z-xcRSGS-overflow-hidden{overflow:hidden;}
-      .z-xcRSGS-truncate-white-space-2{white-space:pre;white-space:nowrap!important;}
-      .z-xcRSGS-text-overflow-ellipsis{text-overflow:ellipsis;}
-      .z-xcRSGS-word-spacing-3px{word-spacing:3px;}
-      .z-xcRSGS-overflow-wrap-anywhere{overflow-wrap:anywhere;}
-      .z-xcRSGS-wrap-white-space-1{white-space:normal;}"
+      .z_xcRSGS0{width:65px;}
+      .z_xcRSGS1{word-break:break-all;}
+      .z_xcRSGS2{letter-spacing:normal;letter-spacing:2px;}
+      .z_xcRSGS3{width:200px;}
+      .z_xcRSGS4{text-indent:var(--z-spacing-indent,12px);}
+      .z_xcRSGS5{text-align-last:start;}
+      .z_xcRSGS6{hyphens:manual;}
+      .z_xcRSGS7{text-transform:uppercase;}
+      .z_xcRSGS8{width:65px;}
+      .z_xcRSGS9{overflow:hidden;}
+      .z_xcRSGSa{white-space:pre;white-space:nowrap!important;}
+      .z_xcRSGSb{text-overflow:ellipsis;}
+      .z_xcRSGSc{word-spacing:3px;}
+      .z_xcRSGSd{overflow-wrap:anywhere;}
+      .z_xcRSGSe{white-space:normal;}"
     `)
 
     const lines = output.css.split('\n')
@@ -1100,24 +1100,24 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-spacing-edge:10px;}
-      .z-lahY7n-display-flex{display:flex;}
-      .z-lahY7n-gap-40px{gap:40px;}
-      .z-lahY7n-overflow-auto{overflow:auto;}
-      .z-lahY7n-horizontal-w-3{width:100px;}
-      .z-lahY7n-horizontal-h-4{height:100px;}
-      .z-lahY7n-horizontal-scroll-padding-5{scroll-padding:var(--z-spacing-edge,10px);}
-      .z-lahY7n-horizontal-scroll-snap-type-6{scroll-snap-type:x proximity;scroll-snap-type:x mandatory!important;}
-      .z-lahY7n-flex-direction-column{flex-direction:column;}
-      .z-lahY7n-vertical-scroll-padding-1{scroll-padding:10px;}
-      .z-lahY7n-vertical-scroll-snap-type-2{scroll-snap-type:y mandatory;}
-      .z-lahY7n-item-w-0{width:60px;}
-      .z-lahY7n-item-h-1{height:60px;}
-      .z-lahY7n-flex-shrink-0{flex-shrink:0;}
-      .z-lahY7n-scroll-margin-5px{scroll-margin:5px;}
-      .z-lahY7n-item-scroll-snap-align-4{scroll-snap-align:start;}
-      .z-lahY7n-scroll-snap-stop-\\5b normal\\3b scroll-snap-stop\\3a always\\21 important\\5d {scroll-snap-stop:normal;scroll-snap-stop:always!important;}
-      .z-lahY7n-pair-scroll-snap-align-0{scroll-snap-align:none center;}
-      .z-lahY7n-pair-scroll-snap-type-1{scroll-snap-type:both proximity;}"
+      .z_lahY7n0{display:flex;}
+      .z_lahY7n1{gap:40px;}
+      .z_lahY7n2{overflow:auto;}
+      .z_lahY7n3{width:100px;}
+      .z_lahY7n4{height:100px;}
+      .z_lahY7n5{scroll-padding:var(--z-spacing-edge,10px);}
+      .z_lahY7n6{scroll-snap-type:x proximity;scroll-snap-type:x mandatory!important;}
+      .z_lahY7n7{flex-direction:column;}
+      .z_lahY7n8{scroll-padding:10px;}
+      .z_lahY7n9{scroll-snap-type:y mandatory;}
+      .z_lahY7na{width:60px;}
+      .z_lahY7nb{height:60px;}
+      .z_lahY7nc{flex-shrink:0;}
+      .z_lahY7nd{scroll-margin:5px;}
+      .z_lahY7ne{scroll-snap-align:start;}
+      .z_lahY7nf{scroll-snap-stop:normal;scroll-snap-stop:always!important;}
+      .z_lahY7ng{scroll-snap-align:none center;}
+      .z_lahY7nh{scroll-snap-type:both proximity;}"
     `)
 
     const lines = output.css.split('\n')
@@ -1236,19 +1236,19 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-spacing-offset:20px;--z-spacing-auto:24px;}
-      .z-it1fs6-overflow-auto{overflow:auto;}
-      .z-it1fs6-container-h-1{height:100px;}
-      .z-it1fs6-w-100px{width:100px;}
-      .z-it1fs6-container-scroll-behavior-3{scroll-behavior:auto;}
-      .z-it1fs6-container-scroll-padding-top-4{scroll-padding-top:10px;scroll-padding-top:var(--z-spacing-offset,20px);}
-      .z-it1fs6-container-scroll-padding-inline-5{scroll-padding-inline:auto;}
-      .z-it1fs6-container-overscroll-behavior-6{overscroll-behavior:auto;overscroll-behavior:contain!important;}
-      .z-it1fs6-container-overscroll-behavior-x-7{overscroll-behavior-x:none;}
-      .z-it1fs6-scroll-margin-top-10px{scroll-margin-top:10px;}
-      .z-it1fs6-target-h-1{height:20px;}
-      .z-it1fs6-explicit-scroll-padding-top-0{scroll-padding-top:var(--z-spacing-auto,24px);}
-      .z-it1fs6-named-scroll-padding-block-start-0{scroll-padding-block-start:var(--z-spacing-offset,20px)!important;}
-      .z-it1fs6-smooth-scroll-behavior-0{scroll-behavior:smooth;}"
+      .z_it1fs60{overflow:auto;}
+      .z_it1fs61{height:100px;}
+      .z_it1fs62{width:100px;}
+      .z_it1fs63{scroll-behavior:auto;}
+      .z_it1fs64{scroll-padding-top:10px;scroll-padding-top:var(--z-spacing-offset,20px);}
+      .z_it1fs65{scroll-padding-inline:auto;}
+      .z_it1fs66{overscroll-behavior:auto;overscroll-behavior:contain!important;}
+      .z_it1fs67{overscroll-behavior-x:none;}
+      .z_it1fs68{scroll-margin-top:10px;}
+      .z_it1fs69{height:20px;}
+      .z_it1fs6a{scroll-padding-top:var(--z-spacing-auto,24px);}
+      .z_it1fs6b{scroll-padding-block-start:var(--z-spacing-offset,20px)!important;}
+      .z_it1fs6c{scroll-behavior:smooth;}"
     `)
 
     const lines = output.css.split('\n')
@@ -1358,22 +1358,22 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-spacing-min_2d_content:24px;--z-spacing-narrow:40px;}
-      .z-tWUOQH-minimum-inline-size-0{inline-size:min-content;}
-      .z-tWUOQH-maximum-inline-size-0{inline-size:max-content;}
-      .z-tWUOQH-fit-inline-size-0{inline-size:100%;inline-size:fit-content!important;}
-      .z-tWUOQH-fit-min-width-1{min-width:auto;}
-      .z-tWUOQH-fit-max-width-2{max-width:none;}
-      .z-tWUOQH-explicit-w-0{width:var(--z-spacing-min_2d_content,24px);}
-      .z-tWUOQH-constrained-min-inline-size-0{min-inline-size:var(--z-spacing-narrow,40px);}
-      .z-tWUOQH-constrained-max-inline-size-1{max-inline-size:max-content;}
-      .z-tWUOQH-constrained-block-size-2{block-size:fit-content;}
-      .z-tWUOQH-constrained-min-block-size-3{min-block-size:auto;}
-      .z-tWUOQH-constrained-max-block-size-4{max-block-size:none;}
-      .z-tWUOQH-content-flex-basis-0{flex-basis:content;}
-      .z-tWUOQH-content-w-1{width:5px;}
-      .z-tWUOQH-flex-shrink-0{flex-shrink:0;}
-      .z-tWUOQH-content-min-width-3{min-width:0;}
-      .z-tWUOQH-automatic-flex-basis-0{flex-basis:auto;}"
+      .z_tWUOQH0{inline-size:min-content;}
+      .z_tWUOQH1{inline-size:max-content;}
+      .z_tWUOQH2{inline-size:100%;inline-size:fit-content!important;}
+      .z_tWUOQH3{min-width:auto;}
+      .z_tWUOQH4{max-width:none;}
+      .z_tWUOQH5{width:var(--z-spacing-min_2d_content,24px);}
+      .z_tWUOQH6{min-inline-size:var(--z-spacing-narrow,40px);}
+      .z_tWUOQH7{max-inline-size:max-content;}
+      .z_tWUOQH8{block-size:fit-content;}
+      .z_tWUOQH9{min-block-size:auto;}
+      .z_tWUOQHa{max-block-size:none;}
+      .z_tWUOQHb{flex-basis:content;}
+      .z_tWUOQHc{width:5px;}
+      .z_tWUOQHd{flex-shrink:0;}
+      .z_tWUOQHe{min-width:0;}
+      .z_tWUOQHf{flex-basis:auto;}"
     `)
 
     const lines = output.css.split('\n')
@@ -1532,21 +1532,21 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-borderColor-brand:#06c;--z-color-brand:#fff;--z-radius-round:8px;}
-      .z-2em1cQ-border-style-solid{border-style:solid;}
-      .z-2em1cQ-box-border-width-1{border-width:2px;}
-      .z-2em1cQ-box-border-left-width-2{border-left-width:3px;}
-      .z-2em1cQ-box-border-inline-start-width-3{border-inline-start-width:4px;border-inline-start-width:5px!important;}
-      .z-2em1cQ-box-border-color-4{border-color:var(--z-borderColor-brand,#06c);}
-      .z-2em1cQ-box-border-inline-end-color-5{border-inline-end-color:var(--z-color-brand,#fff);}
-      .z-2em1cQ-box-border-radius-6{border-radius:var(--z-radius-round,8px);}
-      .z-2em1cQ-box-border-start-start-radius-7{border-start-start-radius:10px;}
-      .z-2em1cQ-outline-color-\\5b var\\28 --z-color-brand\\2c \\23 fff\\29 \\5d {outline-color:var(--z-color-brand,#fff);}
-      .z-2em1cQ-outline-style-dashed{outline-style:dashed;}
-      .z-2em1cQ-outline-width-2px{outline-width:2px;}
-      .z-2em1cQ-outline-offset--1px{outline-offset:-1px;}
-      .z-2em1cQ-physical-border-width-0{border-width:2px;}
-      .z-2em1cQ-physical-border-inline-start-width-1{border-inline-start-width:5px;}
-      .z-2em1cQ-physical-border-left-width-2{border-left-width:3px;}"
+      .z_2em1cQ0{border-style:solid;}
+      .z_2em1cQ1{border-width:2px;}
+      .z_2em1cQ2{border-left-width:3px;}
+      .z_2em1cQ3{border-inline-start-width:4px;border-inline-start-width:5px!important;}
+      .z_2em1cQ4{border-color:var(--z-borderColor-brand,#06c);}
+      .z_2em1cQ5{border-inline-end-color:var(--z-color-brand,#fff);}
+      .z_2em1cQ6{border-radius:var(--z-radius-round,8px);}
+      .z_2em1cQ7{border-start-start-radius:10px;}
+      .z_2em1cQ8{outline-color:var(--z-color-brand,#fff);}
+      .z_2em1cQ9{outline-style:dashed;}
+      .z_2em1cQa{outline-width:2px;}
+      .z_2em1cQb{outline-offset:-1px;}
+      .z_2em1cQc{border-width:2px;}
+      .z_2em1cQd{border-inline-start-width:5px;}
+      .z_2em1cQe{border-left-width:3px;}"
     `)
 
     const lines = output.css.split('\n')
@@ -1577,25 +1577,25 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-spacing-item:60px;}
-      .z-MhD43s-display-flex{display:flex;}
-      .z-MhD43s-flex-wrap-wrap{flex-wrap:wrap;}
-      .z-MhD43s-container-w-2{width:180px;}
-      .z-MhD43s-container-h-3{height:100px;}
-      .z-MhD43s-align-content-space-between{align-content:space-between;}
-      .z-MhD43s-align-items-flex-start{align-items:flex-start;}
-      .z-MhD43s-flex-basis-\\5b 40px\\3b flex-basis\\3a var\\28 --z-spacing-item\\2c 60px\\29 \\5d {flex-basis:40px;flex-basis:var(--z-spacing-item,60px);}
-      .z-MhD43s-flex-grow-0{flex-grow:0;}
-      .z-MhD43s-flex-shrink-0{flex-shrink:0;}
-      .z-MhD43s-item-h-3{height:20px;}
-      .z-MhD43s-align-self-flex-end{align-self:flex-end;}
-      .z-MhD43s-order-\\5b -1\\21 important\\5d {order:-1!important;}
-      .z-MhD43s-clip-w-0{width:40px;}
-      .z-MhD43s-clip-h-1{height:40px;}
-      .z-MhD43s-clip-overflow-2{overflow:hidden;overflow:clip!important;}
-      .z-MhD43s-clip-overflow-x-3{overflow-x:visible;}
-      .z-MhD43s-scroll-overflow-x-0{overflow-x:clip;}
-      .z-MhD43s-scroll-overflow-1{overflow:hidden;}
-      .z-MhD43s-scroll-overflow-y-2{overflow-y:scroll;}"
+      .z_MhD43s0{display:flex;}
+      .z_MhD43s1{flex-wrap:wrap;}
+      .z_MhD43s2{width:180px;}
+      .z_MhD43s3{height:100px;}
+      .z_MhD43s4{align-content:space-between;}
+      .z_MhD43s5{align-items:flex-start;}
+      .z_MhD43s6{flex-basis:40px;flex-basis:var(--z-spacing-item,60px);}
+      .z_MhD43s7{flex-grow:0;}
+      .z_MhD43s8{flex-shrink:0;}
+      .z_MhD43s9{height:20px;}
+      .z_MhD43sa{align-self:flex-end;}
+      .z_MhD43sb{order:-1!important;}
+      .z_MhD43sc{width:40px;}
+      .z_MhD43sd{height:40px;}
+      .z_MhD43se{overflow:hidden;overflow:clip!important;}
+      .z_MhD43sf{overflow-x:visible;}
+      .z_MhD43sg{overflow-x:clip;}
+      .z_MhD43sh{overflow:hidden;}
+      .z_MhD43si{overflow-y:scroll;}"
     `)
 
     const lines = output.css.split('\n')
@@ -1741,18 +1741,18 @@ describe('compile', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-i9aFWE-logical-w-0{width:60px;}
-      .z-i9aFWE-logical-inline-size-1{inline-size:70px;inline-size:80px!important;}
-      .z-i9aFWE-logical-block-size-2{block-size:40px;}
-      .z-i9aFWE-logical-pl-3{padding-left:2px;}
-      .z-i9aFWE-logical-padding-inline-start-4{padding-inline-start:4px;padding-inline-start:var(--z-spacing-space,12px);}
-      .z-i9aFWE-margin-inline-end-\\5b var\\28 --z-spacing-space\\2c 12px\\29 \\21 important\\5d {margin-inline-end:var(--z-spacing-space,12px)!important;}
-      .z-i9aFWE-position-relative{position:relative;}
-      .z-i9aFWE-inset-inline-start--3px{inset-inline-start:-3px;}
-      .z-i9aFWE-physical-inline-size-0{inline-size:30px;}
-      .z-i9aFWE-physical-w-1{width:50px;}
-      .z-i9aFWE-physical-padding-inline-start-2{padding-inline-start:6px;}
-      .z-i9aFWE-physical-pl-3{padding-left:8px;}"
+      .z_i9aFWE0{width:60px;}
+      .z_i9aFWE1{inline-size:70px;inline-size:80px!important;}
+      .z_i9aFWE2{block-size:40px;}
+      .z_i9aFWE3{padding-left:2px;}
+      .z_i9aFWE4{padding-inline-start:4px;padding-inline-start:var(--z-spacing-space,12px);}
+      .z_i9aFWE5{margin-inline-end:var(--z-spacing-space,12px)!important;}
+      .z_i9aFWE6{position:relative;}
+      .z_i9aFWE7{inset-inline-start:-3px;}
+      .z_i9aFWE8{inline-size:30px;}
+      .z_i9aFWE9{width:50px;}
+      .z_i9aFWEa{padding-inline-start:6px;}
+      .z_i9aFWEb{padding-left:8px;}"
     `)
 
     const lines = output.css.split('\n')
@@ -1891,9 +1891,9 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-spacing-0:8px;}
-      .z-WUKCte-token-p-0{padding:var(--z-spacing-0,8px)!important;}
-      .z-WUKCte-literal-p-0{padding:0!important;}
-      .z-WUKCte-plain-p-0{padding:var(--z-spacing-0,8px);}"
+      .z_WUKCte0{padding:var(--z-spacing-0,8px)!important;}
+      .z_WUKCte1{padding:0!important;}
+      .z_WUKCte2{padding:var(--z-spacing-0,8px);}"
     `)
   })
 
@@ -1906,8 +1906,8 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-color-brand:#06c;}
-      .z-viRWul-display-\\5b block\\3b display\\3a flex\\5d {display:block;display:flex;}
-      .z-viRWul-text-\\5b \\23 000\\3b color\\3a var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:#000;color:var(--z-color-brand,#06c);}"
+      .z_viRWul0{display:block;display:flex;}
+      .z_viRWul1{color:#000;color:var(--z-color-brand,#06c);}"
     `)
 
     const lines = output.css.split('\n')
@@ -1936,13 +1936,13 @@ describe('compile', () => {
 
     expect(output.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-spacing-space:1lh;}
-      .z-GgEBF4-w-\\5b 50vw\\3b width\\3a 50cqi\\21 important\\5d {width:50vw;width:50cqi!important;}
-      .z-GgEBF4-h-10dvh{height:10dvh;}
-      .z-GgEBF4-root-ml-2{margin-left:-1in;}
-      .z-GgEBF4-border-width-1pc{border-width:1pc;}
-      .z-GgEBF4-border-style-solid{border-style:solid;}
-      .z-GgEBF4-p-\\5b 1rem\\3b padding\\3a var\\28 --z-spacing-space\\2c 1lh\\29 \\5d {padding:1rem;padding:var(--z-spacing-space,1lh);}
-      .z-GgEBF4-themed-mt-1{margin-top:2rlh!important;}"
+      .z_GgEBF40{width:50vw;width:50cqi!important;}
+      .z_GgEBF41{height:10dvh;}
+      .z_GgEBF42{margin-left:-1in;}
+      .z_GgEBF43{border-width:1pc;}
+      .z_GgEBF44{border-style:solid;}
+      .z_GgEBF45{padding:1rem;padding:var(--z-spacing-space,1lh);}
+      .z_GgEBF46{margin-top:2rlh!important;}"
     `)
 
     const lines = output.css.split('\n')
@@ -2058,9 +2058,9 @@ describe('compile', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-OyLMsc-gap-\\5b var\\28 --z-spacing-2-5\\2c 10px\\29 \\5d {gap:var(--z-spacing-2-5,10px);}
-      .z-OyLMsc-m-\\5b var\\28 --z-spacing-0-5\\2c 2px\\29 \\5d {margin:var(--z-spacing-0-5,2px);}
-      .z-OyLMsc-p-\\5b var\\28 --z-spacing-0\\2c 0px\\29 \\5d {padding:var(--z-spacing-0,0px);}"
+      .z_OyLMsc0{gap:var(--z-spacing-2-5,10px);}
+      .z_OyLMsc1{margin:var(--z-spacing-0-5,2px);}
+      .z_OyLMsc2{padding:var(--z-spacing-0,0px);}"
     `)
   })
 
@@ -2105,13 +2105,13 @@ describe('compile', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-wjwnAQ-props-text-0{color:#000;color:var(--z-color-brand,#06c);color:var(--z-color-brand,#06c)!important;}
-      .z-wjwnAQ-display-\\5b block\\3b display\\3a flex\\5d {display:block;display:flex;}
-      .z-wjwnAQ-opacity-\\5b 0\\2e 25\\21 important\\3b opacity\\3a 0\\2e 75\\5d {opacity:0.25!important;opacity:0.75;}
-      .z-wjwnAQ-props-p-3{padding:4px!important;padding:8px;}
-      .z-wjwnAQ-props-pl-4{padding-left:12px;}
-      .z-wjwnAQ-later-text-0{color:#fff;}
-      .z-wjwnAQ-later-p-1{padding:20px;}"
+      .z_wjwnAQ0{color:#000;color:var(--z-color-brand,#06c);color:var(--z-color-brand,#06c)!important;}
+      .z_wjwnAQ1{display:block;display:flex;}
+      .z_wjwnAQ2{opacity:0.25!important;opacity:0.75;}
+      .z_wjwnAQ3{padding:4px!important;padding:8px;}
+      .z_wjwnAQ4{padding-left:12px;}
+      .z_wjwnAQ5{color:#fff;}
+      .z_wjwnAQ6{padding:20px;}"
     `)
 
     const lines = output.css.split('\n')
@@ -2197,7 +2197,7 @@ describe('compile', () => {
       const alternate = ({} as import('zyzz').Vars.Definition<{readonly "color":{readonly "transparent":"#06c";readonly "palette":{readonly 500:"#123"}};readonly "spacing":{readonly 0:"8px";readonly 4:"16px"}}>); const alternateConfig=({vars:__zyzzSelection.create([["default","z-theme-theme"]],false,'set',"default")} as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "transparent":"#175";readonly "palette":{readonly "500":"#456"}};readonly "spacing":{readonly "0":"8px";readonly "4":"16px"}}}>);
       const { style } = (themeConfig as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "transparent":"#06c";readonly "palette":{readonly "500":"#123"}};readonly "spacing":{readonly "0":"8px";readonly "4":"16px"}}}>);
       export const scope = alternateConfig.vars().className;
-      export const props = ({className:"z-tVIWWz-text-[var(--z-color-transparent,#06c)] z-tVIWWz-border-color-[var(--z-color-palette-500,#123)] z-tVIWWz-p-[var(--z-spacing-0,8px)]"});
+      export const props = ({className:"z_tVIWWz0 z_tVIWWz1 z_tVIWWz2"});
       "
     `)
     expect(result.css).toMatchInlineSnapshot(`
@@ -2205,9 +2205,9 @@ describe('compile', () => {
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-tVIWWz-text-\\5b var\\28 --z-color-transparent\\2c \\23 06c\\29 \\5d {color:var(--z-color-transparent,#06c);}
-      .z-tVIWWz-border-color-\\5b var\\28 --z-color-palette-500\\2c \\23 123\\29 \\5d {border-color:var(--z-color-palette-500,#123);}
-      .z-tVIWWz-p-\\5b var\\28 --z-spacing-0\\2c 8px\\29 \\5d {padding:var(--z-spacing-0,8px);}"
+      .z_tVIWWz0{color:var(--z-color-transparent,#06c);}
+      .z_tVIWWz1{border-color:var(--z-color-palette-500,#123);}
+      .z_tVIWWz2{padding:var(--z-spacing-0,8px);}"
     `)
 
     const output = await Esbuild.build({
@@ -2238,7 +2238,7 @@ describe('compile', () => {
       )
 
       expect(executed.stdout).toMatchInlineSnapshot(`
-        "{"className":"z-tVIWWz-text-[var(--z-color-transparent,#06c)] z-tVIWWz-border-color-[var(--z-color-palette-500,#123)] z-tVIWWz-p-[var(--z-spacing-0,8px)]"}
+        "{"className":"z_tVIWWz0 z_tVIWWz1 z_tVIWWz2"}
         "
       `)
     } finally {
@@ -2395,15 +2395,15 @@ describe('compile', () => {
       const alternate = ({} as import('zyzz').Vars.Definition<{readonly "color":{readonly "brand":{readonly "dark":"#fff";readonly "light":"#000"}};readonly "spacing":{readonly 1:"4px";readonly "md":"8px"}}>); const alternateConfig=({vars:__zyzzSelection.create([["default","z-theme-theme"]],false,'set',"default")} as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "brand":"#f00"};readonly "spacing":{readonly "1":"4px";readonly "md":"8px"}}}>);
       export type Brand = typeof theme.color.brand;
       export const scope = alternateConfig.vars().className;
-      export const props = ({className:"z-pXWEgW-text-[var(--z-color-brand,light-dark(#000,#fff))] z-pXWEgW-p-[var(--z-spacing-md,8px)]"});"
+      export const props = ({className:"z_pXWEgW0 z_pXWEgW1"});"
     `)
     expect(result.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-color-brand:light-dark(#000,#fff);--z-spacing-md:8px;}
       .z_scheme-dark{color-scheme:dark;}
       .z_scheme-light{color-scheme:light;}
       .z_scheme-light-dark{color-scheme:light dark;}
-      .z-pXWEgW-text-\\5b var\\28 --z-color-brand\\2c light-dark\\28 \\23 000\\2c \\23 fff\\29 \\29 \\5d {color:var(--z-color-brand,light-dark(#000,#fff));}
-      .z-pXWEgW-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_pXWEgW0{color:var(--z-color-brand,light-dark(#000,#fff));}
+      .z_pXWEgW1{padding:var(--z-spacing-md,8px);}"
     `)
     expect(result.vars).toMatchInlineSnapshot(`
       {
@@ -2536,19 +2536,16 @@ describe('compile', () => {
       [
         "--z-color-brand",
         "--z-color-brand",
-        "--z-color-brand",
       ]
     `)
     expect(changed.css.match(/--z-color-brand/g)).toMatchInlineSnapshot(`
       [
         "--z-color-brand",
         "--z-color-brand",
-        "--z-color-brand",
       ]
     `)
     expect(inserted.css.match(/--z-color-brand/g)).toMatchInlineSnapshot(`
       [
-        "--z-color-brand",
         "--z-color-brand",
         "--z-color-brand",
       ]
@@ -2676,7 +2673,7 @@ export const button = ${kind === 'direct' || kind === 'tokens' ? 'theme.style' :
       "import { Vars as T } from "zyzz";
       const values = {};
       const theme = {};
-      export const props = { className: "z-hXWEpA-text-[var(--z-color-brand,#000)]" };
+      export const props = { className: "z_hXWEpA0" };
       export function other(T2) {
         return T2.define({ arbitrary: true });
       }
@@ -2723,15 +2720,15 @@ export const button = ${kind === 'direct' || kind === 'tokens' ? 'theme.style' :
       const chained = (undefined as unknown as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "brand":"#06c"};readonly "spacing":{readonly "md":"8px"}}}>['style']);
       const { style: renamed } = (themeConfig as import('zyzz').Config.VariableConfig<{readonly "vars":{readonly "color":{readonly "brand":"#06c"};readonly "spacing":{readonly "md":"8px"}}}>);
       export type Styles = Parameters<typeof renamed>[0];
-      export const first = ({className:"z-RfEg8H-text-[var(--z-color-brand,#06c)]"});
-      export const second = ({className:"z-RfEg8H-p-[var(--z-spacing-md,8px)]"});
+      export const first = ({className:"z_RfEg8H0"});
+      export const second = ({className:"z_RfEg8H1"});
       export function shadow(style: (input: string) => string) { return style('untouched') }
       "
     `)
     expect(result.css).toMatchInlineSnapshot(`
       ".z-theme-theme{--z-color-brand:#06c;--z-spacing-md:8px;}
-      .z-RfEg8H-text-\\5b var\\28 --z-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-color-brand,#06c);}
-      .z-RfEg8H-p-\\5b var\\28 --z-spacing-md\\2c 8px\\29 \\5d {padding:var(--z-spacing-md,8px);}"
+      .z_RfEg8H0{color:var(--z-color-brand,#06c);}
+      .z_RfEg8H1{padding:var(--z-spacing-md,8px);}"
     `)
 
     const bundle = await Esbuild.build({
@@ -2762,8 +2759,8 @@ export const button = ${kind === 'direct' || kind === 'tokens' ? 'theme.style' :
       )
 
       expect(executed.stdout).toMatchInlineSnapshot(`
-        "{"className":"z-RfEg8H-text-[var(--z-color-brand,#06c)]"}
-        {"className":"z-RfEg8H-p-[var(--z-spacing-md,8px)]"}
+        "{"className":"z_RfEg8H0"}
+        {"className":"z_RfEg8H1"}
         untouched
         "
       `)
@@ -2816,7 +2813,7 @@ style({ color: 'md' });
 
       const theme = ({}); const themeConfig=({});
       const { style } = themeConfig;
-      export function card(value = ({className:"z-tfEg1R-text-[var(--z-color-brand,#06c)]"})) { var style = 1; return value }
+      export function card(value = ({className:"z_tfEg1R0"})) { var style = 1; return value }
       "
     `)
 
@@ -3076,13 +3073,13 @@ style({ color: 'md' });
     expect(result.code).toMatchInlineSnapshot(`
       "
       const text = '🎉';
-      export const props = ({className:"z-GkHrU2-text-[#f00] z-GkHrU2-p-8px"});"
+      export const props = ({className:"z_GkHrU20 z_GkHrU21"});"
     `)
 
     expect(result.css).toMatchInlineSnapshot(
       `
-      ".z-GkHrU2-text-\\5b \\23 f00\\5d {color:#f00;}
-      .z-GkHrU2-p-8px{padding:8px;}"
+      ".z_GkHrU20{color:#f00;}
+      .z_GkHrU21{padding:8px;}"
     `,
     )
 
@@ -3187,19 +3184,19 @@ style({ color: 'md' });
         "import other from 'zyzz'; export const props = ({className:""}); export { other };",
         ""use client";
       import { Props as __zyzzProps } from 'zyzz/runtime';
-        export const button = __zyzzProps.create({className:"z-style-illRZq-button"});",
+        export const button = /*#__PURE__*/__zyzzProps.create({className:"z-style-illRZq-button"});",
         "#!/usr/bin/env node
 
       import { Props as __zyzzProps } from 'zyzz/runtime';
-      import { Style } from 'zyzz'; export const button = __zyzzProps.create({className:"z-style-illRZq-button"}); export { Style };",
+      import { Style } from 'zyzz'; export const button = /*#__PURE__*/__zyzzProps.create({className:"z-style-illRZq-button"}); export { Style };",
         "import { Style,  } from 'zyzz'; export const a = ({className:""}); export const b = ({className:""}); export { Style };",
         "import { Style } from 'zyzz'; export const a = ({className:""}); export const b = ({className:""}); export { Style };",
         "
       import { Props as __zyzzProps } from 'zyzz/runtime';
-      import { style } from 'zyzz'; export type Signature = typeof style; export const button = __zyzzProps.create({className:"z-style-illRZq-button"});",
+      import { style } from 'zyzz'; export type Signature = typeof style; export const button = /*#__PURE__*/__zyzzProps.create({className:"z-style-illRZq-button"});",
         "
       import { Props as __zyzzProps_ } from 'zyzz/runtime';
-       const __zyzzProps = 1; export const el = <button {...({className:"z-illRZq-text-[#f00]"})} />; export const button = __zyzzProps_.create({className:"z-style-illRZq-button"});",
+       const __zyzzProps = 1; export const el = <button {...({className:"z_illRZq0"})} />; export const button = /*#__PURE__*/__zyzzProps_.create({className:"z-style-illRZq-button"});",
         "import { style } from 'zyzz'; export function f(value = ({className:""})) { var style; return value; }",
         "export const untouched = '🎉';",
       ]
@@ -3400,9 +3397,9 @@ export function f() { var defineConfig = 1; return defineConfig }
       expect(JSON.parse(platforms.stdout)).toMatchInlineSnapshot(`
         {
           "classes": {
-            "button": "z-p-0",
+            "button": "z_0",
           },
-          "css": ".z-p-0{padding:0;}",
+          "css": ".z_0{padding:0;}",
           "vars": {},
         }
       `)
@@ -3417,7 +3414,7 @@ export function f() { var defineConfig = 1; return defineConfig }
 
       expect(JSON.parse(consumer.stdout)).toMatchInlineSnapshot(`
         {
-          "className": "z-3DNxjG-text-[#f00] z-style-3DNxjG-button external",
+          "className": "z_3DNxjG0 z-style-3DNxjG-button external",
         }
       `)
 
@@ -3439,6 +3436,103 @@ export function f() { var defineConfig = 1; return defineConfig }
       { column: prefix.at(-1)!.length, line: prefix.length },
     )
     expect(original.name).toMatchInlineSnapshot(`"'&[data-state="{"]'"`)
+  })
+})
+
+describe('applications', () => {
+  describe('compile', () => {
+    test('folded applications and specialized recipes render the props of runtime callables', async () => {
+      const source = `import { style, variants } from 'zyzz'
+const Capture = (props: object) => JSON.stringify(props)
+const Base = (props: { className?: string | undefined }) => <Capture {...styles.base({ className: props.className })} />
+const Outer = (props: { className?: string | undefined }) => <Base {...styles.outer({ className: props.className })} />
+export const early = () => <Capture {...styles.base()} />
+export const App = () => <main>
+<Capture {...styles.base()} />
+<Outer />
+<Outer className="external" />
+<Capture className="before" {...styles.inline({ className: 'literal' })} />
+<Capture {...styles.inline({ style: { color: 'red' } })} />
+<span>{styles.base().className}</span>
+<Capture {...styles.button()} />
+<Capture {...styles.button({ active: true, tone: null })} />
+<Capture {...styles.button({ active: false, className: 'x', tone: 'loud', vars: { '--a': '1' }, style: { color: 'red' } })} />
+</main>
+early()
+namespace styles {
+export const base=style({color:'red'})
+export const outer=style({padding:'8px'})
+export const inline=style({margin:'4px'})
+export const button=variants({base:{display:'flex'},variants:{active:{false:{opacity:0.5},true:{}},tone:{loud:{color:'red'},quiet:{color:'gray'}}},defaultVariants:{tone:'quiet'}})
+}`
+      const output = Transform.compile({ moduleId: 'App.tsx', source })
+
+      expect(output.code).toMatchInlineSnapshot(`
+        "
+        import { Props as __zyzzProps } from 'zyzz/runtime';
+        import { style } from 'zyzz'
+        const Capture = (props: object) => JSON.stringify(props)
+        const Base = (props: { className?: string | undefined }) => <Capture className={styles.base?__zyzzProps.merge("z_l0kPgl0",props.className):styles.base({className:props.className}).className} />
+        const Outer = (props: { className?: string | undefined }) => <Base className={styles.outer?__zyzzProps.merge("z_l0kPgl1",props.className):styles.outer({className:props.className}).className} />
+        export const early = () => <Capture className={(styles.base?"z_l0kPgl0":styles.base().className)} />
+        export const App = () => <main>
+        <Capture className={(styles.base?"z_l0kPgl0":styles.base().className)} />
+        <Outer />
+        <Outer className="external" />
+        <Capture className="before" {...styles.inline({ className: 'literal' })} />
+        <Capture {...styles.inline({ style: { color: 'red' } })} />
+        <span>{(styles.base?"z_l0kPgl0":styles.base().className)}</span>
+        <Capture {...styles.button()} />
+        <Capture {...styles.button({ active: true, tone: null })} />
+        <Capture {...styles.button({ active: false, className: 'x', tone: 'loud', vars: { '--a': '1' }, style: { color: 'red' } })} />
+        </main>
+        early()
+        namespace styles {
+        export const base=(1 as unknown as import('zyzz').style.ReturnType)
+        export const outer=(1 as unknown as import('zyzz').style.ReturnType)
+        export const inline=/*#__PURE__*/__zyzzProps.create({className:"z_l0kPgl2"})
+        export const button=(((input:Record<string,unknown>&import('zyzz').style.Options={})=>{const external=input.className,style=input.style,vars=input.vars,inline=vars?{...vars,...style}:style,className=external?"z_l0kPgl3 z_l0kPgl4 z_l0kPgl5 z_l0kPgl6"+" "+external:"z_l0kPgl3 z_l0kPgl4 z_l0kPgl5 z_l0kPgl6",result:Record<string,unknown>=inline?{className,style:inline}:{className};let value;value=Object.hasOwn(input,"active")?input["active"]:void 0;if(value!==null&&value!==void 0)result["data-active"]=String(value);value=Object.hasOwn(input,"tone")?input["tone"]:void 0;if(value===void 0)value="quiet";if(value!==null&&value!==void 0)result["data-tone"]=String(value);return result}) as unknown as import('zyzz').variants.ReturnType<{variants:{"active":{"false":{};"true":{}};"tone":{"loud":{};"quiet":{}}}}>)
+        }"
+      `)
+
+      const bundle = await Esbuild.build({
+        alias: { 'zyzz/runtime': Path.resolve('src/runtime/index.ts') },
+        bundle: true,
+        external: ['react'],
+        format: 'cjs',
+        jsx: 'automatic',
+        platform: 'node',
+        stdin: {
+          contents: output.code.replace(
+            '\nearly()',
+            '\nexport const failure = (() => { try { early() } catch (error) { return String(error) } })()',
+          ),
+          loader: 'tsx',
+          resolveDir: process.cwd(),
+        },
+        write: false,
+      })
+      const module = {
+        exports: {} as { App: () => React.ReactNode; failure: string },
+      }
+
+      new Function('module', 'exports', 'require', bundle.outputFiles[0]!.text)(
+        module,
+        module.exports,
+        Module.createRequire(import.meta.url),
+      )
+
+      // Applications before the namespace initializes still fail.
+      expect(module.exports.failure).toMatchInlineSnapshot(
+        `"TypeError: Cannot read properties of undefined (reading 'base')"`,
+      )
+
+      expect(
+        Server.renderToStaticMarkup(React.createElement(module.exports.App)),
+      ).toMatchInlineSnapshot(
+        `"<main>{&quot;className&quot;:&quot;z_l0kPgl0&quot;}{&quot;className&quot;:&quot;z_l0kPgl0 z_l0kPgl1&quot;}{&quot;className&quot;:&quot;z_l0kPgl0 z_l0kPgl1 external&quot;}{&quot;className&quot;:&quot;z_l0kPgl2 literal&quot;}{&quot;className&quot;:&quot;z_l0kPgl2&quot;,&quot;style&quot;:{&quot;color&quot;:&quot;red&quot;}}<span>z_l0kPgl0</span>{&quot;className&quot;:&quot;z_l0kPgl3 z_l0kPgl4 z_l0kPgl5 z_l0kPgl6&quot;,&quot;data-tone&quot;:&quot;quiet&quot;}{&quot;className&quot;:&quot;z_l0kPgl3 z_l0kPgl4 z_l0kPgl5 z_l0kPgl6&quot;,&quot;data-active&quot;:&quot;true&quot;}{&quot;className&quot;:&quot;z_l0kPgl3 z_l0kPgl4 z_l0kPgl5 z_l0kPgl6 x&quot;,&quot;style&quot;:{&quot;--a&quot;:&quot;1&quot;,&quot;color&quot;:&quot;red&quot;},&quot;data-active&quot;:&quot;false&quot;,&quot;data-tone&quot;:&quot;loud&quot;}</main>"`,
+      )
+    })
   })
 })
 
@@ -3886,8 +3980,8 @@ export const fade = keyframes({ '@supports (display: grid)': {'entry 0%, cover 1
       })
       expect(output.css).toMatchInlineSnapshot(
         `
-        "@media (width >= 48rem){.z-XSk4U0-styles-card-text-0{color:red;}}
-        @media (width >= 48rem){.z-XSk4U0-styles-card-text-1{color:blue;}}"
+        "@media (width >= 48rem){.z_XSk4U00{color:red;}}
+        @media (width >= 48rem){.z_XSk4U01{color:blue;}}"
       `,
       )
     })
@@ -3900,8 +3994,8 @@ export const fade = keyframes({ '@supports (display: grid)': {'entry 0%, cover 1
       })
       expect(output.css).toMatchInlineSnapshot(
         `
-        ".z-oO6_9C-styles-box-text-0{@scope (.outer) to (.stop){@layer components{color:red;}}}
-        .z-oO6_9C-styles-box-text-1{@scope (.outer) to (.stop){@layer components{@container scroll-state(stuck: top){color:blue;}}}}"
+        ".z_oO6_9C0{@scope (.outer) to (.stop){@layer components{color:red;}}}
+        .z_oO6_9C1{@scope (.outer) to (.stop){@layer components{@container scroll-state(stuck: top){color:blue;}}}}"
       `,
       )
     })
@@ -4007,7 +4101,7 @@ describe('atomicReview', () => {
       const compiler = Graph.create()
       const modules = {
         'styles.ts':
-          "import {style} from 'zyzz';export const a=style({color:'red',padding:'2px'});export const b=style({color:'red',padding:'4px'})",
+          "import {style} from 'zyzz';export const a=style({color:'red',padding:'2px'});export const b=style({color:'blue',padding:'4px'})",
       }
       const atomic = compiler.compile({ modules })
       const grouped = compiler.compile({
@@ -4016,15 +4110,14 @@ describe('atomicReview', () => {
         modules,
       })
       expect(grouped.modules['styles.ts']!.css).toMatchInlineSnapshot(`
-        ".z-b8Bx0E-a{color:red;}
-        .z-b8Bx0E-a__1{padding:2px;}
-        .z-b8Bx0E-b{padding:4px;}"
+        ".z_b8Bx0E0{color:red;padding:2px;}
+        .z_b8Bx0E1{color:blue;padding:4px;}"
       `)
       expect(Object.values(grouped.modules['styles.ts']!.classes))
         .toMatchInlineSnapshot(`
           [
-            "z-b8Bx0E-a z-b8Bx0E-a__1 z-style-b8Bx0E-a",
-            "z-b8Bx0E-a z-b8Bx0E-b z-style-b8Bx0E-b",
+            "z_b8Bx0E0 z-style-b8Bx0E-a",
+            "z_b8Bx0E1 z-style-b8Bx0E-b",
           ]
         `)
       expect(grouped.modules['styles.ts']!.css).not.toBe(
@@ -4310,8 +4403,8 @@ describe('bindings', () => {
         }).css,
       ).toMatchInlineSnapshot(
         `
-        ".z-Hgy0Gw-border-width-\\5b calc\\28 var\\28 --z-border-size\\29 \\29 \\5d {border-width:calc(var(--z-border-size));}
-        .z-Hgy0Gw-w-\\5b var\\28 --z-border-size\\29 \\5d {width:var(--z-border-size);}"
+        ".z_Hgy0Gw0{border-width:calc(var(--z-border-size));}
+        .z_Hgy0Gw1{width:var(--z-border-size);}"
       `,
       )
     })
@@ -4331,8 +4424,8 @@ describe('bindings', () => {
 
       expect(output.css).toMatchInlineSnapshot(
         `
-        ".z-nYY8mX-w-\\5b var\\28 --z-vars-amount\\29 \\5d {width:var(--z-vars-amount);}
-        .z-nYY8mX-ml-\\5b calc\\28 var\\28 --z-vars-gap\\29 _20_\\2b _20_2px\\29 \\5d {margin-left:calc(var(--z-vars-gap) + 2px);}"
+        ".z_nYY8mX0{width:var(--z-vars-amount);}
+        .z_nYY8mX1{margin-left:calc(var(--z-vars-gap) + 2px);}"
       `,
       )
 
@@ -4429,8 +4522,8 @@ describe('bindings', () => {
           source: `import { style, variable } from 'zyzz'; const a = ({x:variable("number")}); const b = ({x:variable("number")}); style({opacity:a.x})(); style({opacity:b.x})()`,
         }).css,
       ).toMatchInlineSnapshot(`
-        ".z-B0G1Ix-style-0-opacity-0{opacity:var(--z-a-x);}
-        .z-B0G1Ix-style-1-opacity-0{opacity:var(--z-b-x);}"
+        ".z_B0G1Ix0{opacity:var(--z-a-x);}
+        .z_B0G1Ix1{opacity:var(--z-b-x);}"
       `)
     })
 
@@ -4571,15 +4664,15 @@ describe('borderShorthand', () => {
       })
 
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-a-border-0{border:2px solid red;}
-        .z-a-outline-1{outline:1px dotted black;}
-        .z-a-column-rule-2{column-rule:3px dashed blue;}
-        .z-b-border-top-color-0{border-top-color:green;}
-        .z-b-outline-width-1{outline-width:5px;}
-        .z-b-column-rule-style-2{column-rule-style:solid;}
-        .z-c-border-0{border:2px solid red;}
-        .z-c-outline-1{outline:1px dotted black;}
-        .z-c-column-rule-2{column-rule:3px dashed blue;}"
+        ".z_0{border:2px solid red;}
+        .z_1{outline:1px dotted black;}
+        .z_2{column-rule:3px dashed blue;}
+        .z_3{border-top-color:green;}
+        .z_4{outline-width:5px;}
+        .z_5{column-rule-style:solid;}
+        .z_6{border:2px solid red;}
+        .z_7{outline:1px dotted black;}
+        .z_8{column-rule:3px dashed blue;}"
       `)
     })
     test('combined borders match native declarations across writing modes', async () => {
@@ -4808,9 +4901,9 @@ describe('case', () => {
 
       expect(Css.compile({ styles }).css).toMatchInlineSnapshot(
         `
-        ".z-text-\\5b var\\28 --z0\\2c blue\\29 \\5d {color:var(--z0,blue);}
-        .z-display-FlEx{display:FlEx;}
-        .z-p-2PX{padding:2PX;}"
+        ".z_0{color:var(--z0,blue);}
+        .z_1{display:FlEx;}
+        .z_2{padding:2PX;}"
       `,
       )
     })
@@ -4822,8 +4915,8 @@ describe('case', () => {
 
       expect(Css.compile({ styles }).css).toMatchInlineSnapshot(
         `
-        ".z-text-\\5b _20_ReD\\21 important\\5d {color: ReD!important;}
-        .z-display-\\5b BlOcK_9_Flow\\5d {display:BlOcK	Flow;}"
+        ".z_0{color: ReD!important;}
+        .z_1{display:BlOcK	Flow;}"
       `,
       )
     })
@@ -4846,9 +4939,9 @@ describe('case', () => {
 
       expect(output.css).toMatchInlineSnapshot(
         `
-        ".z-text-\\5b \\5c 72_20_ed\\2f \\2a \\2a \\2f \\21 important\\5d {color:\\72 ed/**/!important;}
-        .z-display-\\5b bl\\5c 6f_20_ck\\2f \\2a \\2a \\2f flow\\5d {display:bl\\6f ck/**/flow;}
-        .z-p-\\5b 1\\5c 70_20_x\\5d {padding:1\\70 x;}"
+        ".z_0{color:\\72 ed/**/!important;}
+        .z_1{display:bl\\6f ck/**/flow;}
+        .z_2{padding:1\\70 x;}"
       `,
       )
 
@@ -5318,9 +5411,9 @@ describe('conditions', () => {
         }).css,
       ).toMatchInlineSnapshot(
         `
-        ".z-Osf2pa-style-0-text-0{:where(.dark) &{color:red;}}
-        @media only screen{.z-Osf2pa-style-0-display-1{display:grid;}}
-        @media not print{.z-Osf2pa-style-0-display-2{display:block;}}"
+        ".z_Osf2pa0{:where(.dark) &{color:red;}}
+        @media only screen{.z_Osf2pa1{display:grid;}}
+        @media not print{.z_Osf2pa2{display:block;}}"
       `,
       )
     })
@@ -5365,8 +5458,8 @@ describe('conditions', () => {
 
       expect(output.css).toMatchInlineSnapshot(
         `
-        ".z-YB3XzN-style-0-text-0{&:is(:hover,:focus){color:red;}}
-        @media (width > 1px)  and (hover: hover){.z-YB3XzN-style-0-p-1{padding:2px;}}"
+        ".z_YB3XzN0{&:is(:hover,:focus){color:red;}}
+        @media (width > 1px)  and (hover: hover){.z_YB3XzN1{padding:2px;}}"
       `,
       )
     })
@@ -5389,10 +5482,10 @@ describe('conditions', () => {
       })
 
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-a-ml-0{margin-left:2px;}
-        .z-b-ml-0{margin-left:4px;}
-        .z-b-text-1{&:hover{color:red;}}
-        .z-c-ml-0{margin-left:2px;}"
+        ".z_0{margin-left:2px;}
+        .z_1{margin-left:4px;}
+        .z_2{&:hover{color:red;}}
+        .z_3{margin-left:2px;}"
       `)
 
       const browser = await chromium.launch()
@@ -5420,8 +5513,8 @@ describe('conditions', () => {
 
       expect(output.css).toMatchInlineSnapshot(
         `
-        ".z-A1zKnx-style-0-text-0{color:red;}
-        @media screen, print{.z-A1zKnx-style-0-p-1{padding:2px;}}"
+        ".z_A1zKnx0{color:red;}
+        @media screen, print{.z_A1zKnx1{padding:2px;}}"
       `,
       )
 
@@ -5474,13 +5567,13 @@ describe('conditions', () => {
       expect(Transform.compile({ moduleId: 'conditions.ts', source }).css)
         .toMatchInlineSnapshot(`
           ".z-theme-theme{--z-spacing-small:4px;--z-spacing-large:16px;}
-          .z-FlkpGI-box-p-0{padding:var(--z-spacing-small,4px);}
-          .z-FlkpGI-box-p-1{&:hover{padding:var(--z-spacing-large,16px);}}
-          @media (48rem <= width < 64rem){.z-FlkpGI-box-w-2{width:100px;}}
-          @media (48rem <= width < 64rem){.z-FlkpGI-box-h-3{&[data-active]{height:20px;}}}
-          .z-FlkpGI-box-display-4{@container sidebar (width >= 24rem){display:grid;}}
-          @supports (display:grid){.z-FlkpGI-box-gap-5{gap:var(--z-spacing-small,4px);}}
-          .z-FlkpGI-box-opacity-6{@starting-style{opacity:0;}}"
+          .z_FlkpGI0{padding:var(--z-spacing-small,4px);}
+          .z_FlkpGI1{&:hover{padding:var(--z-spacing-large,16px);}}
+          @media (48rem <= width < 64rem){.z_FlkpGI2{width:100px;}}
+          @media (48rem <= width < 64rem){.z_FlkpGI3{&[data-active]{height:20px;}}}
+          .z_FlkpGI4{@container sidebar (width >= 24rem){display:grid;}}
+          @supports (display:grid){.z_FlkpGI5{gap:var(--z-spacing-small,4px);}}
+          .z_FlkpGI6{@starting-style{opacity:0;}}"
         `)
     })
     test('retains dynamic and theme variables inside nested contexts', () => {
@@ -5492,8 +5585,8 @@ describe('conditions', () => {
         }).css,
       ).toMatchInlineSnapshot(`
         ".z-theme-theme{--z-spacing-gap:4px;}
-        .z-RPENcp-box-opacity-0{&:hover{opacity:var(--z-RPENcp-box-alpha);}}
-        .z-RPENcp-box-ml-1{&:hover{margin-left:calc(var(--z-spacing-gap,4px) + 2px);}}"
+        .z_RPENcp0{&:hover{opacity:var(--z-RPENcp-box-alpha);}}
+        .z_RPENcp1{&:hover{margin-left:calc(var(--z-spacing-gap,4px) + 2px);}}"
       `)
     })
     test('resolves imported thresholds through the packed contract', () => {
@@ -5515,7 +5608,7 @@ describe('conditions', () => {
 
       expect(output.modules['app.ts']!.css).toMatchInlineSnapshot(`
         ".z-theme-theme{}
-        @media (width >= 48rem){.z-Zf5JrJ-box-w-0{width:100px;}}"
+        @media (width >= 48rem){.z_Zf5JrJ0{width:100px;}}"
       `)
     })
     test.each([
@@ -5936,10 +6029,10 @@ describe('contributions', () => {
         body{color:red;}
         @font-face{font-family:App;src:url(/font.woff2);font-display:swap;}
         @keyframes z-k-fade{from{opacity:0;}to{opacity:1;}}
-        .z-qfO5i6-animation-name-z-k-fade{animation-name:z-k-fade;}"
+        .z_qfO5i60{animation-name:z-k-fade;}"
       `)
       expect(result.code).toMatchInlineSnapshot(
-        `"  void 0; void 0; void 0; const unused="z-k-unused"; const fade="z-k-fade"; export const box=({className:"z-qfO5i6-animation-name-z-k-fade"})"`,
+        `"  void 0; void 0; void 0; const unused="z-k-unused"; const fade="z-k-fade"; export const box=({className:"z_qfO5i60"})"`,
       )
     })
     test('keeps theme references live in global rules', () => {
@@ -6001,7 +6094,7 @@ describe('contributions', () => {
       }).toMatchInlineSnapshot(`
         {
           "modules": [
-            ".z-Zf5JrJ-text-blue{color:blue;}",
+            ".z_Zf5JrJ0{color:blue;}",
             "",
           ],
           "shared": "@layer reset,app;
@@ -6249,14 +6342,14 @@ export const child = style({all:'initial', color:'var(--Accent)', backgroundColo
       const output = Transform.compile({ moduleId: 'custom.ts', source })
 
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-SM3vav-\\5b --Accent\\3a red\\5d {--Accent:red;}
-        .z-SM3vav-\\5b --accent\\3a blue\\5d {--accent:blue;}
-        .z-SM3vav-\\5b --data\\3a _22_a\\3b b\\3a c_22_\\5d {--data:"a;b:c";}
-        .z-SM3vav-\\5b --count\\3a 2\\5d {--count:2;}
-        .z-SM3vav-child-all-0{all:initial;}
-        .z-SM3vav-child-text-1{color:var(--Accent);}
-        .z-SM3vav-child-bg-2{background-color:var(--accent);}
-        .z-SM3vav-\\5b --choice\\3a red\\3b --choice\\3a blue\\21 important\\5d {--choice:red;--choice:blue!important;}"
+        ".z_SM3vav0{--Accent:red;}
+        .z_SM3vav1{--accent:blue;}
+        .z_SM3vav2{--data:"a;b:c";}
+        .z_SM3vav3{--count:2;}
+        .z_SM3vav4{all:initial;}
+        .z_SM3vav5{color:var(--Accent);}
+        .z_SM3vav6{background-color:var(--accent);}
+        .z_SM3vav7{--choice:red;--choice:blue!important;}"
       `)
     })
 
@@ -6272,10 +6365,10 @@ export const child = style({all:'initial', color:'var(--Accent)', backgroundColo
 
       expect(Css.compile({ styles }).css).toMatchInlineSnapshot(
         `
-        ".z-\\5b --escaped\\3a hello\\5c \\21 \\5d {--escaped:hello\\!;}
-        .z-\\5b --escapedWord\\3a hello\\5c \\21 important\\5d {--escapedWord:hello\\!important;}
-        .z-\\5b --even\\3a hello\\5c \\5c \\21 important\\5d {--even:hello\\\\!important;}
-        .z-\\5b --space\\3a hello\\5c _20_\\21 important\\5d {--space:hello\\ !important;}"
+        ".z_0{--escaped:hello\\!;}
+        .z_1{--escapedWord:hello\\!important;}
+        .z_2{--even:hello\\\\!important;}
+        .z_3{--space:hello\\ !important;}"
       `,
       )
     })
@@ -6791,7 +6884,7 @@ describe('dynamic', () => {
             'import {style} from "zyzz"; style((v:{ratio:1|1.5})=>({aspectRatio:v.ratio}))',
         }).css,
       ).toMatchInlineSnapshot(
-        `".z-uD69fJ-aspect-ratio-\\5b var\\28 --z-uD69fJ-style-0-ratio\\29 \\5d {aspect-ratio:var(--z-uD69fJ-style-0-ratio);}"`,
+        `".z_uD69fJ0{aspect-ratio:var(--z-uD69fJ-style-0-ratio);}"`,
       )
 
       const errors = ['0|1', '-1|1'].map((type) => {
@@ -6823,8 +6916,8 @@ describe('dynamic', () => {
         }).css,
       ).toMatchInlineSnapshot(`
         ".z-theme-t{--z-color-ink:red;}
-        .z-i84kRs-text-\\5b var\\28 --z-color-ink\\2c red\\29 \\5d {color:var(--z-color-ink,red);}
-        .z-i84kRs-opacity-\\5b var\\28 --z-i84kRs-style-0-alpha\\29 \\5d {opacity:var(--z-i84kRs-style-0-alpha);}"
+        .z_i84kRs0{color:var(--z-color-ink,red);}
+        .z_i84kRs1{opacity:var(--z-i84kRs-style-0-alpha);}"
       `)
     })
     test('rejects imported names in callback template annotations', () => {
@@ -6891,8 +6984,8 @@ describe('dynamic', () => {
         }).css,
       ).toMatchInlineSnapshot(`
         ".z-theme-t{--z-color-ink:red;}
-        .z-oc2law-opacity-\\5b var\\28 --z-oc2law-style-0-alpha\\29 \\5d {opacity:var(--z-oc2law-style-0-alpha);}
-        .z-oc2law-text-\\5b blue\\3b color\\3a var\\28 --z-color-ink\\2c red\\29 \\5d {color:blue;color:var(--z-color-ink,red);}"
+        .z_oc2law0{opacity:var(--z-oc2law-style-0-alpha);}
+        .z_oc2law1{color:blue;color:var(--z-color-ink,red);}"
       `)
     })
     test('compiles callbacks to fixed rules and preserves callable values', async () => {
@@ -6900,10 +6993,10 @@ describe('dynamic', () => {
 
       expect(output.css).toMatchInlineSnapshot(
         `
-        ".z-RPENcp-block{display:block;}
-        .z-RPENcp-w-\\5b var\\28 --z-RPENcp-bar-amount\\29 \\5d {width:var(--z-RPENcp-bar-amount);}
-        .z-RPENcp-ml-\\5b calc\\28 var\\28 --z-RPENcp-bar-gap\\29 _20_\\2b _20_2px\\29 \\5d {margin-left:calc(var(--z-RPENcp-bar-gap) + 2px);}
-        .z-RPENcp-opacity-\\5b var\\28 --z-RPENcp-bar-alpha\\29 \\5d {opacity:var(--z-RPENcp-bar-alpha);}"
+        ".z_RPENcp0{display:block;}
+        .z_RPENcp1{width:var(--z-RPENcp-bar-amount);}
+        .z_RPENcp2{margin-left:calc(var(--z-RPENcp-bar-gap) + 2px);}
+        .z_RPENcp3{opacity:var(--z-RPENcp-bar-alpha);}"
       `,
       )
       expect(output.code.includes('values.amount')).toMatchInlineSnapshot(
@@ -6932,7 +7025,7 @@ describe('dynamic', () => {
 
       expect(module.first).toMatchInlineSnapshot(`
         {
-          "className": "z-RPENcp-block z-RPENcp-w-[var(--z-RPENcp-bar-amount)] z-RPENcp-ml-[calc(var(--z-RPENcp-bar-gap)_20_+_20_2px)] z-RPENcp-opacity-[var(--z-RPENcp-bar-alpha)] z-style-RPENcp-bar",
+          "className": "z_RPENcp0 z_RPENcp1 z_RPENcp2 z_RPENcp3 z-style-RPENcp-bar",
           "style": {
             "--z-RPENcp-bar-alpha": 0.5,
             "--z-RPENcp-bar-amount": "25%",
@@ -6950,7 +7043,7 @@ describe('dynamic', () => {
         }),
       ).toMatchInlineSnapshot(`
         {
-          "className": "z-RPENcp-block z-RPENcp-w-[var(--z-RPENcp-bar-amount)] z-RPENcp-ml-[calc(var(--z-RPENcp-bar-gap)_20_+_20_2px)] z-RPENcp-opacity-[var(--z-RPENcp-bar-alpha)] z-style-RPENcp-bar external",
+          "className": "z_RPENcp0 z_RPENcp1 z_RPENcp2 z_RPENcp3 z-style-RPENcp-bar external",
           "style": {
             "--z-RPENcp-bar-alpha": 1,
             "--z-RPENcp-bar-amount": "75%",
@@ -7031,6 +7124,240 @@ describe('dynamic', () => {
       }
     })
 
+    test('writes fields that fill one declaration inline on elements styled alone', async () => {
+      const source = `import { style } from 'zyzz'
+export const App = (props: { label: string; x: number }) => <main>
+<div id="dot" {...styles.dot({ transform: \`translateX(\${props.x}px)\`, width: props.label as \`\${number}px\` })} />
+<div id="shared" className="shared" {...styles.dot({ transform: 'translateX(0px)', width: '3px' })} />
+<div id="later" {...styles.later({ width: props.label })} />
+<div id="hover" {...styles.hover({ width: props.label })} />
+<div id="mixed" {...styles.mixed({ opacity: 0.5, width: props.label as \`\${number}px\` })} />
+<div id="keyword" {...styles.keyword({ width: props.label })} />
+</main>
+namespace styles {
+  export const dot = style((values: { transform: \`translateX(\${number}px)\`; width: \`\${number}px\` }) => ({
+    display: 'block',
+    width: values.width,
+    transform: values.transform,
+  }))
+
+  export const later = style((values: { width: string }) => ({ width: values.width, minInlineSize: '20px' }))
+
+  export const hover = style((values: { width: string }) => ({ width: values.width, selectors: { '&:hover': { width: '1px' } } }))
+
+  export const mixed = style((values: { opacity: number; width: \`\${number}px\` }) => ({ opacity: values.opacity, width: values.width }))
+
+  export const keyword = style((values: { width: string }) => ({ width: values.width }))
+}`
+      const output = Transform.compile({ moduleId: 'App.tsx', source })
+
+      // Applications spread alone fold to their props, and other applications and fields that admit CSS-wide keywords keep variables.
+      expect(
+        output.code.slice(
+          output.code.indexOf('<main>'),
+          output.code.indexOf('</main>'),
+        ),
+      ).toMatchInlineSnapshot(`
+        "<main>
+        <div id="dot" {...(styles.dot?{className:"z_l0kPgl0 z_l0kPgl1 z_l0kPgl2",style:{"transform":(\`translateX(\${props.x}px)\`)||"unset","width":(props.label as \`\${number}px\`)||"unset"}}:styles.dot())} />
+        <div id="shared" className="shared" {...styles.dot({ transform: 'translateX(0px)', width: '3px' })} />
+        <div id="later" {...styles.later({ width: props.label })} />
+        <div id="hover" {...styles.hover({ width: props.label })} />
+        <div id="mixed" {...(styles.mixed?{className:"z_l0kPgl7 z_l0kPgl8",style:{"--z-l0kPgl-styles-mixed-opacity":\`\${(0.5)}\`||" ","width":(props.label as \`\${number}px\`)||"unset"}}:styles.mixed())} />
+        <div id="keyword" {...styles.keyword({ width: props.label })} />
+        "
+      `)
+
+      const bundle = await Esbuild.build({
+        alias: { 'zyzz/runtime': Path.resolve('src/runtime/index.ts') },
+        bundle: true,
+        external: ['react'],
+        format: 'cjs',
+        jsx: 'automatic',
+        platform: 'node',
+        stdin: {
+          contents: output.code,
+          loader: 'tsx',
+          resolveDir: process.cwd(),
+        },
+        write: false,
+      })
+      const module = {
+        exports: {} as {
+          App: (props: { label: string; x: number }) => React.ReactNode
+        },
+      }
+
+      new Function('module', 'exports', 'require', bundle.outputFiles[0]!.text)(
+        module,
+        module.exports,
+        Module.createRequire(import.meta.url),
+      )
+
+      const browser = await chromium.launch()
+
+      try {
+        const page = await browser.newPage()
+        const render = async (props: { label: string; x: number }) => {
+          await page.setContent(
+            `<style>${output.css}</style>${Server.renderToStaticMarkup(React.createElement(module.exports.App, props))}`,
+          )
+
+          return page.locator('div').evaluateAll((elements) =>
+            elements.map((element) => {
+              const style = getComputedStyle(element)
+
+              return [element.id, style.transform, style.width, style.opacity]
+            }),
+          )
+        }
+
+        expect(await render({ label: '10px', x: 4 })).toMatchInlineSnapshot(`
+          [
+            [
+              "dot",
+              "matrix(1, 0, 0, 1, 4, 0)",
+              "10px",
+              "1",
+            ],
+            [
+              "shared",
+              "matrix(1, 0, 0, 1, 0, 0)",
+              "3px",
+              "1",
+            ],
+            [
+              "later",
+              "none",
+              "20px",
+              "1",
+            ],
+            [
+              "hover",
+              "none",
+              "10px",
+              "1",
+            ],
+            [
+              "mixed",
+              "none",
+              "10px",
+              "0.5",
+            ],
+            [
+              "keyword",
+              "none",
+              "10px",
+              "1",
+            ],
+          ]
+        `)
+
+        // An empty value leaves each property unset, as an invalid variable does.
+        expect(await render({ label: '', x: 4 })).toMatchInlineSnapshot(`
+          [
+            [
+              "dot",
+              "matrix(1, 0, 0, 1, 4, 0)",
+              "1264px",
+              "1",
+            ],
+            [
+              "shared",
+              "matrix(1, 0, 0, 1, 0, 0)",
+              "3px",
+              "1",
+            ],
+            [
+              "later",
+              "none",
+              "1264px",
+              "1",
+            ],
+            [
+              "hover",
+              "none",
+              "1264px",
+              "1",
+            ],
+            [
+              "mixed",
+              "none",
+              "1264px",
+              "0.5",
+            ],
+            [
+              "keyword",
+              "none",
+              "1264px",
+              "1",
+            ],
+          ]
+        `)
+      } finally {
+        await browser.close()
+      }
+    })
+
+    test('keeps the callable when a member read could replace the definition', () => {
+      const source = `import { style } from 'zyzz'
+const styles = {
+  dot: style((values: { width: string }) => ({ width: values.width })),
+}
+styles.dot = ((values: { width: string }) => ({ className: 'other', style: { height: values.width } })) as typeof styles.dot
+export const App = () => <div {...styles.dot({ width: '10px' })} />`
+      const output = Transform.compile({ moduleId: 'App.tsx', source })
+
+      expect(
+        output.code.slice(output.code.indexOf('<div')),
+      ).toMatchInlineSnapshot(`"<div {...styles.dot({ width: '10px' })} />"`)
+    })
+
+    test('keeps the variable when a later all resets the declaration', () => {
+      const source = `import { style } from 'zyzz'
+export const App = () => <div {...styles.reset({ width: '10px' })} />
+namespace styles {
+  export const reset = style((values: { width: string }) => ({ width: values.width, all: 'unset' }))
+}`
+      const output = Transform.compile({ moduleId: 'App.tsx', source })
+
+      const start = output.code.indexOf('<div')
+
+      expect(
+        output.code.slice(start, output.code.indexOf('\n', start)),
+      ).toMatchInlineSnapshot(`"<div {...styles.reset({ width: '10px' })} />"`)
+    })
+
+    test('keeps keyword templates and merged namespace members callable', () => {
+      const source = `import { style } from 'zyzz'
+export const A = () => <div {...styles.keyword({ width: 'inherit' })} />
+namespace styles {
+  export const keyword = style((values: { width: \`\${'in'}herit\` }) => ({ width: values.width }))
+
+  export const spaced = style((values: { width: \` \${'in'}herit \` }) => ({ width: values.width }))
+}
+export const C = () => <div {...styles.spaced({ width: ' inherit ' })} />
+export const B = () => <div {...merged.dot({ width: '10px' })} />
+namespace merged {
+  export const dot = style((values: { width: \`\${number}px\` }) => ({ width: values.width }))
+}
+namespace merged {
+  export const other = style({ color: 'red' })
+}`
+      const output = Transform.compile({ moduleId: 'App.tsx', source })
+      const lines = output.code
+        .split('\n')
+        .filter((line) => line.includes('<div'))
+
+      expect(lines).toMatchInlineSnapshot(`
+        [
+          "export const A = () => <div {...styles.keyword({ width: 'inherit' })} />",
+          "export const C = () => <div {...styles.spaced({ width: ' inherit ' })} />",
+          "export const B = () => <div {...merged.dot({ width: '10px' })} />",
+        ]
+      `)
+    })
+
     test('mixes bound theme references with static and dynamic declarations', () => {
       expect(
         Transform.compile({
@@ -7040,8 +7367,8 @@ describe('dynamic', () => {
         }).css,
       ).toMatchInlineSnapshot(`
         ".z-theme-theme{--z-color-brand:red;}
-        .z-mSk-e5-text-\\5b var\\28 --z-color-brand\\2c red\\29 \\5d {color:var(--z-color-brand,red);}
-        .z-mSk-e5-opacity-\\5b var\\28 --z-mSk-e5-bar-alpha\\29 \\5d {opacity:var(--z-mSk-e5-bar-alpha);}"
+        .z_mSk-e50{color:var(--z-color-brand,red);}
+        .z_mSk-e51{opacity:var(--z-mSk-e5-bar-alpha);}"
       `)
     })
 
@@ -7053,7 +7380,7 @@ describe('dynamic', () => {
             'import { style } from "zyzz"; style((values:{$alpha:number})=>({opacity:values.$alpha}))',
         }).css,
       ).toMatchInlineSnapshot(
-        `".z-8ludUQ-opacity-\\5b var\\28 --z-8ludUQ-style-0-_5f_24_5f_alpha\\29 \\5d {opacity:var(--z-8ludUQ-style-0-_24_alpha);}"`,
+        `".z_8ludUQ0{opacity:var(--z-8ludUQ-style-0-_24_alpha);}"`,
       )
     })
 
@@ -7888,8 +8215,8 @@ export const any=cssFunction({parameters:[{name:'--x',syntax:'type(*)'}],returns
         `"@function --z-cssfunction-size(--size type(<length> | <percentage>): 25%) returns type(<length> | <percentage>){result:var(--size);}"`,
       )
       expect(output.modules['app.ts']?.css).toMatchInlineSnapshot(`
-        ".z-Zf5JrJ-styles-default-w-0{width:--z-cssfunction-size();}
-        .z-Zf5JrJ-styles-fixed-w-0{width:--z-cssfunction-size(20px);}"
+        ".z_Zf5JrJ0{width:--z-cssfunction-size();}
+        .z_Zf5JrJ1{width:--z-cssfunction-size(20px);}"
       `)
     })
 
@@ -8727,11 +9054,11 @@ describe('images', () => {
       })
 
       expect(Css.compile({ styles }).css).toMatchInlineSnapshot(`
-        ".z-background-image-\\5b url\\28 _22_image\\2e png_22_\\29 \\3b background-image\\3a linear-gradient\\28 red\\2c _20_blue\\29 \\21 important\\5d {background-image:url("image.png");background-image:linear-gradient(red, blue)!important;}
-        .z-first-marker-0{marker:url(#first);}
-        .z-second-marker-start-0{marker-start:url(#second);}
-        .z-third-marker-0{marker:url(#first);}
-        .z-opacity-\\5b 0\\2e 5\\5d {opacity:0.5;}"
+        ".z_0{background-image:url("image.png");background-image:linear-gradient(red, blue)!important;}
+        .z_1{marker:url(#first);}
+        .z_2{marker-start:url(#second);}
+        .z_3{marker:url(#first);}
+        .z_4{opacity:0.5;}"
       `)
 
       const lexer = Conformance.lexer()
@@ -8753,8 +9080,8 @@ describe('images', () => {
 
       expect(Css.compile({ styles }).css).toMatchInlineSnapshot(
         `
-        ".z-text-\\5b \\23 12\\5d {color:#12;}
-        .z-order-\\5b 0\\2e 5\\5d {order:0.5;}"
+        ".z_0{color:#12;}
+        .z_1{order:0.5;}"
       `,
       )
 
@@ -9787,9 +10114,9 @@ export namespace styles {
         @font-palette-values --z-fontpalettevalues-palette{font-family:Body;base-palette:0;override-colors:0 red;}
         @position-try --z-positiontry-below{position-area:bottom;margin-top:4px;}
         @color-profile --z-colorprofile-profile{src:url(/profile.icc);rendering-intent:relative-colorimetric;}
-        .z-aRWX0o-list-style-type-z-counterstyle-dots{list-style-type:z-counterstyle-dots;}
-        .z-aRWX0o-font-palette-\\5b --z-fontpalettevalues-palette\\5d {font-palette:--z-fontpalettevalues-palette;}
-        .z-aRWX0o-position-try-fallbacks---z-positiontry-below{position-try-fallbacks:--z-positiontry-below;}"
+        .z_aRWX0o0{list-style-type:z-counterstyle-dots;}
+        .z_aRWX0o1{font-palette:--z-fontpalettevalues-palette;}
+        .z_aRWX0o2{position-try-fallbacks:--z-positiontry-below;}"
       `)
       expect(
         output.code
@@ -9805,7 +10132,7 @@ export namespace styles {
         export const below="--z-positiontry-below" as import('zyzz/web').positionTry.Reference;
         export const profile="--z-colorprofile-profile" as import('zyzz/web').colorProfile.Reference;
         export namespace styles {
-          export const list = __zyzzProps.create({className:"z-aRWX0o-list-style-type-z-counterstyle-dots z-aRWX0o-font-palette-[--z-fontpalettevalues-palette] z-aRWX0o-position-try-fallbacks---z-positiontry-below z-style-aRWX0o-styles-list"})
+          export const list = /*#__PURE__*/__zyzzProps.create({className:"z_aRWX0o0 z_aRWX0o1 z_aRWX0o2 z-style-aRWX0o-styles-list"})
         }"
       `)
     })
@@ -9830,7 +10157,7 @@ export namespace styles {
         `"@counter-style z-counterstyle-dots{system:cyclic;symbols:"●";}"`,
       )
       expect(output.modules['app.ts']!.css).toMatchInlineSnapshot(
-        `".z-Zf5JrJ-list-style-type-z-counterstyle-dots{list-style-type:z-counterstyle-dots;}"`,
+        `".z_Zf5JrJ0{list-style-type:z-counterstyle-dots;}"`,
       )
       expect(
         JSON.parse(library.contracts['names.ts']!).version,
@@ -10218,11 +10545,11 @@ export const dynamic = styles.dynamic({ width: '20px' });`
       const output = Transform.compile({ moduleId: 'namespace.ts', source })
 
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-Kokhlf-p-8px{padding:8px;}
-        .z-Kokhlf-styles-card-text-1{color:red;}
-        .z-Kokhlf-styles-button-text-0{color:blue;}
-        .z-Kokhlf-styles-dynamic-text-0{color:red;}
-        .z-Kokhlf-w-\\5b var\\28 --z-Kokhlf-styles-dynamic-width\\29 \\5d {width:var(--z-Kokhlf-styles-dynamic-width);}"
+        ".z_Kokhlf0{padding:8px;}
+        .z_Kokhlf1{color:red;}
+        .z_Kokhlf2{color:blue;}
+        .z_Kokhlf3{color:red;}
+        .z_Kokhlf4{width:var(--z-Kokhlf-styles-dynamic-width);}"
       `)
 
       const built = await Esbuild.build({
@@ -10243,17 +10570,17 @@ export const dynamic = styles.dynamic({ width: '20px' });`
 
       expect(result.card).toMatchInlineSnapshot(`
         {
-          "className": "z-Kokhlf-p-8px z-Kokhlf-styles-card-text-1 z-style-Kokhlf-styles-card",
+          "className": "z_Kokhlf0 z_Kokhlf1 z-style-Kokhlf-styles-card",
         }
       `)
       expect(result.button).toMatchInlineSnapshot(`
         {
-          "className": "z-Kokhlf-p-8px z-Kokhlf-styles-button-text-0 z-style-Kokhlf-styles-button",
+          "className": "z_Kokhlf0 z_Kokhlf2 z-style-Kokhlf-styles-button",
         }
       `)
       expect(result.dynamic).toMatchInlineSnapshot(`
         {
-          "className": "z-Kokhlf-p-8px z-Kokhlf-styles-dynamic-text-0 z-Kokhlf-w-[var(--z-Kokhlf-styles-dynamic-width)] z-style-Kokhlf-styles-dynamic",
+          "className": "z_Kokhlf0 z_Kokhlf3 z_Kokhlf4 z-style-Kokhlf-styles-dynamic",
           "style": {
             "--z-Kokhlf-styles-dynamic-width": "20px",
           },
@@ -10273,8 +10600,8 @@ export const dynamic = styles.dynamic({ width: '20px' });`
       })
 
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-dRwjil-first-card-text-0{color:red;}
-        .z-dRwjil-second-card-text-0{color:blue;}"
+        ".z_dRwjil0{color:red;}
+        .z_dRwjil1{color:blue;}"
       `)
     })
 
@@ -10312,9 +10639,9 @@ import { Css } from 'zyzz/web';export const { style, variants, vars:theme } = Co
             import { CompositionHtml as __zyzzCompositionHtml, Props as __zyzzProps, Recipe as __zyzzRecipe } from 'zyzz/runtime';
 
             import { styled, variants, theme } from './pkg/index.js';
-            export const card=(__zyzzCompositionHtml.bind(__zyzzProps.create({className:"z-Zf5JrJ-card-text-0 z-Zf5JrJ-card-p-1 z-style-Zf5JrJ-card"})) as import('zyzz').style.ReturnType<'html'>);
-            export const other=(__zyzzCompositionHtml.bind(__zyzzProps.create({className:"z-Zf5JrJ-card-text-0 z-Zf5JrJ-card-p-1 z-style-Zf5JrJ-other"})) as import('zyzz').style.ReturnType<'html'>);
-            export const button=(__zyzzCompositionHtml.bind(__zyzzRecipe.create({"axes":{"size":["large"]},"defaults":{},"className":"z-Zf5JrJ-card-text-0 z-Zf5JrJ-button-p-0 z-Zf5JrJ-button-p-1 z-style-Zf5JrJ-button"})) as import('zyzz').variants.ReturnType<{variants:{"size":{"large":{}}}},"html">);
+            export const card=(__zyzzCompositionHtml.bind(__zyzzProps.create({className:"z_Zf5JrJ0 z_Zf5JrJ1 z-style-Zf5JrJ-card"})) as import('zyzz').style.ReturnType<'html'>);
+            export const other=(__zyzzCompositionHtml.bind(__zyzzProps.create({className:"z_Zf5JrJ0 z_Zf5JrJ1 z-style-Zf5JrJ-other"})) as import('zyzz').style.ReturnType<'html'>);
+            export const button=(__zyzzCompositionHtml.bind(/*#__PURE__*/__zyzzRecipe.create({"axes":{"size":["large"]},"defaults":{},"className":"z_Zf5JrJ0 z_Zf5JrJ2 z_Zf5JrJ3 z-style-Zf5JrJ-button"})) as import('zyzz').variants.ReturnType<{variants:{"size":{"large":{}}}},"html">);
             export const props=card();"
           `)
           expect(app.css).toMatchInlineSnapshot(`
@@ -10322,10 +10649,10 @@ import { Css } from 'zyzz/web';export const { style, variants, vars:theme } = Co
             .z_scheme-dark{color-scheme:dark;}
             .z_scheme-light{color-scheme:light;}
             .z_scheme-light-dark{color-scheme:light dark;}
-            .z-Zf5JrJ-card-text-0{color:var(--z-color-brand,red);}
-            .z-Zf5JrJ-card-p-1{padding:8px;}
-            .z-Zf5JrJ-button-p-0{padding:8px;}
-            .z-Zf5JrJ-button-p-1{&:where([data-size="large"]){padding:12px;}}"
+            .z_Zf5JrJ0{color:var(--z-color-brand,red);}
+            .z_Zf5JrJ1{padding:8px;}
+            .z_Zf5JrJ2{padding:8px;}
+            .z_Zf5JrJ3{&:where([data-size="large"]){padding:12px;}}"
           `)
         } else {
           expect(app.code).toMatchInlineSnapshot(`
@@ -10333,9 +10660,9 @@ import { Css } from 'zyzz/web';export const { style, variants, vars:theme } = Co
             import { CompositionHtml as __zyzzCompositionHtml, Props as __zyzzProps, Recipe as __zyzzRecipe } from 'zyzz/runtime';
 
             import { styled, variants, theme } from './pkg/index.js';
-            export const card=(__zyzzCompositionHtml.bind(__zyzzProps.create({className:"z-Zf5JrJ-card z-style-Zf5JrJ-card"})) as import('zyzz').style.ReturnType<'html'>);
-            export const other=(__zyzzCompositionHtml.bind(__zyzzProps.create({className:"z-Zf5JrJ-other z-style-Zf5JrJ-other"})) as import('zyzz').style.ReturnType<'html'>);
-            export const button=(__zyzzCompositionHtml.bind(__zyzzRecipe.create({"axes":{"size":["large"]},"defaults":{},"className":"z-Zf5JrJ-button z-style-Zf5JrJ-button"})) as import('zyzz').variants.ReturnType<{variants:{"size":{"large":{}}}},"html">);
+            export const card=(__zyzzCompositionHtml.bind(__zyzzProps.create({className:"z_Zf5JrJ0 z-style-Zf5JrJ-card"})) as import('zyzz').style.ReturnType<'html'>);
+            export const other=(__zyzzCompositionHtml.bind(__zyzzProps.create({className:"z_Zf5JrJ1 z-style-Zf5JrJ-other"})) as import('zyzz').style.ReturnType<'html'>);
+            export const button=(__zyzzCompositionHtml.bind(/*#__PURE__*/__zyzzRecipe.create({"axes":{"size":["large"]},"defaults":{},"className":"z_Zf5JrJ2 z-style-Zf5JrJ-button"})) as import('zyzz').variants.ReturnType<{variants:{"size":{"large":{}}}},"html">);
             export const props=card();"
           `)
           expect(app.css).toMatchInlineSnapshot(`
@@ -10343,9 +10670,9 @@ import { Css } from 'zyzz/web';export const { style, variants, vars:theme } = Co
             .z_scheme-dark{color-scheme:dark;}
             .z_scheme-light{color-scheme:light;}
             .z_scheme-light-dark{color-scheme:light dark;}
-            .z-Zf5JrJ-card{color:var(--z-color-brand,red);padding:8px;}
-            .z-Zf5JrJ-other{color:var(--z-color-brand,red);padding:8px;}
-            .z-Zf5JrJ-button{color:var(--z-color-brand,red);padding:8px;&:where([data-size="large"]){padding:12px;}}"
+            .z_Zf5JrJ0{color:var(--z-color-brand,red);padding:8px;}
+            .z_Zf5JrJ1{color:var(--z-color-brand,red);padding:8px;}
+            .z_Zf5JrJ2{color:var(--z-color-brand,red);padding:8px;&:where([data-size="large"]){padding:12px;}}"
           `)
         }
       }
@@ -10365,12 +10692,12 @@ import { Css } from 'zyzz/web';export const { style, variants, vars:theme } = Co
 
       expect(atomic.classes).toMatchInlineSnapshot(`
         {
-          "style-1e8a67z1uaws1j-96": "z-Zf5JrJ-text-red z-Zf5JrJ-p-8px z-style-Zf5JrJ-card",
+          "style-1e8a67z1uaws1j-96": "z_Zf5JrJ0 z_Zf5JrJ1 z-style-Zf5JrJ-card",
         }
       `)
       expect(grouped.classes).toMatchInlineSnapshot(`
         {
-          "style-1e8a67z1uaws1j-97": "z-Zf5JrJ-card z-style-Zf5JrJ-card",
+          "style-1e8a67z1uaws1j-97": "z_Zf5JrJ0 z-style-Zf5JrJ-card",
         }
       `)
       for (const [mode, output] of [
@@ -10441,20 +10768,20 @@ export const classes=[styles.card().className,styles.label().className,styles.pl
 
       expect(output.classes).toMatchInlineSnapshot(`
         {
-          "composition-1e8a67z1uaws1j-337": "z_Zf5JrJ3 z_Zf5JrJ4",
+          "composition-1e8a67z1uaws1j-337": "z_Zf5JrJ5 z_Zf5JrJ6",
           "style-1e8a67z1uaws1j-139": "z_Zf5JrJ0 z_Zf5JrJ1",
           "style-1e8a67z1uaws1j-208": "z_Zf5JrJ0 z_Zf5JrJ2",
-          "style-1e8a67z1uaws1j-277": "z-Zf5JrJ-text-red z-Zf5JrJ-p-8px",
+          "style-1e8a67z1uaws1j-277": "z_Zf5JrJ3 z_Zf5JrJ4",
         }
       `)
       expect(output.css).toMatchInlineSnapshot(`
         ".z_Zf5JrJ0{color:red;}
         .z_Zf5JrJ1{padding:8px;}
         .z_Zf5JrJ2{padding:4px;}
-        .z-Zf5JrJ-text-red{color:red;}
-        .z-Zf5JrJ-p-8px{padding:8px;}
-        .z_Zf5JrJ3{color:red;color:red;}
-        .z_Zf5JrJ4{padding:8px;padding:4px;}"
+        .z_Zf5JrJ3{color:red;}
+        .z_Zf5JrJ4{padding:8px;}
+        .z_Zf5JrJ5{color:red;color:red;}
+        .z_Zf5JrJ6{padding:8px;padding:4px;}"
       `)
 
       const bundle = await Esbuild.build({
@@ -10543,15 +10870,15 @@ export const accent=style({color:'blue'});
 
       expect(output.css).toMatchInlineSnapshot(`
         ".z_l0kPgl0{padding:24px;}
-        .z-l0kPgl-styles-card-text-0{color:red;}
-        .z-l0kPgl-styles-card-p-1{padding:8px;}
-        .z-l0kPgl-styles-wide-p-0{padding:24px;}
-        .z_l0kPgl1{color:blue;}
-        .z-l0kPgl-styles-note-p-0{padding:8px;}
-        .z-l0kPgl-styles-muted-p-0{padding:24px;}
-        .z_l0kPgl2{color:red;}
-        .z-App-0-l0kPgl-styles-base-l0kPgl-styles-accent-text-0{color:red;}
-        .z-App-0-l0kPgl-styles-base-l0kPgl-styles-accent-text-1{color:blue;}"
+        .z_l0kPgl1{color:red;}
+        .z_l0kPgl2{padding:8px;}
+        .z_l0kPgl3{padding:24px;}
+        .z_l0kPgl4{color:blue;}
+        .z_l0kPgl5{padding:8px;}
+        .z_l0kPgl6{padding:24px;}
+        .z_l0kPgl7{color:red;}
+        .z_l0kPgl8{color:red;}
+        .z_l0kPgl9{color:blue;}"
       `)
 
       const bundle = await Esbuild.build({
@@ -10684,29 +11011,29 @@ export const accent=style({color:'blue'});
             ".z_EZaLq60{color:red;}
             .z_EZaLq61{padding:8px;}
             .z_EZaLq62{padding-left:2px;}
-            .z-props-0-EZaLq6-a-EZaLq6-b-text-0{color:red;}
-            .z-props-0-EZaLq6-a-EZaLq6-b-p-1{padding:8px;}
-            .z-props-0-EZaLq6-a-EZaLq6-b-pl-2{padding-left:2px;}"
+            .z_EZaLq63{color:red;}
+            .z_EZaLq64{padding:8px;}
+            .z_EZaLq65{padding-left:2px;}"
           `)
           expect(emitted.css).toMatchInlineSnapshot(`
-            ".z-EZaLq6-a-text-0{color:red;}
-            .z-EZaLq6-a-p-1{padding:8px;}
-            .z-EZaLq6-b-pl-0{padding-left:2px;}
-            .z-props-0-EZaLq6-a-EZaLq6-b-p-0{padding:8px;}
-            .z-props-0-EZaLq6-a-EZaLq6-b-pl-1{padding-left:2px;}"
+            ".z_0{color:red;}
+            .z_1{padding:8px;}
+            .z_2{padding-left:2px;}
+            .z_3{padding:8px;}
+            .z_4{padding-left:2px;}"
           `)
         } else {
           expect(output.css).toMatchInlineSnapshot(`
-            ".z-EZaLq6-a{color:red;padding:8px;}
-            .z-EZaLq6-b{padding-left:2px;}
-            .z-props-0-EZaLq6-a-EZaLq6-b-style-0{color:red;padding:8px;}
-            .z-props-0-EZaLq6-a-EZaLq6-b-style-1{padding-left:2px;}"
+            ".z_EZaLq60{color:red;padding:8px;}
+            .z_EZaLq61{padding-left:2px;}
+            .z_EZaLq62{color:red;padding:8px;}
+            .z_EZaLq63{padding-left:2px;}"
           `)
           expect(emitted.css).toMatchInlineSnapshot(`
-            ".z-EZaLq6-a{color:red;padding:8px;}
-            .z-EZaLq6-b{padding-left:2px;}
-            .z-props-0-EZaLq6-a-EZaLq6-b-style-0{color:red;padding:8px;}
-            .z-props-0-EZaLq6-a-EZaLq6-b-style-1{padding-left:2px;}"
+            ".z_0{color:red;padding:8px;}
+            .z_1{padding-left:2px;}
+            .z_2{color:red;padding:8px;}
+            .z_3{padding-left:2px;}"
           `)
         }
       }
@@ -11222,12 +11549,12 @@ describe('performance', () => {
       expect(output.code).toMatchInlineSnapshot(`
         "
               
-              export const classes=["z-iFQJXQ-styles-card-text-0","z-iFQJXQ-styles-label-text-0"]"
+              export const classes=["z_iFQJXQ0","z_iFQJXQ1"]"
       `)
       expect(consumer.classes).toMatchInlineSnapshot(`
         [
-          "z-iFQJXQ-styles-card-text-0",
-          "z-iFQJXQ-styles-label-text-0",
+          "z_iFQJXQ0",
+          "z_iFQJXQ1",
         ]
       `)
 
@@ -11241,7 +11568,7 @@ describe('performance', () => {
         "
               declare namespace styles {export const card: import('zyzz').style.ReturnType}
               export type Card = typeof styles.card
-              export const classes=["z-iFQJXQ-text-red"]"
+              export const classes=["z_iFQJXQ0"]"
       `)
     })
 
@@ -11258,20 +11585,20 @@ describe('performance', () => {
       expect(output.code).toMatchInlineSnapshot(`
         "import {style} from 'zyzz';
               const card=(1 as unknown as import('zyzz').style.ReturnType);
-              export const read="z-iFQJXQ-text-red";
-              export const reads=["z-iFQJXQ-text-red",\`\${"z-iFQJXQ-text-red"} extra\`];
-              export function write(){(card?{className:"z-iFQJXQ-text-red"}:card()).className='replaced'}
-              export const optional=({className:"z-iFQJXQ-text-red"})?.className;
-              export const other=({className:"z-iFQJXQ-text-red"}).style"
+              export const read="z_iFQJXQ0";
+              export const reads=["z_iFQJXQ0",\`\${"z_iFQJXQ0"} extra\`];
+              export function write(){(card?{className:"z_iFQJXQ0"}:card()).className='replaced'}
+              export const optional=({className:"z_iFQJXQ0"})?.className;
+              export const other=({className:"z_iFQJXQ0"}).style"
       `)
-      expect(consumer.read).toMatchInlineSnapshot(`"z-iFQJXQ-text-red"`)
+      expect(consumer.read).toMatchInlineSnapshot(`"z_iFQJXQ0"`)
       expect(consumer.reads).toMatchInlineSnapshot(`
         [
-          "z-iFQJXQ-text-red",
-          "z-iFQJXQ-text-red extra",
+          "z_iFQJXQ0",
+          "z_iFQJXQ0 extra",
         ]
       `)
-      expect(consumer.optional).toMatchInlineSnapshot(`"z-iFQJXQ-text-red"`)
+      expect(consumer.optional).toMatchInlineSnapshot(`"z_iFQJXQ0"`)
     })
 
     test('keeps guarded definitions without repeating their class lists', async () => {
@@ -11287,31 +11614,31 @@ describe('performance', () => {
       // The guarded card keeps a truthy definition, while the label and button follow initialization.
       expect(output.code).toMatchInlineSnapshot(`
         "
-              export function apply(){return [(styles.card?{className:"z-iFQJXQ-styles-card-text-0"}:styles.card()),(styles.label?{className:"z-iFQJXQ-styles-label-text-0"}:styles.label())]}
+              export function apply(){return [(styles.card?{className:"z_iFQJXQ0"}:styles.card()),(styles.label?{className:"z_iFQJXQ1"}:styles.label())]}
               export let failed=false;
               try {apply()} catch(error){failed=error instanceof TypeError}
               namespace styles {export const card=(1 as unknown as import('zyzz').style.ReturnType);export const label=(1 as unknown as import('zyzz').style.ReturnType)}
-              export const classes=["z-iFQJXQ-styles-label-text-0"]
+              export const classes=["z_iFQJXQ1"]
               const button=(void 0 as unknown as import('zyzz').style.ReturnType);
-              export const padding="z-iFQJXQ-p-2px""
+              export const padding="z_iFQJXQ2""
       `)
       expect(consumer.failed).toMatchInlineSnapshot(`true`)
       expect(consumer.apply()).toMatchInlineSnapshot(`
         [
           {
-            "className": "z-iFQJXQ-styles-card-text-0",
+            "className": "z_iFQJXQ0",
           },
           {
-            "className": "z-iFQJXQ-styles-label-text-0",
+            "className": "z_iFQJXQ1",
           },
         ]
       `)
       expect(consumer.classes).toMatchInlineSnapshot(`
         [
-          "z-iFQJXQ-styles-label-text-0",
+          "z_iFQJXQ1",
         ]
       `)
-      expect(consumer.padding).toMatchInlineSnapshot(`"z-iFQJXQ-p-2px"`)
+      expect(consumer.padding).toMatchInlineSnapshot(`"z_iFQJXQ2"`)
     })
 
     test('folds local calls into fresh props while preserving initialization errors', async () => {
@@ -12007,7 +12334,7 @@ global({body:{color:\`color(\${profile} 0 1 1 0)\`}});`
       }
     `)
       expect(output.modules['app.ts']?.css).toMatchInlineSnapshot(
-        `".z-Zf5JrJ-text-\\5b color\\28 --z-colorprofile-profile_20_0_20_0_20_0_20_1\\29 \\5d {color:color(--z-colorprofile-profile 0 0 0 1);}"`,
+        `".z_Zf5JrJ0{color:color(--z-colorprofile-profile 0 0 0 1);}"`,
       )
       expect(
         Trace.originalPositionFor(new Trace.TraceMap(output.sharedCssMap!), {
@@ -12626,19 +12953,19 @@ describe('scalars', () => {
       })
 
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-a-font-synthesis-0{font-synthesis:none;}
-        .z-a-white-space-1{white-space:normal;}
-        .z-a-overflow-2{overflow:hidden;}
-        .z-a-word-wrap-3{word-wrap:normal;}
-        .z-b-font-synthesis-weight-0{font-synthesis-weight:auto;}
-        .z-b-white-space-collapse-1{white-space-collapse:preserve;}
-        .z-b-text-wrap-mode-2{text-wrap-mode:nowrap;}
-        .z-b-overflow-block-3{overflow-block:scroll;}
-        .z-b-overflow-wrap-4{overflow-wrap:break-word;}
-        .z-c-font-synthesis-0{font-synthesis:none;}
-        .z-c-white-space-1{white-space:normal;}
-        .z-c-overflow-2{overflow:hidden;}
-        .z-c-word-wrap-3{word-wrap:normal;}"
+        ".z_0{font-synthesis:none;}
+        .z_1{white-space:normal;}
+        .z_2{overflow:hidden;}
+        .z_3{word-wrap:normal;}
+        .z_4{font-synthesis-weight:auto;}
+        .z_5{white-space-collapse:preserve;}
+        .z_6{text-wrap-mode:nowrap;}
+        .z_7{overflow-block:scroll;}
+        .z_8{overflow-wrap:break-word;}
+        .z_9{font-synthesis:none;}
+        .z_a{white-space:normal;}
+        .z_b{overflow:hidden;}
+        .z_c{word-wrap:normal;}"
       `)
     })
     test('SVG geometry and text scalars match native browser output', async () => {
@@ -12981,7 +13308,7 @@ describe('statements', () => {
       ).toMatchInlineSnapshot('[]')
       expect(output.css).toMatchInlineSnapshot(`
         "@function --z-cssfunction-twice(--x <number>) returns <number>{result:calc(var(--x)*2);}
-        .z-ttf1Y3-opacity-\\5b --z-cssfunction-twice\\28 1\\29 \\5d {opacity:--z-cssfunction-twice(1);}"
+        .z_ttf1Y30{opacity:--z-cssfunction-twice(1);}"
       `)
     })
     test('rejects unsupported CSS function arguments without emitting a bare identity', () => {
@@ -13045,7 +13372,7 @@ describe('statements', () => {
         `"@custom-media --z-custommedia-compact (width < 40rem);"`,
       )
       expect(output.modules['app.ts']!.css).toMatchInlineSnapshot(
-        `"@media (--z-custommedia-compact){.z-Zf5JrJ-styles-box-text-0{color:red;}}"`,
+        `"@media (--z-custommedia-compact){.z_Zf5JrJ0{color:red;}}"`,
       )
     })
     test('emits native functions and callable fixed expressions', async () => {
@@ -13109,7 +13436,7 @@ describe('statements', () => {
         },
       })
       expect(output.modules['app.ts']!.css).toMatchInlineSnapshot(
-        `".z-Zf5JrJ-w-\\5b --z-cssfunction-twice\\28 2px\\29 \\5d {width:--z-cssfunction-twice(2px);}"`,
+        `".z_Zf5JrJ0{width:--z-cssfunction-twice(2px);}"`,
       )
     })
     test('rejects malformed function parameter data', () => {
@@ -13628,9 +13955,9 @@ describe('templates', () => {
 
       expect(output.css).toMatchInlineSnapshot(
         `
-        ".z-6aJ_Bj-ml--12px{margin-left:-12px;}
-        .z-6aJ_Bj-\\5b --large\\3a -9007199254740993\\5d {--large:-9007199254740993;}
-        .z-6aJ_Bj-\\5b --zero\\3a 0\\5d {--zero:0;}"
+        ".z_6aJ_Bj0{margin-left:-12px;}
+        .z_6aJ_Bj1{--large:-9007199254740993;}
+        .z_6aJ_Bj2{--zero:0;}"
       `,
       )
     })
@@ -13647,7 +13974,7 @@ describe('templates', () => {
             nested(127) +
             ' })',
         }).css,
-      ).toMatchInlineSnapshot(`".z-5phr51-\\5b --value\\3a 8\\5d {--value:8;}"`)
+      ).toMatchInlineSnapshot(`".z_5phr510{--value:8;}"`)
       expect(() =>
         Transform.compile({
           moduleId: 'depth.ts',
@@ -13669,11 +13996,11 @@ describe('templates', () => {
 
       expect(output.css).toMatchInlineSnapshot(
         `
-        ".z-caKKsf-text-red{color:red;}
-        .z-caKKsf-content-\\5b _22_true\\3a null\\3a 12_22_\\5d {content:"true:null:12";}
-        .z-caKKsf-ml--2px{margin-left:-2px;}
-        .z-caKKsf-p-\\5b 4px\\3b padding\\3a 8px\\21 important\\5d {padding:4px;padding:8px!important;}
-        .z-caKKsf-w-\\5b calc\\28 100\\25 _20_-_20_16px\\29 \\5d {width:calc(100% - 16px);}"
+        ".z_caKKsf0{color:red;}
+        .z_caKKsf1{content:"true:null:12";}
+        .z_caKKsf2{margin-left:-2px;}
+        .z_caKKsf3{padding:4px;padding:8px!important;}
+        .z_caKKsf4{width:calc(100% - 16px);}"
       `,
       )
 
@@ -13698,7 +14025,7 @@ describe('templates', () => {
 
       expect(module.box).toMatchInlineSnapshot(`
         {
-          "className": "z-caKKsf-text-red z-caKKsf-content-[_22_true:null:12_22_] z-caKKsf-ml--2px z-caKKsf-p-[4px;padding:8px!important] z-caKKsf-w-[calc(100%_20_-_20_16px)]",
+          "className": "z_caKKsf0 z_caKKsf1 z_caKKsf2 z_caKKsf3 z_caKKsf4",
         }
       `)
       expect(
@@ -13908,15 +14235,15 @@ describe('textTimeline', () => {
       })
 
       expect(output.css).toMatchInlineSnapshot(`
-        ".z-a-flex-flow-0{flex-flow:row nowrap;}
-        .z-a-text-wrap-1{text-wrap:wrap balance;}
-        .z-a-page-break-before-2{page-break-before:avoid;}
-        .z-b-flex-direction-0{flex-direction:column;}
-        .z-b-text-wrap-style-1{text-wrap-style:pretty;}
-        .z-b-break-before-2{break-before:page;}
-        .z-c-flex-flow-0{flex-flow:row nowrap;}
-        .z-c-text-wrap-1{text-wrap:wrap balance;}
-        .z-c-page-break-before-2{page-break-before:avoid;}"
+        ".z_0{flex-flow:row nowrap;}
+        .z_1{text-wrap:wrap balance;}
+        .z_2{page-break-before:avoid;}
+        .z_3{flex-direction:column;}
+        .z_4{text-wrap-style:pretty;}
+        .z_5{break-before:page;}
+        .z_6{flex-flow:row nowrap;}
+        .z_7{text-wrap:wrap balance;}
+        .z_8{page-break-before:avoid;}"
       `)
     })
     test('text and flex values match native browser controls', async () => {
@@ -14317,7 +14644,7 @@ describe('variables', () => {
         }).css,
       ).toMatchInlineSnapshot(`
         ".z-theme-theme{--z-color-brand:red;}
-        .z-xDWieG-box-shadow-\\5b 0_20_0_20_2px_20_var\\28 --z-color-brand\\2c red\\29 \\5d {box-shadow:0 0 2px var(--z-color-brand,red);}"
+        .z_xDWieG0{box-shadow:0 0 2px var(--z-color-brand,red);}"
       `)
     })
 
@@ -14329,8 +14656,8 @@ describe('variables', () => {
             'import { style, variable } from "zyzz"; const color = variable("color"); export const box = style({ vars: { [color]: "red" }, backgroundImage: `linear-gradient(${color}, transparent)` })();',
         }).css,
       ).toMatchInlineSnapshot(`
-        ".z-jv0DKG-\\5b --z-color\\3a red\\5d {--z-color:red;}
-        .z-jv0DKG-background-image-\\5b linear-gradient\\28 var\\28 --z-color\\29 \\2c _20_transparent\\29 \\5d {background-image:linear-gradient(var(--z-color), transparent);}"
+        ".z_jv0DKG0{--z-color:red;}
+        .z_jv0DKG1{background-image:linear-gradient(var(--z-color), transparent);}"
       `)
     })
 
@@ -14368,7 +14695,7 @@ describe('variables', () => {
         }).css,
       ).toMatchInlineSnapshot(`
         ".z-theme-theme{--z-spacing-md:8px;}
-        .z-6y9KKx-w-\\5b calc\\28 var\\28 --z-spacing-md\\2c 8px\\29 \\29 \\21 important\\5d {width:calc(var(--z-spacing-md,8px))!important;}"
+        .z_6y9KKx0{width:calc(var(--z-spacing-md,8px))!important;}"
       `)
     })
     test('preserves assertions around nested variable templates and fallbacks', () => {
@@ -14380,7 +14707,7 @@ describe('variables', () => {
         }).css,
       ).toMatchInlineSnapshot(`
         ".z-theme-theme{--z-spacing-md:8px;}
-        .z-viRWul-w-\\5b 1px\\3b width\\3a calc\\28 var\\28 --z-spacing-md\\2c 8px\\29 \\29 \\5d {width:1px;width:calc(var(--z-spacing-md,8px));}"
+        .z_viRWul0{width:1px;width:calc(var(--z-spacing-md,8px));}"
       `)
     })
     test('rejects spacing variables in integer properties', () => {
@@ -14405,8 +14732,8 @@ describe('variables', () => {
       expect(Transform.compile({ moduleId: 'vars.ts', source }).css)
         .toMatchInlineSnapshot(`
           ".z-theme-theme{--z-spacing-md:8px;--z-color-brand:red;}
-          .z-ECnQlq-w-\\5b calc\\28 100\\25 _20_-_20_var\\28 --z-spacing-md\\2c 8px\\29 \\29 \\21 important\\5d {width:calc(100% - var(--z-spacing-md,8px))!important;}
-          .z-ECnQlq-text-\\5b var\\28 --z-color-brand\\2c red\\29 \\5d {color:var(--z-color-brand,red);}"
+          .z_ECnQlq0{width:calc(100% - var(--z-spacing-md,8px))!important;}
+          .z_ECnQlq1{color:var(--z-color-brand,red);}"
         `)
     })
 
@@ -14425,8 +14752,8 @@ describe('variables', () => {
         .z_scheme-dark{color-scheme:dark;}
         .z_scheme-light{color-scheme:light;}
         .z_scheme-light-dark{color-scheme:light dark;}
-        .z-Zf5JrJ-w-\\5b calc\\28 100\\25 _20_-_20_var\\28 --z-spacing-md\\2c 8px\\29 \\29 \\5d {width:calc(100% - var(--z-spacing-md,8px));}
-        .z-Zf5JrJ-text-\\5b var\\28 --z-color-brand\\2c light-dark\\28 red\\2c blue\\29 \\29 \\5d {color:var(--z-color-brand,light-dark(red,blue));}"
+        .z_Zf5JrJ0{width:calc(100% - var(--z-spacing-md,8px));}
+        .z_Zf5JrJ1{color:var(--z-color-brand,light-dark(red,blue));}"
       `)
       expect(result.modules['theme.ts']!.css).toMatchInlineSnapshot(`
         ".z_scheme-dark{color-scheme:dark;}
@@ -14456,7 +14783,7 @@ describe('variables', () => {
 
       expect(output.modules['app.ts']!.css).toMatchInlineSnapshot(`
         ".z-theme-theme{--z-spacing-md:8px;}
-        .z-Zf5JrJ-w-\\5b calc\\28 100\\25 _20_-_20_var\\28 --z-spacing-md\\2c 8px\\29 \\29 \\5d {width:calc(100% - var(--z-spacing-md,8px));}"
+        .z_Zf5JrJ0{width:calc(100% - var(--z-spacing-md,8px));}"
       `)
       expect(
         output.modules['app.ts']!.code.includes('.vars'),

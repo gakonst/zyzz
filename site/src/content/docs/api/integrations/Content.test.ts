@@ -187,7 +187,7 @@ describe('Vite API page', () => {
 
     expect(result.status).toMatchInlineSnapshot(`0`)
     expect(await viteCss(path)).toMatchInlineSnapshot(`
-      ".z-EQz5kA-text-red{color:red}.z-EQz5kA-p-8px{padding:8px}
+      ".z_EQz5kA0{color:red}.z_EQz5kA1{padding:8px}
       "
     `)
   })
@@ -228,7 +228,7 @@ global({ body: { color: 'rebeccapurple' } })
 
     expect(result.status).toMatchInlineSnapshot(`0`)
     expect(await viteCss(path)).toMatchInlineSnapshot(`
-      ".z-EQz5kA-text-red{color:red}.z-EQz5kA-p-8px{padding:8px}
+      ".z_EQz5kA0{color:red}.z_EQz5kA1{padding:8px}
       "
     `)
   })
@@ -252,7 +252,7 @@ document.body.className = badge().className
 
     expect(result.status).toMatchInlineSnapshot(`0`)
     expect(await viteCss(path)).toMatchInlineSnapshot(`
-      ".z-Svh2KD-m-4px{margin:4px}
+      ".z_Svh2KD0{margin:4px}
       "
     `)
   })
@@ -387,7 +387,7 @@ process.exit()`,
 
     expect(result.status).toMatchInlineSnapshot(`0`)
     expect(await viteCss(path)).toMatchInlineSnapshot(`
-      ".z-EQz5kA-text-red{color:red}.z-EQz5kA-p-8px{padding:8px}
+      ".z_EQz5kA0{color:red}.z_EQz5kA1{padding:8px}
       "
     `)
   })
@@ -775,11 +775,11 @@ describe('Unplugin API page', () => {
     `)
     expect(await stylesheet(Path.join(path, 'dist/zyzz.css')))
       .toMatchInlineSnapshot(`
-        ".z-YiE3S9-text-red {
+        ".z_YiE3S90 {
           color: red;
         }
 
-        .z-YiE3S9-p-8px {
+        .z_YiE3S91 {
           padding: 8px;
         }
 
@@ -837,11 +837,11 @@ describe('Unplugin API page', () => {
     expect(result.stderr).toMatchInlineSnapshot(`""`)
     expect(await stylesheet(Path.join(path, 'dist/zyzz.css')))
       .toMatchInlineSnapshot(`
-        ".z-kiE3Jn-text-red {
+        ".z_kiE3Jn0 {
           color: red;
         }
 
-        .z-kiE3Jn-p-8px {
+        .z_kiE3Jn1 {
           padding: 8px;
         }
 
@@ -982,13 +982,11 @@ describe('Babel API page', () => {
 
     expect(babel(path, 'code')).toMatchInlineSnapshot(`
       "import { Props as __zyzzProps } from 'zyzz/runtime';
-      export const card = __zyzzProps.create({
-        className: "z--mSYb5-text-red z-style--mSYb5-card"
+      export const card = /*#__PURE__*/__zyzzProps.create({
+        className: "z_-mSYb50 z-style--mSYb5-card"
       });"
     `)
-    expect(babel(path, 'css')).toMatchInlineSnapshot(
-      `".z--mSYb5-text-red{color:red;}"`,
-    )
+    expect(babel(path, 'css')).toMatchInlineSnapshot(`".z_-mSYb50{color:red;}"`)
   })
 
   test('selects web compilation', async () => {
@@ -996,7 +994,7 @@ describe('Babel API page', () => {
 
     expect(output.metadata).toMatchInlineSnapshot(`
       {
-        "css": ".z--mSYb5-text-red{color:red;}",
+        "css": ".z_-mSYb50{color:red;}",
         "moduleId": "src/styles.ts",
       }
     `)
@@ -1009,7 +1007,7 @@ describe('Babel API page', () => {
     )
 
     expect(output.metadata?.css).toMatchInlineSnapshot(
-      `".z--mSYb5-title{color:red;padding:8px;}"`,
+      `".z_-mSYb50{color:red;padding:8px;}"`,
     )
   })
 
@@ -1084,9 +1082,7 @@ describe('Babel API page', () => {
       'example.ts': `${metadata.source}\nexport { css }\n`,
     })
 
-    expect(babel(path, 'css')).toMatchInlineSnapshot(
-      `".z--mSYb5-text-red{color:red;}"`,
-    )
+    expect(babel(path, 'css')).toMatchInlineSnapshot(`".z_-mSYb50{color:red;}"`)
   })
 
   test('rejects an exported configuration', async () => {
@@ -1281,11 +1277,11 @@ describe('CLI API page', () => {
           --z-app-color-brand: light-dark(#06c, #8cf);
         }
 
-        .z-app-sJkhe--text-\\[var\\(--z-app-color-brand\\,light-dark\\(\\#06c\\,\\#8cf\\)\\)\\] {
+        .z_app-sJkhe-0 {
           color: var(--z-app-color-brand, light-dark(#06c, #8cf));
         }
 
-        .z-app-sJkhe--p-8px {
+        .z_app-sJkhe-1 {
           padding: 8px;
         }
         .z-theme-app-theme {
@@ -1331,7 +1327,7 @@ describe('CLI API page', () => {
     expect(status).toMatchInlineSnapshot(`0`)
     expect(await stylesheet(Path.join(path, 'dist/zyzz.css')))
       .toMatchInlineSnapshot(`
-        ".z-sJkhe--text-red {
+        ".z_sJkhe-0 {
           color: red;
         }
         "
@@ -1406,7 +1402,7 @@ describe('CLI API page', () => {
       .toMatchInlineSnapshot(`
         "body{margin:0}
         .z-theme-app-theme{--z-app-color-brand:light-dark(#06c,#8cf)}.z_scheme-dark{color-scheme:dark}.z_scheme-light{color-scheme:light}.z_scheme-light-dark{color-scheme:light dark}
-        .z-theme-app-theme{--z-app-color-brand:light-dark(#06c,#8cf)}.z-app-sJkhe--text-\\[var\\(--z-app-color-brand\\,light-dark\\(\\#06c\\,\\#8cf\\)\\)\\]{color:var(--z-app-color-brand,light-dark(#06c,#8cf))}.z-app-sJkhe--p-8px{padding:8px}
+        .z-theme-app-theme{--z-app-color-brand:light-dark(#06c,#8cf)}.z_app-sJkhe-0{color:var(--z-app-color-brand,light-dark(#06c,#8cf))}.z_app-sJkhe-1{padding:8px}
         .z-theme-app-theme{--z-app-color-brand:light-dark(#06c,#8cf)}
         "
       `)

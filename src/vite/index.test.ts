@@ -2068,8 +2068,8 @@ ${configuration ? "zyzz.style({'@layer components':{color:'brand'}});\n// @ts-ex
         .z_scheme-light{color-scheme:light;}
         .z_scheme-light-dark{color-scheme:light dark;}
         .z-theme-app-base{--z-app-color-brand:#06c;}
-        .z-theme-app-mint{--z-app-color-brand:#175;}.z-app-rnRBDm-text-\\5b var\\28 --z-app-color-brand\\2c \\23 06c\\29 \\5d {color:var(--z-app-color-brand,#06c);}
-        .z-app-rnRBDm-p-8px{padding:8px;}"
+        .z-theme-app-mint{--z-app-color-brand:#175;}.z_app-rnRBDm0{color:var(--z-app-color-brand,#06c);}
+        .z_app-rnRBDm1{padding:8px;}"
       `)
 
       const javascript = result.output
@@ -2122,6 +2122,52 @@ ${configuration ? "zyzz.style({'@layer components':{color:'brand'}});\n// @ts-ex
     }
   })
 
+  test('production keeps only the identity classes that selectors reference', async () => {
+    const { config, root } = await create({
+      'index.html': `<!doctype html><html><head><title>Fixture</title></head><body><script type="module" src="/main.ts"></script></body></html>`,
+      'card.ts': `import { style } from 'zyzz';export const card = style({ color: 'red' });export const label = style({ color: 'blue' });`,
+      'item.ts': `import { style } from 'zyzz';import { card } from './card';export const item = style({ selectors: { [\`\${card}:hover &\`]: { color: 'green' } } });`,
+      'main.ts': `import { card, label } from './card';import { item } from './item';document.body.className = [card().className, label().className, item().className].join(' ');`,
+    })
+
+    try {
+      const result = await Vite.build({
+        ...config,
+        build: { minify: false, write: false },
+      })
+      if (Array.isArray(result) || !('output' in result))
+        throw new Error('Expected one Vite build output')
+
+      const javascript = result.output
+        .filter((file) => file.type === 'chunk')
+        .map((file) => file.code)
+        .join('\n')
+      const stylesheet = result.output
+        .filter(
+          (file) => file.type === 'asset' && file.fileName.endsWith('.css'),
+        )
+        .map((file) => (file.type === 'asset' ? String(file.source) : ''))
+        .join('\n')
+
+      // The card module's graph includes the selector that interpolates card, so only card
+      // keeps its identity class.
+      expect([...new Set(javascript.match(/z-style-[\w-]+/g))])
+        .toMatchInlineSnapshot(`
+        [
+          "z-style-rnRBDm-card",
+        ]
+      `)
+      expect([...new Set(stylesheet.match(/z-style-[\w-]+/g))])
+        .toMatchInlineSnapshot(`
+        [
+          "z-style-rnRBDm-card",
+        ]
+      `)
+    } finally {
+      await Fs.rm(root, { recursive: true, force: true })
+    }
+  })
+
   test('derives contracts for installed packages without sidecars', async () => {
     const { config, root } = await create({
       'index.html': `<!doctype html><html><head><title>Fixture</title></head><body><script type="module" src="/main.ts"></script></body></html>`,
@@ -2152,7 +2198,7 @@ ${configuration ? "zyzz.style({'@layer components':{color:'brand'}});\n// @ts-ex
       expect(String(sheet.source)).toMatchInlineSnapshot(`
         ":root{--gap:var(--z-acme-spacing-16,16px);}
         .z-theme-acme_2f_variables-variables{--z-acme_2f_variables-color-ink:#123456;--z-acme_2f_variables-spacing-16:16px;}
-        .z-theme-acme-theme{--z-acme-spacing-16:16px;--z-acme-color-ink:#123456;}.z-acme-YiE3S9-p-\\5b var\\28 --z-acme-spacing-16\\2c 16px\\29 \\5d {padding:var(--z-acme-spacing-16,16px);}"
+        .z-theme-acme-theme{--z-acme-spacing-16:16px;--z-acme-color-ink:#123456;}.z_acme-YiE3S90{padding:var(--z-acme-spacing-16,16px);}"
       `)
     } finally {
       await Fs.rm(root, { recursive: true, force: true })
@@ -2280,8 +2326,8 @@ Object.assign(globalThis, { fixture: { card: shared.card().className, label, pro
         // The label keeps its own names, and the consumer's composition strips the card's classes.
         expect(await fixture.jsonValue()).toMatchInlineSnapshot(`
           {
-            "card": "z_rnRBDm0 z_rnRBDm1 z-style-rnRBDm-styles-card",
-            "composed": "z_YiE3S91 z_rnRBDm1 z-style-rnRBDm-styles-card",
+            "card": "z_rnRBDm0 z_rnRBDm1",
+            "composed": "z_YiE3S91 z_rnRBDm1",
             "label": "z_ya-T9A0 z_ya-T9A1",
           }
         `)
@@ -2403,12 +2449,12 @@ export function unrelated(props: { className?: string | undefined } = {}) {
           }
         `)
         expect(css).toMatchInlineSnapshot(`
-          ".z-PTgY5k-background-\\5b \\23 2563eb\\5d {background:#2563eb;}
-          .z-PTgY5k-border-color-\\5b \\23 000\\5d {border-color:#000;}
-          .z-PTgY5k-text-\\5b \\23 fff\\5d {color:#fff;}.z-toAUkB-background-transparent{background:transparent;}
-          .z-toAUkB-text-\\5b \\23 374151\\5d {color:#374151;}.z-NZ8pJe-border-color-\\5b \\23 2563eb\\5d {border-color:#2563eb;}
-          .z-NZ8pJe-text-\\5b \\23 2563eb\\5d {color:#2563eb;}.z-z2JeWm-background-\\5b \\23 2563eb\\5d {background:#2563eb;}
-          .z-z2JeWm-text-\\5b \\23 fff\\5d {color:#fff;}"
+          ".z_PTgY5k0{background:#2563eb;}
+          .z_PTgY5k1{border-color:#000;}
+          .z_PTgY5k2{color:#fff;}.z_toAUkB0{background:transparent;}
+          .z_toAUkB1{color:#374151;}.z_NZ8pJe0{border-color:#2563eb;}
+          .z_NZ8pJe1{color:#2563eb;}.z_z2JeWm0{background:#2563eb;}
+          .z_z2JeWm1{color:#fff;}"
         `)
       } finally {
         await browser.close()

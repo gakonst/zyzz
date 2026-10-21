@@ -106,18 +106,18 @@ export const { style, variants } = defineConfig({
 })
 ```
 
-Names combine a hash of the module path with the member path, so modules can reuse member names without collisions.
+Production names combine a module hash with a counter, so modules can reuse member names without collisions. Development builds name each class after its member path instead, such as `z-X8T0-w-styles-card`.
 
 ```css title="grouped.css"
 /* [!code hl:5] */
 /* Generated for styles.card */
-.z-X8T0-w-styles-card {
+.z_X8T0-w0 {
   color: red;
   padding: 8px;
 }
 
 /* Generated for styles.label */
-.z-X8T0-w-styles-label {
+.z_X8T0-w1 {
   color: red;
 }
 ```
@@ -165,7 +165,9 @@ Ordered output resolves conflicts between combined class lists in definition ord
 
 ## Generated Names
 
-Common atomic declarations use readable names unless their rules are shared by short name, and variables follow authored paths, such as `--z-color-brand`. Apply returned props rather than copying class names. When combining independent configs, give each a distinct `id`.
+Production class names are short and deterministic, including shared atomic rules, grouped classes, and `cx` combinations. Development builds use readable names throughout. Variables follow authored paths, such as `--z-color-brand`. Apply returned props rather than copying class names.
+
+Production class lists add a style's identity class only when a selector interpolates that style. When combining independent configs, give each a distinct `id`.
 
 ```ts title="admin.config.ts"
 import { defineConfig } from 'zyzz'

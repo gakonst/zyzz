@@ -68,6 +68,8 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
   const servedShared = new WeakMap<Environment, string>()
   // Watcher events advance an environment's generation, which scopes memoized whole-project work.
   const generations = new WeakMap<Environment, number>()
+  // Modules whose last compile failed. A created file can satisfy one of their imports.
+  const failures = new WeakMap<Environment, Set<string>>()
   let devServer: ViteDevServer | undefined
   const watching = new Set<string>()
   // Chokidar matches its ignore patterns on every add, and each compile watches its whole closure.
@@ -655,6 +657,7 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
         files.add(file)
       }
       entries(environment).delete(file)
+      failures.get(environment)?.delete(file)
       snapshot(environment).delete(file, sourceId(file))
       identities.delete(file)
     }
@@ -702,7 +705,25 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       return memo.output
     }
 
-    const output = await compileEntry(entry, host, code, allSources, everything)
+    let failed = failures.get(entry.environment)
+    if (!failed) {
+      failed = new Set()
+      failures.set(entry.environment, failed)
+    }
+
+    const output = await compileEntry(
+      entry,
+      host,
+      code,
+      allSources,
+      everything,
+    ).catch((error: unknown) => {
+      failed.add(entry.file)
+      throw error
+    })
+
+    failed.delete(entry.file)
+
     const outcome = projects.get(entry.environment)?.outcome
 
     // A concurrent compile can replace the merged result while this one renders, so only an
@@ -1053,8 +1074,16 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
 
     const connected = new Set(files)
     const entryContracts = new Set(Object.keys(contracts))
+    // The merged development graph keeps every module an earlier compile reached, and a module's
+    // output depends only on its own closure. Contribution sources join through the shared
+    // stylesheet's compile, so a module compile neither waits for discovery nor walks them.
+    const merged = entry.environment.mode === 'dev' && !native && !everything
+    const sources =
+      merged && !allSources
+        ? new Map<string, string>()
+        : await discover(entry.environment, host)
 
-    for (const [file, source] of await discover(entry.environment, host)) {
+    for (const [file, source] of sources) {
       if (files.has(file) && !allSources) continue
 
       const selected = contributionFiles.get(entry.environment)?.has(file)
@@ -1225,10 +1254,9 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       imports,
       modules,
     }
-    const result =
-      entry.environment.mode === 'dev' && !native && !everything
-        ? compileProject(entry.environment, input, sourceId(entry.file))
-        : entry.compiler.compile(input)
+    const result = merged
+      ? compileProject(entry.environment, input, sourceId(entry.file))
+      : entry.compiler.compile(input)
 
     if (native) {
       const output = result.modules[sourceId(entry.file)]!
@@ -2062,18 +2090,33 @@ export function zyzz(options: zyzz.Options = {}): Plugin {
       if (!native && before && 'result' in before) {
         await updateDiscovery(this.environment, file, type)
 
-        // The edited module's own entry, or one whose closure reads it, merges its new source.
-        // A contribution source no module imports joins every closure.
+        // The edited module merges its new source through a compile of its own closure. A module
+        // its importers compile away, such as a theme, and a contribution source no module
+        // imports have no entry, so the compile anchors at the file. Other inputs, such as
+        // package files, recompile a closure that reads them.
+        const project = projects.get(this.environment)
         const first =
           state.get(file) ??
-          [...state.values()].find((entry) => entry.files.has(file)) ??
-          (eager(file, this.environment)
-            ? state.values().next().value
-            : undefined)
+          (eligible(file) &&
+          (Object.hasOwn(project?.modules ?? {}, sourceId(file)) ||
+            eager(file, this.environment))
+            ? {
+                compiler: compiler(this.environment),
+                environment: this.environment,
+                file,
+                files: new Set([file]),
+              }
+            : [...state.values()].find((entry) => entry.files.has(file)))
         if (!first && !removed.get(this.environment)?.has(file)) return modules
 
+        // A new source merges like an edit, so only the outputs it changes update. It can also
+        // satisfy an import that failed, which its own closure never reaches, so while a module
+        // fails, every closure recompiles.
         const compiled =
-          first && type === 'update' && eligible(file)
+          first &&
+          (type === 'update' ||
+            (type === 'create' && !failures.get(this.environment)?.size)) &&
+          eligible(file)
             ? await compile(first, {
                 resolve: resolver(this.environment),
                 watch: (file) => watch(server, file),

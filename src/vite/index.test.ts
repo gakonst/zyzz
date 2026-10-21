@@ -3284,6 +3284,52 @@ export namespace styles {
     }
   }, 30000)
 
+  test('development compiles a module with its own import closure', async () => {
+    // `banner.ts` styles a page the card never imports.
+    const { config, root } = await create({
+      ...Fixture.files,
+      'banner.ts': `import { style } from './config'; export const props = style({ color: 'brand', margin: '4px' })();`,
+    })
+    const server = await Vite.createServer(config)
+
+    try {
+      await server.listen()
+
+      const address = server.httpServer!.address()
+      if (!address || typeof address === 'string')
+        throw new Error('Missing server port')
+
+      const origin = `http://127.0.0.1:${address.port}`
+
+      // 1. Transform the card alone, as a page that imports only the card does.
+      await fetch(`${origin}/card.ts`)
+
+      const card = server.environments.client.moduleGraph.getModuleById(
+        Path.join(root, 'card.ts'),
+      )
+      const imported = [...(card?.importedModules ?? [])]
+        .map((module) =>
+          decodeURIComponent(module.url).replace('\0', '').split('/').pop(),
+        )
+        .sort()
+
+      // 2. Its compile reads only what it imports, so an edit to the banner leaves it unchanged.
+      expect(imported).toMatchInlineSnapshot(`
+        [
+          "alternate.ts",
+          "card.ts",
+          "card.ts.css",
+          "config.ts",
+          "theme.ts",
+          "zyzz:shared.css",
+        ]
+      `)
+    } finally {
+      await server.close()
+      await Fs.rm(root, { recursive: true, force: true })
+    }
+  }, 30000)
+
   test('development updates only the stylesheet a value edit changes', async () => {
     const card = `import './fonts'; ${Fixture.files['card.ts']}`
     // The font asset makes the served shared stylesheet differ from the compiled one.

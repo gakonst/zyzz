@@ -12,8 +12,8 @@ use indexmap::IndexMap;
 use oxc_ast::AstKind;
 use oxc_ast::ast::{
     Argument, CallExpression, Declaration, Expression, JSXAttributeItem, JSXAttributeName,
-    JSXElementName, JSXOpeningElement, ObjectExpression, ObjectPropertyKind, Program, PropertyKey, PropertyKind,
-    Statement, TSNamespaceDeclarationBody, UnaryOperator, VariableDeclarationKind,
+    JSXElementName, JSXOpeningElement, ObjectExpression, ObjectPropertyKind, Program, PropertyKey,
+    PropertyKind, Statement, TSNamespaceDeclarationBody, UnaryOperator, VariableDeclarationKind,
 };
 use oxc_semantic::Semantic;
 use oxc_span::{GetSpan, Span};
@@ -927,7 +927,10 @@ impl<'c, 'a> Applications<'c, 'a> {
         self.bound_where(|call| call.recipe.is_some() && call.slots.is_none())
     }
 
-    fn bound_where(&self, accept: impl Fn(&Call<'a>) -> bool) -> FxHashMap<Arc<str>, Vec<Bound<'a>>> {
+    fn bound_where(
+        &self,
+        accept: impl Fn(&Call<'a>) -> bool,
+    ) -> FxHashMap<Arc<str>, Vec<Bound<'a>>> {
         let mut output: FxHashMap<Arc<str>, Vec<Bound<'a>>> = FxHashMap::default();
 
         if self.evaluation {
@@ -1008,7 +1011,8 @@ impl<'c, 'a> Applications<'c, 'a> {
                     (candidate, call, span, reference.grandparent)
                 };
 
-                if !accept(call) || call.composition.is_some() || call.runtime_composition.is_some() {
+                if !accept(call) || call.composition.is_some() || call.runtime_composition.is_some()
+                {
                     continue;
                 }
 

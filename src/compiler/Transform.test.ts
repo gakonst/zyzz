@@ -3888,7 +3888,23 @@ export const button = variants({
 }`
       const output = Transform.compile({ moduleId: 'App.tsx', source })
 
-      expect(output.code).toMatchInlineSnapshot()
+      expect(output.code).toMatchInlineSnapshot(`
+        "
+        const count = { value: 0 }
+        const next = () => (count.value++, 'loud')
+        const Button = (props: { active?: boolean; tone?: 'loud' | 'quiet' }) => <button className={styles.button?"z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4":styles.button().className} data-active={!!props.active} data-tone={(props.tone)===void 0?"quiet":props.tone} />
+        export const App = () => <main>
+        <Button active />
+        <Button tone="loud" />
+        <button className={styles.button?"z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4":styles.button().className} data-active={false} data-tone={"quiet"} />
+        <button {...styles.button({ tone: next(), active: true })} />
+        <button {...styles.button({ active: true, className: 'extra' })} />
+        <button data-tone="x" {...styles.button({ active: true })} />
+        </main>
+        namespace styles {
+        export const button = (((input:Record<string,unknown>&import('zyzz').style.Options={})=>{const external=input.className,style=input.style,vars=input.vars,inline=vars?{...vars,...style}:style,className=external?"z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4"+" "+external:"z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4",result:Record<string,unknown>=inline?{className,style:inline}:{className};let value;value=Object.hasOwn(input,"active")?input["active"]:void 0;if(value!==null&&value!==void 0)result["data-active"]=String(value);value=Object.hasOwn(input,"tone")?input["tone"]:void 0;if(value===void 0)value="quiet";if(value!==null&&value!==void 0)result["data-tone"]=String(value);return result}) as unknown as import('zyzz').variants.ReturnType<{variants:{"active":{"false":{};"true":{}};"tone":{"loud":{};"quiet":{}}}}>)
+        }"
+      `)
 
       const rendered = await Wrappers.render({
         css: output.css,
@@ -3896,8 +3912,53 @@ export const button = variants({
         modules: { 'App.tsx': output.code },
       })
 
-      expect(rendered.markup).toMatchInlineSnapshot()
-      expect(rendered.elements).toMatchInlineSnapshot()
+      expect(rendered.markup).toMatchInlineSnapshot(`"<main><button class="z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4" data-active="true" data-tone="quiet"></button><button class="z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4" data-active="false" data-tone="loud"></button><button class="z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4" data-active="false" data-tone="quiet"></button><button class="z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4" data-active="true" data-tone="loud"></button><button class="z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4 extra" data-active="true" data-tone="quiet"></button><button data-tone="quiet" class="z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4" data-active="true"></button></main>"`)
+      expect(rendered.elements).toMatchInlineSnapshot(`
+        [
+          {
+            "borderLeftWidth": "4px",
+            "className": "z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4",
+            "color": "rgb(0, 0, 255)",
+            "paddingLeft": "2px",
+            "tag": "button",
+          },
+          {
+            "borderLeftWidth": "3px",
+            "className": "z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4",
+            "color": "rgb(0, 0, 255)",
+            "paddingLeft": "1px",
+            "tag": "button",
+          },
+          {
+            "borderLeftWidth": "4px",
+            "className": "z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4",
+            "color": "rgb(0, 0, 255)",
+            "paddingLeft": "1px",
+            "tag": "button",
+          },
+          {
+            "borderLeftWidth": "3px",
+            "className": "z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4",
+            "color": "rgb(0, 0, 255)",
+            "paddingLeft": "2px",
+            "tag": "button",
+          },
+          {
+            "borderLeftWidth": "4px",
+            "className": "z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4 extra",
+            "color": "rgb(0, 0, 255)",
+            "paddingLeft": "2px",
+            "tag": "button",
+          },
+          {
+            "borderLeftWidth": "4px",
+            "className": "z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4",
+            "color": "rgb(0, 0, 255)",
+            "paddingLeft": "2px",
+            "tag": "button",
+          },
+        ]
+      `)
     })
   })
 })

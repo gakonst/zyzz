@@ -639,7 +639,7 @@ fn fold_recipe(
     for (index, value) in &values {
         let defaulted = axes
             .get(*index)
-            .is_some_and(|axis| matches!(recipe.defaults.get(*axis), Some(Some(_))));
+            .is_some_and(|axis| matches!(recipe.defaults.get(axis), Some(Some(_))));
 
         if (!sorted || defaulted) && !repeatable(value) {
             return Ok(());
@@ -666,11 +666,14 @@ fn fold_recipe(
         let _ = write!(text, "className={{{class_name}}}");
     } else {
         // Keep a callable guard so bundlers also keep failures before initialization.
-        let _ = write!(text, "className={{{callee}?{class_name}:{callee}().className}}");
+        let _ = write!(
+            text,
+            "className={{{callee}?{class_name}:{callee}().className}}"
+        );
     }
 
     for (index, axis) in axes.iter().enumerate() {
-        let fallback = recipe.defaults.get(*axis).and_then(Option::as_deref);
+        let fallback = recipe.defaults.get(axis).and_then(Option::as_deref);
         let value = match values.iter().find(|(existing, _)| *existing == index) {
             Some((_, value)) => {
                 let span = value.span();
@@ -684,7 +687,7 @@ fn fold_recipe(
         attribute.push_str(axis);
 
         match (value, fallback) {
-            (None, None) => continue,
+            (None, None) => {}
             (None, Some(fallback)) => {
                 let _ = write!(text, " {attribute}={{{}}}", quote(fallback));
             }
@@ -713,7 +716,9 @@ fn repeatable(expression: &Expression<'_>) -> bool {
         | Expression::NullLiteral(_)
         | Expression::NumericLiteral(_)
         | Expression::StringLiteral(_) => true,
-        Expression::StaticMemberExpression(member) => !member.optional && repeatable(&member.object),
+        Expression::StaticMemberExpression(member) => {
+            !member.optional && repeatable(&member.object)
+        }
         Expression::UnaryExpression(unary) => {
             unary.operator == UnaryOperator::LogicalNot && repeatable(&unary.argument)
         }

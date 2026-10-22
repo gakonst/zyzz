@@ -12,8 +12,8 @@ use indexmap::IndexMap;
 use oxc_ast::AstKind;
 use oxc_ast::ast::{
     Argument, ArrayExpressionElement, BindingPattern, Expression, ImportDeclarationSpecifier,
-    ImportOrExportKind, ObjectExpression, ObjectPropertyKind, Program, PropertyKey, PropertyKind,
-    Statement,
+    ImportOrExportKind, JSXAttributeItem, JSXAttributeName, ObjectExpression, ObjectPropertyKind,
+    Program, PropertyKey, PropertyKind, Statement, UnaryOperator,
 };
 use oxc_span::{GetSpan, Span};
 use rustc_hash::{FxBuildHasher, FxHashMap, FxHashSet};
@@ -588,6 +588,137 @@ fn fold_bound(
     };
 
     module.overwrite(previous, application.end, suffix)
+}
+
+/// Writes a recipe selection spread alone onto a DOM element as the element's own attributes: the
+/// class list, then one `data-*` attribute per axis in axis order, as the generated selector
+/// orders its result. React writes the same strings the selector's `String(value)` produces and
+/// omits `null` and `undefined` values, as the selector does.
+///
+/// Values keep their authored order unless each is a repeatable read, and a value whose axis has a
+/// default must be repeatable too, since it is read once to test it. Other selections, and any
+/// with `className`, `style`, `vars`, or an unknown key, keep the callable.
+fn fold_recipe(
+    module: &mut Edits<'_>,
+    source: &str,
+    application: &Bound<'_>,
+    recipe: &runtime::Definition,
+    class_name: &str,
+) -> Result<()> {
+    // Authored values in authored order, with each one's axis index.
+    let mut values: SmallVec<[(usize, &Expression<'_>); 4]> = SmallVec::new();
+    let axes: Vec<&str> = recipe.axes.keys().map(|axis| &**axis).collect();
+
+    for property in &application.values.properties {
+        let ObjectPropertyKind::ObjectProperty(property) = property else {
+            return Ok(());
+        };
+
+        if property.computed || property.method || property.kind != PropertyKind::Init {
+            return Ok(());
+        }
+
+        let key = match &property.key {
+            PropertyKey::StaticIdentifier(identifier) => identifier.name.as_str(),
+            PropertyKey::StringLiteral(literal) => literal.value.as_str(),
+            _ => return Ok(()),
+        };
+        let Some(index) = axes.iter().position(|axis| *axis == key) else {
+            return Ok(());
+        };
+
+        if values.iter().any(|(existing, _)| *existing == index) {
+            return Ok(());
+        }
+
+        values.push((index, &property.value));
+    }
+
+    let sorted = values.windows(2).all(|pair| pair[0].0 < pair[1].0);
+
+    for (index, value) in &values {
+        let defaulted = axes
+            .get(*index)
+            .is_some_and(|axis| matches!(recipe.defaults.get(*axis), Some(Some(_))));
+
+        if (!sorted || defaulted) && !repeatable(value) {
+            return Ok(());
+        }
+    }
+
+    // An authored attribute of the same name would be a duplicate.
+    for attribute in &application.element.attributes {
+        if let JSXAttributeItem::Attribute(attribute) = attribute
+            && let JSXAttributeName::Identifier(name) = &attribute.name
+            && let Some(axis) = name.name.strip_prefix("data-")
+            && axes.contains(&axis)
+        {
+            return Ok(());
+        }
+    }
+
+    let callee = source
+        .get(application.start as usize..application.callee_end as usize)
+        .unwrap_or_default();
+    let mut text = String::with_capacity(class_name.len() + callee.len() * 2 + 32 * axes.len());
+
+    if application.initialized {
+        let _ = write!(text, "className={{{class_name}}}");
+    } else {
+        // Keep a callable guard so bundlers also keep failures before initialization.
+        let _ = write!(text, "className={{{callee}?{class_name}:{callee}().className}}");
+    }
+
+    for (index, axis) in axes.iter().enumerate() {
+        let fallback = recipe.defaults.get(*axis).and_then(Option::as_deref);
+        let value = match values.iter().find(|(existing, _)| *existing == index) {
+            Some((_, value)) => {
+                let span = value.span();
+
+                Some(module.slice(span.start, span.end)?)
+            }
+            None => None,
+        };
+        let mut attribute = String::from("data-");
+
+        attribute.push_str(axis);
+
+        match (value, fallback) {
+            (None, None) => continue,
+            (None, Some(fallback)) => {
+                let _ = write!(text, " {attribute}={{{}}}", quote(fallback));
+            }
+            (Some(value), None) => {
+                let _ = write!(text, " {attribute}={{{value}}}");
+            }
+            (Some(value), Some(fallback)) => {
+                let _ = write!(
+                    text,
+                    " {attribute}={{({value})===void 0?{}:{value}}}",
+                    quote(fallback)
+                );
+            }
+        }
+    }
+
+    module.overwrite(application.spread.start, application.spread.end, text)
+}
+
+/// Matches identifiers, literals, static member chains, and logical negations of them, which read
+/// the same value however often and in whatever order they evaluate.
+fn repeatable(expression: &Expression<'_>) -> bool {
+    match expression {
+        Expression::Identifier(_)
+        | Expression::BooleanLiteral(_)
+        | Expression::NullLiteral(_)
+        | Expression::NumericLiteral(_)
+        | Expression::StringLiteral(_) => true,
+        Expression::StaticMemberExpression(member) => !member.optional && repeatable(&member.object),
+        Expression::UnaryExpression(unary) => {
+            unary.operator == UnaryOperator::LogicalNot && repeatable(&unary.argument)
+        }
+        _ => false,
+    }
 }
 
 /// Locates emitted declarations, skipping selectors, conditions, and quoted CSS data. Offsets are
@@ -1433,6 +1564,46 @@ pub fn compile<'a>(
                 &properties,
                 &class_name,
             )?;
+        }
+    }
+
+    let recipes = local_applications
+        .as_ref()
+        .map(applications::Applications::recipes)
+        .unwrap_or_default();
+
+    for call in &extracted.calls {
+        let (Some(recipe), Some(applied)) = (&call.recipe, recipes.get(&call.name)) else {
+            continue;
+        };
+
+        // Conditions and payloads select through the runtime helpers.
+        if recipe
+            .conditions
+            .as_ref()
+            .is_some_and(|conditions| !conditions.is_empty())
+            || recipe
+                .payloads
+                .as_ref()
+                .is_some_and(|payloads| !payloads.is_empty())
+            || outputs.get(&*call.name).copied().unwrap_or_default()
+        {
+            continue;
+        }
+
+        let Some(class_name) = generator.classes.get(&call.name) else {
+            continue;
+        };
+        let class_name = quote(class_name);
+
+        for application in applied {
+            if composing_span(application.start, application.end)
+                || html_starts.contains(&application.start)
+            {
+                continue;
+            }
+
+            fold_recipe(&mut module, source, application, recipe, &class_name)?;
         }
     }
 

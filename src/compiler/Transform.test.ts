@@ -3861,6 +3861,47 @@ export const outer = style({ padding: '1px' })
   })
 })
 
+describe('recipes', () => {
+  describe('compile', () => {
+    test('writes literal recipe selections onto elements as attributes', async () => {
+      const source = `import { variants } from 'zyzz'
+const count = { value: 0 }
+const next = () => (count.value++, 'loud')
+const Button = (props: { active?: boolean; tone?: 'loud' | 'quiet' }) => <button {...styles.button({ tone: props.tone, active: !!props.active })} />
+export const App = () => <main>
+<Button active />
+<Button tone="loud" />
+<button {...styles.button({ active: false })} />
+<button {...styles.button({ tone: next(), active: true })} />
+<button {...styles.button({ active: true, className: 'extra' })} />
+<button data-tone="x" {...styles.button({ active: true })} />
+</main>
+namespace styles {
+export const button = variants({
+  base: { color: 'rgb(0, 0, 255)' },
+  variants: {
+    active: { false: { paddingLeft: '1px' }, true: { paddingLeft: '2px' } },
+    tone: { loud: { borderLeft: '3px solid' }, quiet: { borderLeft: '4px solid' } },
+  },
+  defaultVariants: { tone: 'quiet' },
+})
+}`
+      const output = Transform.compile({ moduleId: 'App.tsx', source })
+
+      expect(output.code).toMatchInlineSnapshot()
+
+      const rendered = await Wrappers.render({
+        css: output.css,
+        entry: 'App.tsx',
+        modules: { 'App.tsx': output.code },
+      })
+
+      expect(rendered.markup).toMatchInlineSnapshot()
+      expect(rendered.elements).toMatchInlineSnapshot()
+    })
+  })
+})
+
 describe('atRuleAcceptance', () => {
   const source = `import {counterStyle,fontFace,page,viewTransition,customMedia,cssFunction,namespace,importCss,global} from 'zyzz/web';
 export const dots=counterStyle({system:'cyclic',symbols:'"●"'});

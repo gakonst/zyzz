@@ -12,7 +12,7 @@ use indexmap::IndexMap;
 use oxc_ast::AstKind;
 use oxc_ast::ast::{
     Argument, CallExpression, Declaration, Expression, JSXAttributeItem, JSXAttributeName,
-    JSXElementName, ObjectExpression, ObjectPropertyKind, Program, PropertyKey, PropertyKind,
+    JSXElementName, JSXOpeningElement, ObjectExpression, ObjectPropertyKind, Program, PropertyKey, PropertyKind,
     Statement, TSNamespaceDeclarationBody, UnaryOperator, VariableDeclarationKind,
 };
 use oxc_semantic::Semantic;
@@ -46,16 +46,20 @@ pub struct Application {
     pub terminal: bool,
 }
 
-/// One application of a dynamic definition with an object literal, spread alone onto a DOM
-/// element.
+/// One application of a dynamic definition or recipe with an object literal, spread alone onto
+/// a DOM element.
 #[derive(Clone, Copy, Debug)]
 pub struct Bound<'a> {
     /// End of the callee expression.
     pub callee_end: u32,
+    /// The element the application is spread onto.
+    pub element: &'a JSXOpeningElement<'a>,
     /// End of the call.
     pub end: u32,
     /// Whether every evaluation follows the definition's initialization.
     pub initialized: bool,
+    /// The JSX spread attribute whose argument is the call.
+    pub spread: Span,
     /// Start of the call.
     pub start: u32,
     /// The authored values.
@@ -131,8 +135,9 @@ struct Candidate<'c, 'a> {
 /// What a lexical read is nested in.
 #[derive(Clone, Copy)]
 struct Read<'a> {
-    /// The values object of a one-argument call spread alone onto a DOM element.
-    bound: Option<&'a ObjectExpression<'a>>,
+    /// The values object of a one-argument call spread alone onto a DOM element, with the spread
+    /// attribute and the element.
+    bound: Option<Spread<'a>>,
     deferred: bool,
     /// Parent of the identifier.
     parent: Option<AstKind<'a>>,
@@ -144,6 +149,14 @@ struct Read<'a> {
     resolved: bool,
     span: Span,
     terminal: bool,
+}
+
+/// A one-argument call spread alone onto a DOM element.
+#[derive(Clone, Copy)]
+struct Spread<'a> {
+    element: &'a JSXOpeningElement<'a>,
+    span: Span,
+    values: &'a ObjectExpression<'a>,
 }
 
 /// The applications of one module's local definitions.
@@ -905,6 +918,16 @@ impl<'c, 'a> Applications<'c, 'a> {
     /// Applications of each dynamic definition that bind an object literal on a DOM element alone,
     /// by definition name, in candidate order.
     pub fn bound(&self) -> FxHashMap<Arc<str>, Vec<Bound<'a>>> {
+        self.bound_where(|call| call.slots.is_some() && call.recipe.is_none())
+    }
+
+    /// Applications of each recipe without payload slots that select with an object literal on a
+    /// DOM element alone, by definition name, in candidate order.
+    pub fn recipes(&self) -> FxHashMap<Arc<str>, Vec<Bound<'a>>> {
+        self.bound_where(|call| call.recipe.is_some() && call.slots.is_none())
+    }
+
+    fn bound_where(&self, accept: impl Fn(&Call<'a>) -> bool) -> FxHashMap<Arc<str>, Vec<Bound<'a>>> {
         let mut output: FxHashMap<Arc<str>, Vec<Bound<'a>>> = FxHashMap::default();
 
         if self.evaluation {
@@ -963,7 +986,7 @@ impl<'c, 'a> Applications<'c, 'a> {
             }
 
             for reference in reads {
-                let Some(values) = reference.bound else {
+                let Some(bound) = reference.bound else {
                     continue;
                 };
 
@@ -985,11 +1008,7 @@ impl<'c, 'a> Applications<'c, 'a> {
                     (candidate, call, span, reference.grandparent)
                 };
 
-                if call.slots.is_none()
-                    || call.recipe.is_some()
-                    || call.composition.is_some()
-                    || call.runtime_composition.is_some()
-                {
+                if !accept(call) || call.composition.is_some() || call.runtime_composition.is_some() {
                     continue;
                 }
 
@@ -1011,10 +1030,12 @@ impl<'c, 'a> Applications<'c, 'a> {
                     .or_default()
                     .push(Bound {
                         callee_end: callee.end,
+                        element: bound.element,
                         end: span.end,
                         initialized: !reference.deferred && reference.span.start >= candidate.ready,
+                        spread: bound.span,
                         start: span.start,
-                        values,
+                        values: bound.values,
                     });
             }
         }
@@ -1169,7 +1190,7 @@ fn terminal(path: &[AstKind<'_>]) -> bool {
 }
 
 /// The object literal of a one-argument application spread alone onto a DOM element.
-fn bound<'a>(path: &[AstKind<'a>]) -> Option<&'a ObjectExpression<'a>> {
+fn bound<'a>(path: &[AstKind<'a>]) -> Option<Spread<'a>> {
     let mut index = path.len().checked_sub(1)?;
     let mut node = path.get(index)?.span();
 
@@ -1198,12 +1219,16 @@ fn bound<'a>(path: &[AstKind<'a>]) -> Option<&'a ObjectExpression<'a>> {
         return None;
     };
 
-    (spread.argument.span() == call.span
-        && alone(
-            spread_index.checked_sub(1).and_then(|at| path.get(at)),
-            spread.span,
-        ))
-    .then_some(&**values)
+    let element = spread_index.checked_sub(1).and_then(|at| path.get(at));
+    let Some(AstKind::JSXOpeningElement(opening)) = element else {
+        return None;
+    };
+
+    (spread.argument.span() == call.span && alone(element, spread.span)).then_some(Spread {
+        element: opening,
+        span: spread.span,
+        values,
+    })
 }
 
 /// Matches `^class(?:Name)?$`.

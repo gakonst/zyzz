@@ -1138,15 +1138,99 @@ pub fn compile<'a>(
     let wrappers = if portable || options.development {
         wrappers::Wrappers::default()
     } else {
-        let applications: FxHashMap<u32, wrappers::Applied<'_>> = folded
+        let mut applications: FxHashMap<u32, wrappers::Applied<'_>> = folded
             .iter()
             .filter(|application| !outputs.get(&*application.name).copied().unwrap_or_default())
             .filter_map(|application| {
                 let classes = generator.classes.get(&application.name)?;
 
-                Some((application.start, (application.end, classes.as_str())))
+                Some((
+                    application.start,
+                    wrappers::Applied {
+                        anchors: Vec::new(),
+                        classes: classes.as_str(),
+                        composition: false,
+                        end: application.end,
+                    },
+                ))
             })
             .collect();
+
+        // A composition of known, unconditional applications always selects one class list.
+        for call in &extracted.calls {
+            let Some(classes) = generator.classes.get(&call.name) else {
+                continue;
+            };
+
+            if call.composition_cases.is_some()
+                || outputs.get(&*call.name).copied().unwrap_or_default()
+            {
+                continue;
+            }
+
+            // Compile-time compositions read each input's callee, whose root binding keeps an
+            // imported module.
+            if let Some(guards) = &call.composition {
+                let anchors = guards
+                    .iter()
+                    .filter_map(|guard| guard.split('.').next())
+                    .filter(|root| walker.imports.contains(root))
+                    .collect();
+
+                applications.insert(
+                    call.start,
+                    wrappers::Applied {
+                        anchors,
+                        classes: classes.as_str(),
+                        composition: true,
+                        end: call.end,
+                    },
+                );
+                continue;
+            }
+
+            let Some(inputs) = &call.runtime_composition else {
+                continue;
+            };
+
+            let mut anchors: Vec<&str> = Vec::new();
+            let mut constant = true;
+
+            for input in inputs {
+                let Some(known) = &input.known else {
+                    constant = false;
+                    break;
+                };
+
+                if known.condition.is_some() {
+                    constant = false;
+                    break;
+                }
+
+                if known.imported {
+                    // An imported definition read by name keeps its module.
+                    if generator.input_class(&input.name).is_none() || !is_identifier(&known.callee)
+                    {
+                        constant = false;
+                        break;
+                    }
+
+                    anchors.push(&known.callee);
+                }
+            }
+
+            if constant {
+                applications.insert(
+                    call.start,
+                    wrappers::Applied {
+                        anchors,
+                        classes: classes.as_str(),
+                        composition: true,
+                        end: call.end,
+                    },
+                );
+            }
+        }
         // Definition and contribution calls are replaced whole.
         let replaced = Intervals::new(
             extracted
@@ -1184,9 +1268,15 @@ pub fn compile<'a>(
             (Some(prefix), Some(own)) => {
                 let classes = quote(&format!("{} {own}", prefix.classes));
 
-                match &prefix.anchor {
-                    Some(anchor) => format!("({anchor}&&{classes})"),
-                    None => classes,
+                if prefix.anchors.is_empty() {
+                    classes
+                } else {
+                    let mut text = String::from("(");
+
+                    wrappers::write_anchors(&mut text, &prefix.anchors);
+                    text.push_str(&classes);
+                    text.push(')');
+                    text
                 }
             }
             _ => json_class(&generator.classes, &application.name),
@@ -1396,6 +1486,18 @@ pub fn compile<'a>(
         vars,
         wrappers: (!wrappers.exports.is_empty()).then(|| Arc::new(wrappers.exports)),
     })
+}
+
+/// Matches a plain JavaScript identifier, which reads one binding.
+fn is_identifier(text: &str) -> bool {
+    let mut characters = text.chars();
+
+    characters
+        .next()
+        .is_some_and(|first| first == '_' || first == '$' || first.is_ascii_alphabetic())
+        && characters.all(|character| {
+            character == '_' || character == '$' || character.is_ascii_alphanumeric()
+        })
 }
 
 /// `{ file, mappings, names, sources, sourcesContent, version }`, the module map's key order.

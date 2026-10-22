@@ -41,12 +41,15 @@ export const Ghost = (props: { className?: string | undefined; children?: unknow
 namespace styles {
   export const ghost = style({ borderLeft: '2px solid', paddingLeft: '2px' })
 }`,
-  'index.tsx': `import { style } from 'zyzz'
+  'index.tsx': `import { cx, style } from 'zyzz'
+import { accent, base } from './values.ts'
 import { Ghost } from './ghost.tsx'
 import { Primary } from './primary.tsx'
 import { Left } from './left.tsx'
 const Local = (props: { className?: string | undefined; children?: unknown }) => <Ghost {...styles.local({ className: props.className })}>{props.children}</Ghost>
-export const App = () => <main><Primary>{1}</Primary><Left>left</Left><Local>local</Local></main>
+// A composition of imported definitions keeps their module.
+const Composed = ({ children }: { children?: unknown }) => <b {...cx(base(), accent())}>{children}</b>
+export const App = () => <main><Primary>{1}</Primary><Left>left</Left><Local>local</Local><Composed>composed</Composed></main>
 // The folded element would read a parameter instead of the import that keeps its module.
 export const Shadowed = (Ghost: unknown) => <Local>{String(Ghost)}</Local>
 namespace styles {
@@ -66,6 +69,9 @@ export const Primary = (props: { children?: unknown }) => <Ghost {...styles.prim
 namespace styles {
   export const primary = style({ borderLeft: '3px solid', paddingLeft: '3px' })
 }`,
+  'values.ts': `import { style } from 'zyzz'
+export const base = style({ borderLeft: '7px solid', paddingLeft: '7px' })
+export const accent = style({ paddingLeft: '8px' })`,
   'right.tsx': `import { style } from 'zyzz'
 import { Leaf } from './left.tsx'
 export const Right = (props: { className?: string | undefined; children?: unknown }) => <Leaf {...styles.right({ className: props.className })}>{props.children}</Leaf>
@@ -2700,13 +2706,18 @@ ${web.modules['app.ts']!.code}`,
 
     expect(output.modules['index.tsx']!.code).toMatchInlineSnapshot(`
       "
+      const __zyzzComposition476=/*#__PURE__*/[{className:"z_HXfo7a1 z_HXfo7a2 z_HXfo7a3 z-style-on3f6Q-base z-style-on3f6Q-accent"}].map(Object.freeze);
+
       import { Props as __zyzzProps } from 'zyzz/runtime';
 
+      import { accent, base } from './values.ts'
       import { Ghost } from './ghost.tsx'
       import { Primary } from './primary.tsx'
       import { Left } from './left.tsx'
       const Local = (props: { className?: string | undefined; children?: unknown }) => <button className={styles.local?__zyzzProps.merge((Ghost&&"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_HXfo7a0"),props.className):styles.local({className:props.className}).className}>{props.children}</button>
-      export const App = () => <main><button className={Primary&&"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1"}>{1}</button><Left>left</Left><button className={Ghost&&"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_HXfo7a0"}>local</button></main>
+      // A composition of imported definitions keeps their module.
+
+      export const App = () => <main><button className={Primary&&"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1"}>{1}</button><Left>left</Left><button className={Ghost&&"z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_HXfo7a0"}>local</button><b className={base&&accent&&"z_HXfo7a1 z_HXfo7a2 z_HXfo7a3 z-style-on3f6Q-base z-style-on3f6Q-accent"}>composed</b></main>
       // The folded element would read a parameter instead of the import that keeps its module.
       export const Shadowed = (Ghost: unknown) => <Local>{String(Ghost)}</Local>
       namespace styles {
@@ -2744,7 +2755,7 @@ ${web.modules['app.ts']!.code}`,
     })
 
     expect(rendered.markup).toMatchInlineSnapshot(
-      `"<main><button class="z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1">1</button><i class="z_Ct2jZL0 z_jwICbk0 z_Ct2jZL0">left</i><button class="z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_HXfo7a0">local</button></main>"`,
+      `"<main><button class="z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_zXpW6o0 z_zXpW6o1">1</button><i class="z_Ct2jZL0 z_jwICbk0 z_Ct2jZL0">left</i><button class="z_0gnfN20 z_0gnfN21 z_0gnfN22 z_C1lRjj0 z_C1lRjj1 z_HXfo7a0">local</button><b class="z_HXfo7a1 z_HXfo7a2 z_HXfo7a3 z-style-on3f6Q-base z-style-on3f6Q-accent">composed</b></main>"`,
     )
     expect(rendered.elements).toMatchInlineSnapshot(`
       [
@@ -2768,6 +2779,13 @@ ${web.modules['app.ts']!.code}`,
           "color": "rgb(255, 0, 0)",
           "paddingLeft": "6px",
           "tag": "button",
+        },
+        {
+          "borderLeftWidth": "7px",
+          "className": "z_HXfo7a1 z_HXfo7a2 z_HXfo7a3 z-style-on3f6Q-base z-style-on3f6Q-accent",
+          "color": "rgb(0, 0, 0)",
+          "paddingLeft": "8px",
+          "tag": "b",
         },
       ]
     `)

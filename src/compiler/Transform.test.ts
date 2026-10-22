@@ -3583,15 +3583,15 @@ export const l2 = style({ borderLeft: '3px solid', paddingLeft: '3px' })
         import { Props as __zyzzProps } from 'zyzz/runtime';
 
         type P = { className?: string | undefined; children?: unknown }
-        const L0 = (props: P) => <button className={styles.l0?__zyzzProps.merge("z_l0kPgl0 z_l0kPgl1 z_l0kPgl2",props.className):styles.l0({className:props.className}).className}>{props.children}</button>
-        const L1 = (props: P) => <button className={styles.l1?__zyzzProps.merge("z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4",props.className):styles.l1({className:props.className}).className}>{props.children}</button>
+
+
         function L2({ className, children }: P) {
           return <button className={styles.l2?__zyzzProps.merge("z_l0kPgl0 z_l0kPgl1 z_l0kPgl2 z_l0kPgl3 z_l0kPgl4 z_l0kPgl5 z_l0kPgl6",className):styles.l2({className:className}).className}>
             {children}
           </button>
         }
         const Fixed = ({ children }: P) => <span className={(styles.l0?"z_l0kPgl0 z_l0kPgl1 z_l0kPgl2":styles.l0().className)}>{children}</span>
-        const Drops = (props: P) => <Fixed className={styles.l2?__zyzzProps.merge("z_l0kPgl5 z_l0kPgl6",props.className):styles.l2({className:props.className}).className}>{props.children}</Fixed>
+
         const Labeled = (props: P & { label?: string }) => <button aria-label={props.label} className={styles.l0?__zyzzProps.merge("z_l0kPgl0 z_l0kPgl1 z_l0kPgl2",props.className):styles.l0({className:props.className}).className}>{props.children}</button>
         const Counted = (props: P) => { const label = 'counted'; return <button className={styles.l0?__zyzzProps.merge("z_l0kPgl0 z_l0kPgl1 z_l0kPgl2",props.className):styles.l0({className:props.className}).className}>{props.children}{label}</button> }
         const Conditional = (props: P) => props.children ? <button className={styles.l0?__zyzzProps.merge("z_l0kPgl0 z_l0kPgl1 z_l0kPgl2",props.className):styles.l0({className:props.className}).className}>{props.children}</button> : null
@@ -3816,6 +3816,34 @@ export const l2 = style({ borderLeft: '3px solid', paddingLeft: '3px' })
             "tag": "button",
           },
         ]
+      `)
+    })
+
+    test('removes folded local wrappers and the namespace only they read', () => {
+      const output = Transform.compile({
+        moduleId: 'Chain.tsx',
+        source: `import { cx, style } from 'zyzz'
+type P = { className?: string | undefined; children?: unknown }
+const Base = (props: P) => <button {...styles.base({ className: props.className })}>{props.children}</button>
+const Outer = (props: P) => <Base {...styles.outer({ className: props.className })}>{props.children}</Base>
+const Pair = ({ children }: P) => <span {...cx(styles.base(), styles.outer())}>{children}</span>
+export const App = () => <main><Outer>outer</Outer><Pair>pair</Pair></main>
+namespace styles {
+export const base = style({ color: 'red' })
+export const outer = style({ padding: '1px' })
+}`,
+      })
+
+      expect(output.code).toMatchInlineSnapshot(`
+        "
+        import { Props as __zyzzProps } from 'zyzz/runtime';
+
+        type P = { className?: string | undefined; children?: unknown }
+
+
+
+        export const App = () => <main><button className={"z_sQBwGV0 z_sQBwGV1"}>outer</button><span className={"z_sQBwGV0 z_sQBwGV1"}>pair</span></main>
+        "
       `)
     })
 

@@ -756,9 +756,51 @@ The callback must be synchronous and return a literal object, because the compil
 
 ### Adjust Color Opacity
 
-`color-mix()` derives a translucent color from a token. `Vars.compose` turns the expression into a token of its own, which keeps a live reference, so it follows the accent of the active set and scheme.
+Append a slash and a percentage from 0 to 100 to a color token name, such as `'accent/15'`. Every color property accepts the suffix, and TypeScript checks the token name before it.
 
 <Tabs label="Adjust color opacity">
+<Tab title="zyzz.config.ts">
+
+```ts title="zyzz.config.ts"
+import { defineConfig } from 'zyzz'
+
+export const { style } = defineConfig({
+  // Each scheme value receives the same opacity
+  vars: { color: { accent: { dark: '#60a5fa', light: '#2563eb' } } },
+})
+```
+
+</Tab>
+<Tab title="Badge.tsx">
+
+```tsx title="Badge.tsx"
+import { style } from './zyzz.config.js'
+
+export function Badge() {
+  return <span {...styles.badge()}>New</span>
+}
+
+namespace styles {
+  export const badge = style({
+    // [!code hl:3]
+    // Translucent fill and border from one accent token
+    backgroundColor: 'accent/15',
+    borderColor: 'accent/40',
+    color: 'accent',
+  })
+}
+```
+
+</Tab>
+</Tabs>
+
+The value compiles to `color-mix()` with `transparent` and a live reference, so it follows the accent of the active set and scheme. React Native converts it to an RGBA hex color for each scheme when the token holds a hex or functional sRGB color.
+
+### Compose Translucent Tokens
+
+`Vars.compose` turns a `color-mix()` expression into a token of its own. The token keeps a live reference, so it follows the accent of the active set and scheme.
+
+<Tabs label="Compose translucent tokens">
 <Tab title="zyzz.config.ts">
 
 ```ts title="zyzz.config.ts"
@@ -805,15 +847,14 @@ namespace styles {
 </Tab>
 </Tabs>
 
-For a single declaration, interpolate the reference into the expression and add ` !custom`:
+For another mix in a single declaration, interpolate the reference into the expression and add ` !custom`. The browser evaluates the expression, and React Native rejects it.
 
 ```ts
+// Mixes the accent with white instead of transparent
 style({
-  backgroundColor: `color-mix(in srgb, ${vars.color.accent} 15%, transparent) !custom`,
+  backgroundColor: `color-mix(in srgb, ${vars.color.accent} 85%, white) !custom`,
 })
 ```
-
-The browser evaluates the expression. React Native rejects composed values.
 
 ### Make Tokens Responsive
 

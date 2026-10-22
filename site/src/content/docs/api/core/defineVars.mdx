@@ -172,7 +172,7 @@ Derived values that replace an existing path, keys containing `!`, dotted catego
 
 ## React Native
 
-Native compilation resolves references to native values, and color pairs follow the selected scheme. `@media` conditions select by the [`Provider`](/docs/api/react-native/Provider) window size. Composed values compile when the joined value is a supported native value, such as a `calc()` length or an absolute color. Values such as `color-mix()` fail native compilation.
+Native compilation resolves references to native values, and color pairs follow the selected scheme. `@media` conditions select by the [`Provider`](/docs/api/react-native/Provider) window size. Composed values compile when the joined value is a supported native value, such as a `calc()` length or an absolute color. Values such as `oklch()` fail native compilation.
 
 ```ts title="tokens.ts"
 import { defineVars } from 'zyzz'

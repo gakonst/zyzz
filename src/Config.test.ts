@@ -4,14 +4,15 @@
  */
 import * as Path from 'node:path'
 import * as Packed from '../test/fixtures/Packed.js'
-import { Graph } from 'zyzz/compiler'
-import { Config as PublicConfig, defineConfig } from 'zyzz'
+import { Graph, Native } from 'zyzz/compiler'
+import { Config as PublicConfig, defineConfig, Vars } from 'zyzz'
 import * as Ts from 'typescript-api'
 import { chromium } from 'playwright'
 import { describe, expect, test } from 'vite-plus/test'
 import { Style } from 'zyzz'
 import * as Theme from './internal/Theme.js'
 import * as Config from './internal/Configuration.js'
+import { StyleSheet } from 'zyzz/react-native'
 import { Css } from 'zyzz/web'
 
 describe('create', () => {
@@ -247,6 +248,151 @@ export const third=configured.style({width:'calc(1px /* ] */ + 2px) !custom'});`
       PublicConfig.create({ strict: true } as never),
     ).toThrowErrorMatchingInlineSnapshot(
       `[Config.InvalidError: Unknown configuration option: strict]`,
+    )
+  })
+
+  test('mixes color tokens with an opacity across schemes and targets', async () => {
+    const config = `import {Config} from 'zyzz'; export const {style}=Config.create({vars:{color:{blue:{500:'rgb(0 0 255)'},ink:{light:'#ff0000',dark:'#0000ff'}},spacing:{md:'8px'}}});`
+    function compile(body: string) {
+      return Graph.compile({
+        imports: {
+          'app.ts': { './config': 'config.ts' },
+          'config.ts': { zyzz: null },
+        },
+        modules: {
+          'app.ts': `import {style} from './config'; ${body}`,
+          'config.ts': config,
+        },
+      })
+    }
+
+    const result = compile(
+      `export const card=style({backgroundColor:'ink/40',borderColor:'blue.500/12.5',color:'ink/100 !important'});`,
+    )
+    const css = result.modules['app.ts']!.css
+
+    expect(
+      css
+        .split('\n')
+        .filter((line) => line.startsWith('.z_'))
+        .join('\n'),
+    ).toMatchInlineSnapshot(`
+      ".z_Zf5JrJ0{background-color:color-mix(in srgb, var(--z-color-ink,light-dark(#ff0000,#0000ff)) 40%, transparent);}
+      .z_Zf5JrJ1{border-color:color-mix(in srgb, var(--z-color-blue-500,rgb(0 0 255)) 12.5%, transparent);}
+      .z_Zf5JrJ2{color:color-mix(in srgb, var(--z-color-ink,light-dark(#ff0000,#0000ff)) 100%, transparent)!important;}"
+    `)
+    expect(
+      [
+        `style({padding:'md/40'})`,
+        `style({color:'ink/101'})`,
+        `style({color:'missing/40'})`,
+        `style({color:'ink/'})`,
+      ].map((body) => {
+        try {
+          compile(`export const invalid=${body}`)
+          return 'accepted'
+        } catch (error) {
+          return (error as Error).message
+        }
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        "app.ts:68: Expected a configured token or a CSS value with the " !custom" suffix.",
+        "app.ts:66: Expected a configured token or a CSS value with the " !custom" suffix.",
+        "app.ts:66: Expected a configured token or a CSS value with the " !custom" suffix.",
+        "app.ts:66: Expected a configured token or a CSS value with the " !custom" suffix.",
+      ]
+    `)
+
+    const browser = await chromium.launch()
+    try {
+      const page = await browser.newPage()
+      await page.setContent(
+        `<style>${css}</style><div class="${Object.values(result.modules['app.ts']!.classes).join(' ')} z-theme-theme" id="card">card</div>`,
+      )
+      async function colors() {
+        return page.locator('#card').evaluate((element) => {
+          const style = getComputedStyle(element)
+          return [style.backgroundColor, style.borderTopColor, style.color]
+        })
+      }
+
+      expect(await colors()).toMatchInlineSnapshot(`
+        [
+          "color(srgb 1 0 0 / 0.4)",
+          "color(srgb 0 0 1 / 0.125)",
+          "color(srgb 1 0 0)",
+        ]
+      `)
+
+      await page.evaluate(() => {
+        document.documentElement.style.colorScheme = 'dark'
+      })
+
+      expect(await colors()).toMatchInlineSnapshot(`
+        [
+          "color(srgb 0 0 1 / 0.4)",
+          "color(srgb 0 0 1 / 0.125)",
+          "color(srgb 0 0 1)",
+        ]
+      `)
+    } finally {
+      await browser.close()
+    }
+
+    const native = Native.compile({
+      colorScheme: 'dark',
+      moduleId: 'app.ts',
+      source: `import {Config} from 'zyzz'; const {style}=Config.create({vars:{color:{blue:{500:'rgb(0 0 255)'},ink:{light:'#ff0000',dark:'#0000ff'}}}}); export const card=style({backgroundColor:'ink/40',borderColor:'blue.500/12.5'})`,
+    })
+
+    expect(
+      native.code.slice(native.code.indexOf('export const card')),
+    ).toMatchInlineSnapshot(
+      `"export const card=(__zyzzNative.create({"axes":{},"defaults":{},"styles":{"0":{"backgroundColor":"#0000ff66","borderTopColor":"#0000ff20","borderRightColor":"#0000ff20","borderBottomColor":"#0000ff20","borderLeftColor":"#0000ff20"}}}) as import('zyzz/runtime').Native.Callable<{}>)"`,
+    )
+
+    const vars = Vars.define({
+      color: {
+        blue: { 500: '#00f' },
+        ink: { dark: '#0000ff', light: '#ff0000' },
+      },
+      spacing: { md: '8px' },
+    })
+    const styles = Style.define(
+      { card: { backgroundColor: 'ink/40', borderColor: 'blue.500/12.5' } },
+      { vars },
+    )
+
+    expect(Css.compile({ styles }).css).toMatchInlineSnapshot(`
+      ".z_0{background-color:color-mix(in srgb, var(--z0,light-dark(#ff0000,#0000ff)) 40%, transparent);}
+      .z_1{border-color:color-mix(in srgb, var(--z1,#00f) 12.5%, transparent);}"
+    `)
+
+    const tables = StyleSheet.compile({ styles })
+
+    expect(tables.styles.default.light.card).toMatchInlineSnapshot(`
+      {
+        "backgroundColor": "#ff000066",
+        "borderBottomColor": "#0000ff20",
+        "borderLeftColor": "#0000ff20",
+        "borderRightColor": "#0000ff20",
+        "borderTopColor": "#0000ff20",
+      }
+    `)
+    expect(tables.styles.default.dark.card).toMatchInlineSnapshot(`
+      {
+        "backgroundColor": "#0000ff66",
+        "borderBottomColor": "#0000ff20",
+        "borderLeftColor": "#0000ff20",
+        "borderRightColor": "#0000ff20",
+        "borderTopColor": "#0000ff20",
+      }
+    `)
+    expect(() =>
+      Style.define({ card: { padding: 'md/40' } } as never, { vars }),
+    ).toThrowErrorMatchingInlineSnapshot(
+      `[Style.InvalidError: ["card","padding"]: Expected a configured token or a CSS value with the " !custom" suffix.]`,
     )
   })
 

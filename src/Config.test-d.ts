@@ -446,6 +446,28 @@ describe('defineConfig', () => {
     style({ gap: 1.5 })
   })
 
+  test('accepts color tokens with an opacity on color properties', () => {
+    const { style } = defineConfig({
+      vars: {
+        color: { blue: { 500: '#00f' }, ink: { dark: '#fff', light: '#000' } },
+        spacing: { md: '8px' },
+      },
+    })
+
+    style({
+      backgroundColor: 'ink/40',
+      borderColor: 'blue.500/12.5',
+      color: 'ink/100 !important',
+      outlineColor: 'blue.500',
+    })
+    // @ts-expect-error Unknown color names remain rejected.
+    style({ color: 'missing/40' })
+    // @ts-expect-error An opacity requires a number.
+    style({ color: 'ink/half' })
+    // @ts-expect-error Non-color properties accept no opacity.
+    style({ padding: 'md/40' })
+  })
+
   test('rejects font weight tokens outside the fontWeight domain', () => {
     const config = defineConfig({
       vars: { fontWeight: { bold: 'bold', medium: 500, regular: 400 } },

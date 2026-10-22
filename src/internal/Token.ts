@@ -542,8 +542,21 @@ export type Metadata = {
 /** Literal domain carried by explicit variable references during type checking. */
 export const scalar = Symbol('zyzz.variable.scalar')
 
-/** Inferred shorthand names whose leaves belong to a property domain. */
-export type Names<
+/** Inferred shorthand names whose leaves belong to a property domain, with `name/opacity` on color properties. */
+export type Names<tokens, property extends keyof Literal.Properties> = Opacity<
+  BaseNames<tokens, property>,
+  property
+>
+
+type Opacity<names, property extends keyof Literal.Properties> = [
+  names,
+] extends [never]
+  ? never
+  : property extends Property<'color'>
+    ? names | `${Extract<names, string | number>}/${number}`
+    : names
+
+type BaseNames<
   tokens,
   property extends keyof Literal.Properties,
 > = tokens extends {
@@ -696,8 +709,35 @@ export type Reference<group extends Group = Group> = {
 
 const reference = Symbol('zyzz.token')
 
-/** Resolves configured token names, with specific color groups first. */
+/**
+ * Resolves configured token names, with specific color groups first.
+ *
+ * On color properties, an unmatched `name/opacity` value resolves `name` and mixes the color
+ * with `transparent`, where `opacity` is a percentage from 0 to 100.
+ */
 export function resolve(value: unknown, options: resolve.Options): unknown {
+  const resolved = lookup(value, options)
+  if (resolved !== value || typeof value !== 'string') return resolved
+
+  const match = /^(.+)\/(\d+(?:\.\d*)?|\.\d+)$/.exec(value)
+  if (!match || !accepts('color', options.property)) return value
+
+  const opacity = Number(match[2])
+  if (opacity > 100) return value
+
+  const base = lookup(match[1], options)
+  if (
+    !is(base) ||
+    (base.group !== 'color' && !base.group.endsWith('Color')) ||
+    (base.contract.variableSet && !acceptsReference(base, options.property))
+  )
+    return value
+
+  // Premultiplied mixing with `transparent` scales the alpha and keeps the channels.
+  return compose(['color-mix(in srgb, ', base, ` ${opacity}%, transparent)`])
+}
+
+function lookup(value: unknown, options: resolve.Options): unknown {
   if (
     options.property.startsWith('--') ||
     (typeof value !== 'string' && typeof value !== 'number')

@@ -738,9 +738,9 @@ struct Validator<'a> {
     locations: &'a [SourceLocation],
     /// Whether a theme maps tokens to a property, by theme address and property.
     mapped: FxHashMap<(usize, Arc<str>), bool>,
-    /// The token a scalar resolves to, by theme address, property, and value text. Resolution
-    /// scans every token path, so each value resolves once.
-    references: FxHashMap<(usize, Arc<str>, String), Option<Arc<Reference>>>,
+    /// The token or opacity expression a scalar resolves to, by theme address, property, and
+    /// value text. Resolution scans every token path, so each value resolves once.
+    references: FxHashMap<(usize, Arc<str>, String), Option<Data>>,
 }
 
 const MARKERS: &str = "Value markers require \" !custom\" followed by optional \" !important\", or \" !important\" alone.";
@@ -856,6 +856,8 @@ impl Validator<'_> {
             };
             let had_markers = scalar.is_some();
             let scalar = scalar.unwrap_or_else(|| entry.clone());
+            // Only an authored expression requires reference parts. Resolution returns opacity mixes.
+            let authored_expression = matches!(scalar, Data::Expression(_));
             let resolved = match theme {
                 Some(theme) if !custom && scalar.is_scalar() => {
                     let cache = (
@@ -865,17 +867,15 @@ impl Validator<'_> {
                     );
 
                     match self.references.get(&cache) {
-                        Some(Some(reference)) => Data::Token(Arc::clone(reference)),
+                        Some(Some(resolved)) => resolved.clone(),
                         // A value no token names resolves to itself.
                         Some(None) => scalar,
                         None => {
                             let resolved = token::resolve(&scalar, key, theme);
-                            let reference = match &resolved {
-                                Data::Token(reference) => Some(Arc::clone(reference)),
-                                _ => None,
-                            };
+                            let named = matches!(&resolved, Data::Token(_) | Data::Expression(_));
 
-                            self.references.insert(cache, reference);
+                            self.references
+                                .insert(cache, named.then(|| resolved.clone()));
                             resolved
                         }
                     }
@@ -907,7 +907,7 @@ impl Validator<'_> {
                     .entry((std::ptr::from_ref(theme).addr(), Arc::clone(key)))
                     .or_insert_with(|| token::mapped(theme, key))
                 && !matches!(&resolved, Data::Binding(binding) if !binding.dynamic)
-                && !matches!(&resolved, Data::Expression(expression) if expression.parts.iter().all(|part| matches!(part, Part::Reference(_)) || matches!(part, Part::Text(text) if text.is_empty())))
+                && !matches!(&resolved, Data::Expression(expression) if !authored_expression || expression.parts.iter().all(|part| matches!(part, Part::Reference(_)) || matches!(part, Part::Text(text) if text.is_empty())))
             {
                 self.report(
                     Code::InvalidValue,

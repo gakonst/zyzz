@@ -837,7 +837,12 @@ describe('style', () => {
         Style.DeclarationProperties<{ color: { brand: '#06c' } }>['color'],
         `brand${string}`
       >
-    >().toEqualTypeOf<'brand' | 'brand !important'>()
+    >().toEqualTypeOf<
+      | 'brand'
+      | 'brand !important'
+      | `brand/${number}`
+      | `brand/${number} !important`
+    >()
 
     configured.style({ color: 'brand !important' })
     style({ color: 'red !important', opacity: '0.5 !important' })

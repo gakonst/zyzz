@@ -6,13 +6,18 @@ use crate::react_native::internal::scalar::{Decimal, Exponent, Fraction};
 
 /// Normalizes functional colors to byte-accurate RGBA hex for native parsers.
 ///
-/// Returns `None` for inherited, relative, wide-gamut, and malformed colors.
+/// `color-mix(in srgb, color N%, transparent)` converts when `color` is a hex or functional
+/// color. Returns `None` for inherited, relative, wide-gamut, and malformed colors.
 pub fn parse(input: &str) -> Option<String> {
     // Every accepted spelling is ASCII, so ASCII folding decides acceptance like `toLowerCase`.
     let value = js::trim(input).to_ascii_lowercase();
 
     if value == "transparent" || hex(&value) || NAMED_COLORS.contains(&value.as_str()) {
         return Some(value);
+    }
+
+    if let Some((color, opacity)) = mix(&value) {
+        return transparent(color, opacity);
     }
 
     let open = value.find('(')?;
@@ -138,6 +143,86 @@ pub fn parse(input: &str) -> Option<String> {
 
     Some(output)
 }
+
+/// Matches `^color-mix\(\s*in\s+srgb\s*,\s*(.+?)\s+(\d+(?:\.\d*)?|\.\d+)%\s*,\s*transparent\s*\)$`.
+fn mix(value: &str) -> Option<(&str, &str)> {
+    let body = value.strip_prefix("color-mix(")?.strip_suffix(')')?;
+    let body = body
+        .trim_start_matches(js::is_whitespace)
+        .strip_prefix("in")?;
+    let rest = body.trim_start_matches(js::is_whitespace);
+
+    if rest.len() == body.len() {
+        return None;
+    }
+
+    let body = rest
+        .strip_prefix("srgb")?
+        .trim_start_matches(js::is_whitespace)
+        .strip_prefix(',')?
+        .trim_start_matches(js::is_whitespace);
+    let body = body
+        .trim_end_matches(js::is_whitespace)
+        .strip_suffix("transparent")?
+        .trim_end_matches(js::is_whitespace)
+        .strip_suffix(',')?
+        .trim_end_matches(js::is_whitespace)
+        .strip_suffix('%')?;
+    let (color, opacity) = body.rsplit_once(js::is_whitespace)?;
+    let color = color.trim_end_matches(js::is_whitespace);
+
+    if color.is_empty() || opacity.is_empty() || !OPACITY.matches(opacity) {
+        return None;
+    }
+
+    Some((color, opacity))
+}
+
+/// Scales the alpha of a color by a percentage, as premultiplied mixing with `transparent` does.
+fn transparent(color: &str, opacity: &str) -> Option<String> {
+    let opacity = js::to_number(opacity);
+    let color = parse(color)?;
+
+    if opacity > 100.0 {
+        return None;
+    }
+
+    if color == "transparent" {
+        return Some(color);
+    }
+
+    let digits = color.strip_prefix('#')?;
+    let full: String = if digits.len() <= 4 {
+        digits.chars().flat_map(|digit| [digit, digit]).collect()
+    } else {
+        digits.to_owned()
+    };
+    let alpha = full
+        .get(6..8)
+        .map_or(Some(255), |alpha| u8::from_str_radix(alpha, 16).ok())?;
+    let byte = round(f64::from(alpha) * opacity / 100.0);
+    let mut output = String::with_capacity(9);
+
+    output.push('#');
+    output.push_str(full.get(..6)?);
+
+    let digits = js::radix(byte, 16);
+
+    if digits.len() < 2 {
+        output.push('0');
+    }
+
+    output.push_str(&digits);
+
+    Some(output)
+}
+
+/// The spelling `\d+(?:\.\d*)?|\.\d+` of a `color-mix()` percentage.
+const OPACITY: Decimal = Decimal {
+    exponent: Exponent::None,
+    fraction: Fraction::Optional,
+    sign: false,
+};
 
 /// Matches `^#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$`.
 fn hex(value: &str) -> bool {

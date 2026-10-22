@@ -59,7 +59,7 @@ Viewport and font-relative units, such as `vw` and `em`, and percentages inside 
 
 ## Colors
 
-Named colors, hex colors, and absolute `rgb()`, `hsl()`, and `hwb()` functions are supported. Functional colors normalize to RGBA hex, and named and hex colors stay in their own form, trimmed and lowercased. Other functions, such as `oklch()` and `color-mix()`, fail native compilation.
+Named colors, hex colors, and absolute `rgb()`, `hsl()`, and `hwb()` functions are supported. Functional colors normalize to RGBA hex, and named and hex colors stay in their own form, trimmed and lowercased. `color-mix(in srgb, color N%, transparent)`, the form of a [token with an opacity](/docs/guides/themes#adjust-color-opacity), converts to RGBA hex when `color` is a hex or functional color. Other functions, such as `oklch()` and other `color-mix()` forms, fail native compilation.
 
 ```ts
 import { style } from 'zyzz'

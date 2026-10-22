@@ -8,7 +8,11 @@ export type Value =
   | (typeof Literal.namedColors)[number]
   | `${'rgb' | 'rgba' | 'hsl' | 'hsla' | 'hwb'}(${string})`
 
-/** Normalizes functional colors to byte-accurate RGBA hex for native parsers. */
+/**
+ * Normalizes functional colors to byte-accurate RGBA hex for native parsers.
+ *
+ * `color-mix(in srgb, color N%, transparent)` converts when `color` is a hex or functional color.
+ */
 export function parse(input: string): string | undefined {
   const value = input.trim().toLowerCase()
   if (value === 'transparent') return value
@@ -17,6 +21,27 @@ export function parse(input: string): string | undefined {
     (Literal.namedColors as readonly string[]).includes(value)
   )
     return value
+  const mix =
+    /^color-mix\(\s*in\s+srgb\s*,\s*(.+?)\s+(\d+(?:\.\d*)?|\.\d+)%\s*,\s*transparent\s*\)$/.exec(
+      value,
+    )
+  if (mix) {
+    const opacity = Number(mix[2])
+    const color = parse(mix[1]!)
+    if (opacity > 100 || !color) return undefined
+    if (color === 'transparent') return color
+    if (!color.startsWith('#')) return undefined
+    const digits = color.slice(1)
+    const full =
+      digits.length <= 4
+        ? [...digits].map((digit) => digit + digit).join('')
+        : digits
+    // Premultiplied mixing with `transparent` scales the alpha and keeps the channels.
+    const alpha = Math.round(
+      (parseInt(full.slice(6, 8) || 'ff', 16) * opacity) / 100,
+    )
+    return `#${full.slice(0, 6)}${alpha.toString(16).padStart(2, '0')}`
+  }
   const match = /^(rgb|rgba|hsl|hsla|hwb)\(([^()]*)\)$/.exec(value)
   if (!match) return undefined
   const family = match[1]!

@@ -500,8 +500,71 @@ const LEGACY_GROUPS: [&str; 14] = [
 
 /// Resolves a scalar declaration value to a token reference when the theme names it.
 ///
-/// Values for custom properties and non-scalars return unchanged.
+/// On color properties, an unmatched `name/opacity` value resolves `name` and mixes the color
+/// with `transparent`, where `opacity` is a percentage from 0 to 100. Values for custom
+/// properties and non-scalars return unchanged.
 pub fn resolve(value: &Data, property: &str, theme: &theme::Definition) -> Data {
+    let resolved = lookup(value, property, theme);
+
+    let Data::String(text) = value else {
+        return resolved;
+    };
+
+    if resolved != *value || !accepts("color", property) {
+        return resolved;
+    }
+
+    let Some((name, opacity)) = text.rsplit_once('/') else {
+        return resolved;
+    };
+
+    if name.is_empty() || !percentage(opacity) {
+        return resolved;
+    }
+
+    let amount = crate::js::to_number(opacity);
+
+    if amount > 100.0 {
+        return resolved;
+    }
+
+    let Data::Token(base) = lookup(&Data::String(Arc::from(name)), property, theme) else {
+        return resolved;
+    };
+
+    if (base.group != "color" && !base.group.ends_with("Color"))
+        || (base.contract.variable_set && !accepts_reference(&base, property))
+    {
+        return resolved;
+    }
+
+    let mut suffix = String::with_capacity(24);
+
+    suffix.push(' ');
+    suffix.push_str(&crate::js::number(amount));
+    suffix.push_str("%, transparent)");
+
+    // Premultiplied mixing with `transparent` scales the alpha and keeps the channels.
+    Data::Expression(compose(vec![
+        Part::Text(Arc::from("color-mix(in srgb, ")),
+        Part::Reference(base),
+        Part::Text(Arc::from(suffix)),
+    ]))
+}
+
+/// Matches `^(?:\d+(?:\.\d*)?|\.\d+)$`.
+fn percentage(text: &str) -> bool {
+    let digits = |part: &str| part.bytes().all(|byte| byte.is_ascii_digit());
+
+    match text.split_once('.') {
+        Some((whole, fraction)) => {
+            (!whole.is_empty() || !fraction.is_empty()) && digits(whole) && digits(fraction)
+        }
+        None => !text.is_empty() && digits(text),
+    }
+}
+
+fn lookup(value: &Data, property: &str, theme: &theme::Definition) -> Data {
     let text = match value {
         Data::String(text) if !property.starts_with("--") => text.to_string(),
         Data::Number(number) if !property.starts_with("--") => crate::js::number(*number),

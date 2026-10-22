@@ -688,7 +688,8 @@ export function define(
           !(Binding.is(resolved) && !resolved[Binding.dynamic]) &&
           !(
             Token.isExpression(resolved) &&
-            resolved.parts.every((part) => Token.is(part) || part === '')
+            (resolved !== scalar ||
+              resolved.parts.every((part) => Token.is(part) || part === ''))
           )
         ) {
           report(

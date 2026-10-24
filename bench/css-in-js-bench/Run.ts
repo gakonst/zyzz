@@ -10,9 +10,9 @@ import * as Url from 'node:url'
 
 const cases = process.env.CSS_BENCH_CASES
 const commit =
-  process.env.CSS_BENCH_COMMIT ?? '49263836d8a11ed214a310dfcd801e35b6b55969'
+  process.env.CSS_BENCH_COMMIT ?? '2447c525f2dfc41fc5487559ac840e3c71c4258c'
 const lanes = (
-  process.env.CSS_BENCH_LANES ?? 'zyzz,vanilla,next-yak,stylex-layers,plumeria'
+  process.env.CSS_BENCH_LANES ?? 'zyzz,vanilla,yak-react,stylex-layers,plumeria'
 ).split(',')
 const measures = process.env.CSS_BENCH_MEASURES ?? 'microbench,payload'
 const repository = 'https://github.com/jantimon/css-in-js-bench.git'

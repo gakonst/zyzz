@@ -700,6 +700,17 @@ type Entry<
 
 type Keys<styles> = styles extends unknown ? keyof styles : never
 
+// Rejects an invalid key that only some union branches declare. A single object has no such
+// keys, so this stays `unknown` and each key is checked by its member alone.
+type BranchKeys<styles, reserved, dynamic> = [
+  Exclude<Keys<styles>, keyof styles>,
+] extends [never]
+  ? unknown
+  : Record<
+      Exclude<Exclude<Exclude<Keys<styles>, keyof styles>, reserved>, dynamic>,
+      never
+    >
+
 /**
  * Returns `key` when it names a condition or an allowed `@layer` block, otherwise `never`.
  * Testing the key against the cached `Condition.Static` union avoids building a union per key.
@@ -746,74 +757,93 @@ export type Body<
   layers extends string,
   mappings extends Shorthands.Map,
   targets extends boolean = true,
-> = Record<
-  Exclude<
-    Exclude<Keys<styles>, Reserved<tokens, layers, mappings>>,
-    Exclude<Condition.Dynamic<Keys<styles>>, `@layer${string}`>
-  >,
-  never
+> = BranchKeys<
+  styles,
+  Reserved<tokens, layers, mappings>,
+  Exclude<Condition.Dynamic<Keys<styles>>, `@layer${string}`>
 > &
   (styles extends unknown
     ? {
-        [key in keyof styles]: key extends 'targets'
-          ? targets extends false
-            ? never
-            : styles[key] extends undefined
-              ? undefined
-              : {
-                  [target in keyof styles[key]]: target extends 'web'
-                    ?
-                        | Body<
-                            NonNullable<styles[key][target]>,
-                            tokens,
-                            layers,
-                            mappings,
-                            false
-                          >
-                        | Extract<styles[key][target], undefined>
-                    : Style.Accepted<
-                        { targets: Pick<styles[key], target> },
-                        tokens
-                      >['targets'][target]
-                }
-          : key extends 'selectors'
-            ? styles[key] extends Record<string, unknown>
-              ? {
-                  [selector in keyof styles[key]]: styles[key][selector] extends Record<
-                    string,
-                    unknown
-                  >
-                    ? Body<
-                        styles[key][selector],
-                        tokens,
-                        layers,
-                        mappings,
-                        targets
-                      >
-                    : never
-                }
-              : never
-            : key extends Nested<tokens, key, layers>
-              ? styles[key] extends Record<string, unknown>
-                ? Body<styles[key], tokens, layers, mappings, targets>
-                : never
-              : key extends keyof mappings
-                ? {
-                    [target in mappings[key][number]]: styles[key] extends Style.Accepted<
-                      Record<target, styles[key]>,
-                      tokens
-                    >[target] &
-                      Binding.Checked<Record<target, styles[key]>>[target]
-                      ? never
-                      : target
-                  }[mappings[key][number]] extends never
-                  ? styles[key]
-                  : [Token.Names<tokens, mappings[key][number]>] extends [never]
-                    ? never
-                    : Value.Mismatch<tokens, mappings[key][number]>
-                : Style.Accepted<Pick<styles, key>, tokens>[key]
+        [key in keyof styles]: BodyMember<
+          key,
+          styles[key],
+          tokens,
+          layers,
+          mappings,
+          targets
+        >
       }
     : never)
+
+// Checks one declaration from its key and value alone. The alias instantiation is then
+// cached per key, value and contract across every style, instead of per authored object.
+type BodyMember<
+  key extends PropertyKey,
+  value,
+  tokens extends Theme.Tokens,
+  layers extends string,
+  mappings extends Shorthands.Map,
+  targets extends boolean,
+> = [
+  Exclude<
+    Exclude<key, Reserved<tokens, layers, mappings>>,
+    Exclude<Condition.Dynamic<key>, `@layer${string}`>
+  >,
+] extends [never]
+  ? key extends 'targets'
+    ? targets extends false
+      ? never
+      : value extends undefined
+        ? undefined
+        : {
+            [target in keyof value]: target extends 'web'
+              ?
+                  | Body<
+                      NonNullable<value[target]>,
+                      tokens,
+                      layers,
+                      mappings,
+                      false
+                    >
+                  | Extract<value[target], undefined>
+              : Style.Accepted<
+                    { targets: Pick<value, target> },
+                    tokens
+                  >['targets'] extends infer checked
+                ? checked[target & keyof checked]
+                : never
+          }
+    : key extends 'selectors'
+      ? value extends Record<string, unknown>
+        ? {
+            [selector in keyof value]: value[selector] extends Record<
+              string,
+              unknown
+            >
+              ? Body<value[selector], tokens, layers, mappings, targets>
+              : never
+          }
+        : never
+      : key extends Nested<tokens, key, layers>
+        ? value extends Record<string, unknown>
+          ? Body<value, tokens, layers, mappings, targets>
+          : never
+        : key extends keyof mappings
+          ? {
+              [target in mappings[key][number]]: value extends Style.Accepted<
+                Record<target, value>,
+                tokens
+              >[target] &
+                Binding.Checked<Record<target, value>>[target]
+                ? never
+                : target
+            }[mappings[key][number]] extends never
+            ? value
+            : [Token.Names<tokens, mappings[key][number]>] extends [never]
+              ? never
+              : Value.Mismatch<tokens, mappings[key][number]>
+          : Style.Accepted<Record<key, value>, tokens>[key]
+  : never
 
 function definition(value: unknown): Theme.Definition {
   try {

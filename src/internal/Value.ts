@@ -138,7 +138,7 @@ export type Checked<style, tokens = {}> = {
       : LiteralChecked<Record<property, ScalarValue<value, property>>>[property]
     : style[property] extends readonly [unknown, ...unknown[]]
       ? CheckedArray<style[property], property, tokens>
-      : LiteralChecked<Pick<style, property>, tokens>[property]
+      : LiteralChecked<Record<property, style[property]>, tokens>[property]
 }
 
 type LiteralChecked<style, tokens = {}> = {

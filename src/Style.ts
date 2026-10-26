@@ -21,85 +21,92 @@ export type Accepted<
   tokens extends Theme.Tokens = {},
   literal extends boolean = false,
   targets extends boolean = true,
-> = Record<
-  Exclude<
-    Exclude<Keys<style>, Reserved<tokens>>,
-    Condition.Dynamic<Keys<style>>
-  >,
-  never
-> &
+> = BranchKeys<style, Reserved<tokens>, Condition.Dynamic<Keys<style>>> &
   (style extends unknown
     ? {
-        [key in keyof style]: key extends 'targets'
-          ? targets extends true
-            ? AcceptedTargets<style[key], tokens, literal>
-            : never
-          : key extends 'selectors'
-            ? style[key] extends Record<string, unknown>
-              ? {
-                  [selector in keyof style[key]]: style[key][selector] extends Record<
-                    string,
-                    unknown
-                  >
-                    ? Accepted<style[key][selector], tokens, literal, targets>
-                    : never
-                }
-              : never
-            : key extends 'vars'
-              ? style[key] extends Record<string, unknown>
-                ? {
-                    [name in keyof style[key]]: style[key][name] extends
-                      | number
-                      | string
-                      ? Literal.Checked<style[key][name]>
-                      : literal extends true
-                        ? never
-                        : style[key][name] extends Token.Reference
-                          ? style[key][name]
-                          : never
-                  }
-                : never
-              : key extends 'typography'
-                ? literal extends true
-                  ? never
-                  : style[key] extends Value.Atom<Typography.Names<tokens>>
-                    ? style[key]
-                    : // A disjoint literal would reduce the whole object to `never`, so the brand keeps the error on this property.
-                      Value.Unmatched<Typography.Names<tokens>>
-                : key extends keyof Literal.Properties
-                  ? (literal extends true
-                      ? LiteralDeclarations
-                      : keyof tokens extends never
-                        ? LiteralDeclarations
-                        : DeclarationProperties<tokens>)[key] extends style[key]
-                    ? style[key]
-                    : // Naming the expected tokens avoids a `never` diagnostic and keeps completions to accepted values.
-                      [Value.Tokens<style[key], tokens, key>] extends [never]
-                      ? Value.Mismatch<tokens, key>
-                      : Value.Accepted<
-                          Pick<style, key>,
-                          literal extends true
-                            ? LiteralDeclarations
-                            : DeclarationProperties<tokens>
-                        >[key] &
-                          Value.Checked<Pick<style, key>, tokens>[key] &
-                          Value.Tokens<style[key], tokens, key>
-                  : key extends Condition.Keys<tokens, key>
-                    ? [style[key]] extends [undefined]
-                      ? never
-                      : NonNullable<style[key]> extends Record<string, unknown>
-                        ?
-                            | Accepted<
-                                NonNullable<style[key]>,
-                                tokens,
-                                literal,
-                                targets
-                              >
-                            | Extract<style[key], undefined>
-                        : never
-                    : never
+        [key in keyof style]: AcceptedMember<
+          key,
+          style[key],
+          tokens,
+          literal,
+          targets
+        >
       }
     : never)
+
+// Checks one declaration from its key and value alone. The alias instantiation is then
+// cached per key, value and contract across every style, instead of per authored object.
+type AcceptedMember<
+  key extends PropertyKey,
+  value,
+  tokens extends Theme.Tokens,
+  literal extends boolean,
+  targets extends boolean,
+> = [Exclude<Exclude<key, Reserved<tokens>>, Condition.Dynamic<key>>] extends [
+  never,
+]
+  ? key extends 'targets'
+    ? targets extends true
+      ? AcceptedTargets<value, tokens, literal>
+      : never
+    : key extends 'selectors'
+      ? value extends Record<string, unknown>
+        ? {
+            [selector in keyof value]: value[selector] extends Record<
+              string,
+              unknown
+            >
+              ? Accepted<value[selector], tokens, literal, targets>
+              : never
+          }
+        : never
+      : key extends 'vars'
+        ? value extends Record<string, unknown>
+          ? {
+              [name in keyof value]: value[name] extends number | string
+                ? Literal.Checked<value[name]>
+                : literal extends true
+                  ? never
+                  : value[name] extends Token.Reference
+                    ? value[name]
+                    : never
+            }
+          : never
+        : key extends 'typography'
+          ? literal extends true
+            ? never
+            : value extends Value.Atom<Typography.Names<tokens>>
+              ? value
+              : // A disjoint literal would reduce the whole object to `never`, so the brand keeps the error on this property.
+                Value.Unmatched<Typography.Names<tokens>>
+          : key extends keyof Literal.Properties
+            ? (literal extends true
+                ? LiteralDeclarations
+                : keyof tokens extends never
+                  ? LiteralDeclarations
+                  : DeclarationProperties<tokens>)[key] extends value
+              ? value
+              : // Naming the expected tokens avoids a `never` diagnostic and keeps completions to accepted values.
+                [Value.Tokens<value, tokens, key>] extends [never]
+                ? Value.Mismatch<tokens, key>
+                : Value.Accepted<
+                    Record<key, value>,
+                    literal extends true
+                      ? LiteralDeclarations
+                      : DeclarationProperties<tokens>
+                  >[key] &
+                    Value.Checked<Record<key, value>, tokens>[key] &
+                    Value.Tokens<value, tokens, key>
+            : key extends Condition.Keys<tokens, key>
+              ? [value] extends [undefined]
+                ? never
+                : NonNullable<value> extends Record<string, unknown>
+                  ?
+                      | Accepted<NonNullable<value>, tokens, literal, targets>
+                      | Extract<value, undefined>
+                  : never
+              : never
+  : never
 
 type AcceptedTargets<
   input,
@@ -125,6 +132,17 @@ export type TargetBranches<tokens extends Theme.Tokens = {}> =
   }
 
 type Keys<value> = value extends unknown ? keyof value : never
+
+// Rejects an invalid key that only some union branches declare. A single object has no such
+// keys, so this stays `unknown` and each key is checked by its member alone.
+type BranchKeys<style, reserved, dynamic> = [
+  Exclude<Keys<style>, keyof style>,
+] extends [never]
+  ? unknown
+  : Record<
+      Exclude<Exclude<Exclude<Keys<style>, keyof style>, reserved>, dynamic>,
+      never
+    >
 
 // The conditional caches this union per token set. `Accepted` runs for every declaration,
 // and the union holds every property name.
